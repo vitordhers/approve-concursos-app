@@ -1,0 +1,14 @@
+<mat-form-field appearance="outline">
+  <mat-label>Ano</mat-label>
+  <input matInput
+         [matDatepicker]="dp"
+         [formControl]="control"
+         [max]="maxYear"
+         maxlength="4">
+  <mat-datepicker-toggle matIconSuffix
+                         [for]="dp"></mat-datepicker-toggle>
+  <mat-datepicker #dp
+                  startView="multi-year"
+                  (yearSelected)="onYearSelected($event)">
+  </mat-datepicker>
+</mat-form-field>

@@ -1,0 +1,30 @@
+<div class="wrapper">
+  @if (loadedFilteredQuestions().length) {
+  @for (question of loadedFilteredQuestions(); track $index) {
+  <app-answerable-question [_question]="question"
+                           [questionNo]="currentPage().start + $index + 1"
+                           (nextPage)="nextPage($event)"
+                           [prevAnswer]="answerMap.get(question.id)"
+                           [pageEnd]="currentPage().end"
+                           [questionIndex]="$index"
+                           [examTotalQuestions]="totalFilteredQuestions" />
+  }
+  } @else if (loadedExamQuestions().length) {
+  @for (question of loadedExamQuestions(); track $index) {
+  <app-answerable-question [_question]="question"
+                           [questionNo]="currentPage().start + $index + 1"
+                           (nextPage)="nextPage($event)"
+                           [prevAnswer]="answerMap.get(question.id)"
+                           [pageEnd]="currentPage().end"
+                           [questionIndex]="$index"
+                           [examTotalQuestions]="totalExamQuestions" />
+  }
+  }
+  <mat-paginator [pageSizeOptions]="pageSizeOptions"
+                 [pageSize]="currentPageSize"
+                 [length]="type() === 'exam' ?  totalExamQuestions : totalFilteredQuestions"
+                 showFirstLastButtons
+                 (page)="onPageEvent($event)"
+                 [hidePageSize]="(type() === 'exam' ?  totalExamQuestions : totalFilteredQuestions) < pageSizeOptions[0]">
+  </mat-paginator>
+</div>

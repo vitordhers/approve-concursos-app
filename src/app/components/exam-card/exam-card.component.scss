@@ -1,0 +1,79 @@
+mat-card {
+  border-radius: 20px;
+  color: #fff;
+  overflow: hidden;
+  mat-card-subtitle {
+    color: #fff;
+    font-weight: 600;
+  }
+
+  button,
+  span {
+    color: #fff;
+    cursor: pointer;
+
+    fa-icon {
+      color: #fff;
+    }
+  }
+}
+
+.yellow {
+  background-color: #ffd53f;
+}
+
+.green {
+  background-color: #00aa60;
+}
+
+.purple {
+  background-color: #8400a2;
+}
+
+.red {
+  background-color: orangered;
+}
+
+.blue {
+  background-color: #006aff;
+}
+
+.flamingo {
+  background-color: #ff0059;
+}
+
+mat-card-actions {
+  backdrop-filter: brightness(80%);
+}
+
+p {
+  text-align: right;
+  font-size: 24px;
+}
+
+mat-list {
+  width: 100%;
+}
+
+mat-list-item {
+  width: 100%;
+  cursor: pointer !important;
+
+  &:hover {
+    button,
+    span {
+      color: #ffffffbf;
+
+      fa-icon {
+        color: #ffffffbf;
+      }
+    }
+  }
+}
+
+.avatar-icon {
+  img {
+    width: 60px !important;
+    height: 60px !important;
+  }
+}

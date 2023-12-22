@@ -1,0 +1,77 @@
+<div class="add-edit-header">
+  <button mat-icon-button
+          (click)="navigateToList()">
+    <fa-icon [icon]="faArrowLeft"></fa-icon>
+  </button>
+  <h3 class="list-label">{{isEdit() ? 'Editar' : 'Criar'}} {{labels.labelCapitalized}}</h3>
+</div>
+<div class="add-edit-body">
+  <div class="stats"
+       *ngIf="updatedBoard() as board">
+    <div class="stats-body">
+      <span><fa-icon [icon]="faFingerprint"></fa-icon>&nbsp;Id:</span>
+      <span>{{board.id}}</span>
+
+      <span><fa-icon [icon]="faClock"></fa-icon>&nbsp;Criado em:</span>
+      <span>{{board.createdDateTime | date:'long':'pt-BR'}}</span>
+      @if (board.createdAt !== board.updatedAt) {
+      <span><fa-icon [icon]="faClock"></fa-icon>&nbsp;Última edição em:</span>
+      <span>{{board.updatedDateTime | date:'long':'pt-BR'}}</span>
+      }
+    </div>
+  </div>
+  <form [formGroup]="form">
+    <div class="form-field-pair-wrap">
+      <mat-form-field appearance="outline">
+        <mat-label>Nome</mat-label>
+        <span matTextPrefix><fa-icon [icon]="faFont"></fa-icon> &nbsp;</span>
+        <input matInput
+               type="text"
+               placeholder="Nome d{{labels.defArticle}} {{labels.label}}"
+               maxlength="50"
+               formControlName="name">
+        @if (form.controls['name'].touched && form.controls['name'].invalid) {
+        <div>
+          @if (form.controls['name'].hasError('required')) {
+          <mat-error>O nome é obrigatório</mat-error>
+          }
+          @if (form.controls['name'].hasError('minlength')) {
+          <mat-error>O nome deve ter pelo menos 2 caracteres</mat-error>
+          }
+          @if (form.controls['name'].hasError('maxlength')) {
+          <mat-error>O nome deve ter até 50 caracteres</mat-error>
+          }
+        </div>
+        }
+      </mat-form-field>
+    </div>
+    <div class="form-field-full-wrap">
+      <h4><fa-icon [icon]="faImage"></fa-icon> Imagem d{{labels.defArticle}} {{labels.labelCapitalized}}</h4>
+      <app-file-uploader [imgSrc]="form.controls['img'].value"
+                         [generateThumbnail]="true"
+                         (emitPreview)="patchPreview($event)"></app-file-uploader>
+    </div>
+  </form>
+  <div class="add-edit-actions">
+    <div class="start-actions">
+      @if (isEdit()) {
+      <button mat-raised-button
+              (click)="remove()"
+              color="warn"
+              [disabled]="loading()">
+        <fa-icon [icon]="faTrash"></fa-icon>
+        <span> Apagar </span>
+      </button>
+      }
+    </div>
+    <div class="end-actions">
+      <button mat-raised-button
+              (click)="save()"
+              color="primary"
+              [disabled]="loading()">
+        <fa-icon [icon]="faSave"></fa-icon>
+        <span> {{isEdit() ? 'Salvar alterações' : 'Salvar'}} </span>
+      </button>
+    </div>
+  </div>
+</div>

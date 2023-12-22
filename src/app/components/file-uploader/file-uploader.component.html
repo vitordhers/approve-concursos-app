@@ -1,0 +1,26 @@
+<div class="img-wrapper"
+     (mouseenter)="imageHover(true)"
+     (mouseleave)="imageHover(false)"
+     (click)="handleFileUpload()">
+  <img class="cover-img image-editable"
+       [ngClass]="{'hovered': imageHovered()}"
+       [ngSrc]="(imgSrc || 'assets/img/none.jpg') | serverImg"
+       fill
+       priority />
+  <fa-icon class="upload-action"
+           [ngClass]="{'displayed': imageHovered()}"
+           [icon]="imgSrc === 'assets/img/products/none.jpg' ? faCloudArrowUp : faRotateRight"></fa-icon>
+  @if(displayProgressBar()) {
+  <mat-progress-bar mode="determinate"
+                    [value]="progress()"></mat-progress-bar>
+  }
+
+</div>
+
+<div class="img-upload-section">
+  <input type="file"
+         class="image-input"
+         accept="image/jpg, image/jpeg, image/png"
+         (change)="previewImg($event.target)"
+         #fileInput />
+</div>

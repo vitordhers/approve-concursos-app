@@ -1,0 +1,297 @@
+<div class="add-edit-header">
+  <button mat-icon-button
+          (click)="navigateToList()">
+    <fa-icon [icon]="faArrowLeft"></fa-icon>
+  </button>
+  <h3 class="list-label">{{isEdit() ? 'Editar' : 'Criar'}} {{labels.labelCapitalized}}</h3>
+</div>
+<div class="add-edit-body">
+  <div class="stats"
+       *ngIf="updatedRecord() as record">
+    <div class="stats-body">
+      <span><fa-icon [icon]="faFingerprint"></fa-icon>&nbsp;Id:</span>
+      <span>{{record.id}}</span>
+      <span><fa-icon [icon]="faClock"></fa-icon>&nbsp;Criado em:</span>
+      <span><fa-icon [icon]="faClock"></fa-icon>&nbsp;Código:</span>
+      <span>{{record.code}}</span>
+      <span><fa-icon [icon]="faClock"></fa-icon>&nbsp;Criado em:</span>
+      <span>{{record.createdDateTime | date:'long':'pt-BR'}}</span>
+      @if (record.createdAt !== record.updatedAt) {
+      <span><fa-icon [icon]="faClock"></fa-icon>&nbsp;Última edição em:</span>
+      <span>{{record.updatedDateTime | date:'long':'pt-BR'}}</span>
+      }
+    </div>
+  </div>
+  <form [formGroup]="form">
+    @if (!isEdit()) {
+    <div class="form-field-full-wrap">
+      <mat-form-field appearance="outline">
+        <mat-label>Código
+        </mat-label>
+        <span matTextPrefix><fa-icon [icon]="faBarcode"></fa-icon>&nbsp;</span>
+        <input matInput
+               type="text"
+               placeholder="ex.: CESPE-PF-2014"
+               maxlength="50"
+               formControlName="code"
+               appLettersNumbersAndDashOnly>
+        @if (form.controls['code'].touched && form.controls['code'].invalid) {
+        <div>
+          @if (form.controls['code'].hasError('codeTaken')) {
+          <mat-error>Este código já foi registrado</mat-error>
+          }
+          @if (form.controls['code'].hasError('required')) {
+          <mat-error>O código é obrigatório</mat-error>
+          }
+          @if (form.controls['code'].hasError('minlength')) {
+          <mat-error>O código deve ter pelo menos 5 caracteres</mat-error>
+          }
+          @if (form.controls['code'].hasError('maxlength')) {
+          <mat-error>O código deve ter até 50 caracteres</mat-error>
+          }
+        </div>
+        }
+        <span matTextSuffix>
+          <fa-icon [icon]="faCircleInfo"
+                   matTooltip="Esse campo só pode ser editado durante a criação d{{labels.defArticle}} {{labels.labelCapitalized}}. Ele só aceita letras, números e travessões (-). Ele também deve ter um valor único."></fa-icon>
+        </span>
+      </mat-form-field>
+    </div>
+    }
+    <div class="form-field-pair-wrap">
+      <mat-form-field appearance="outline">
+        <mat-label>Nome</mat-label>
+        <span matTextPrefix><fa-icon [icon]="faFont"></fa-icon> &nbsp;</span>
+        <input matInput
+               type="text"
+               placeholder="Nome d{{labels.defArticle}} {{labels.label}}"
+               maxlength="50"
+               formControlName="name">
+        @if (form.controls['name'].touched && form.controls['name'].invalid) {
+        <div>
+          @if (form.controls['name'].hasError('required')) {
+          <mat-error>O nome é obrigatório</mat-error>
+          }
+          @if (form.controls['name'].hasError('minlength')) {
+          <mat-error>O nome deve ter pelo menos 2 caracteres</mat-error>
+          }
+          @if (form.controls['name'].hasError('maxlength')) {
+          <mat-error>O nome deve ter até 50 caracteres</mat-error>
+          }
+        </div>
+        }
+      </mat-form-field>
+      <app-year-selector (selectedEmitter)="onYearSelected($event)" />
+
+    </div>
+    @if (type() === 1) {
+
+    <div class="form-field-pair-wrap">
+      <app-institution-selector (selectedEmitter)="onSelectInstitution($event)"
+                                [markAsTouched]="markInstitutionSelectorAsTouched"
+                                [required]="true"
+                                [loadValue]="loadInstitutionValue" />
+      <app-board-selector (selectedEmitter)="onSelectedBoard($event)"
+                          [markAsTouched]="markBoardSelectorAsTouched"
+                          [required]="true"
+                          [loadValue]="loadBoardValue" />
+    </div>
+    }
+    <div class="form-field-full-wrap">
+      <ng-container *ngIf="labels.label === 'simulados' || isEdit(); else assessmentQuestions">
+        <div class="mock-questions-wrap">
+          @if (form.controls['mockQuestions'].controls.length) {
+          <h4>
+            Questões adicionadas
+          </h4>
+          }
+          @for (formGroup of form.controls['mockQuestions'].controls; track $index) {
+          <mat-card class="mat-mdc-elevation-specific mat-elevation-z4">
+            <mat-card-header>
+              <div mat-card-avatar>
+                <img height="40"
+                     width="40"
+                     mat-card-avatar
+                     [ngSrc]="formGroup.controls['subject'].value.thumb ? (formGroup.controls['subject'].value.thumb | serverImg ): 'assets/img/none.jpg'">
+              </div>
+              <mat-card-title>Caderno {{$index + 1}}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="form-field-pair-wrap">
+                <mat-form-field appearance="outline">
+                  <mat-label>Número de Questões
+                  </mat-label>
+                  <span matTextPrefix><fa-icon [icon]="faTimes"></fa-icon>&nbsp;</span>
+                  <input matInput
+                         type="text"
+                         placeholder="ex.: 10"
+                         inputmode="numeric"
+                         [formControl]="formGroup.controls['times']">
+                </mat-form-field>
+                @if (formGroup.controls['times'].touched &&
+                formGroup.controls['times'].invalid) {
+                <div>
+                  @if (formGroup.controls['times'].hasError('min')) {
+                  <mat-error>O número de questões precisa ser pelo menos 1.</mat-error>
+                  }
+                  @if (formGroup.controls['times'].hasError('max')) {
+                  <mat-error>Para a disciplina selecionada, o número máximo de questões disponíveis é
+                    {{formGroup.controls['times'].getError('max').max}}.</mat-error>
+                  }
+                </div>
+                }
+                <app-subject-selector (selectedEmitter)="onUpdateMockQuestionSubject($event, $index)"
+                                      [required]="true" />
+              </div>
+            </mat-card-content>
+          </mat-card>
+          }
+        </div>
+        <mat-card class="mat-mdc-elevation-specific mat-elevation-z0 no-side-padding">
+          <mat-card-header>
+            <mat-card-title>
+              <fa-icon [icon]="faAdd" />&nbsp;
+              Adicionar novas questões</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <form class="add-mock-question-form"
+                  [formGroup]="addMockQuestionsFromGroup">
+              <div class="form-field-pair-wrap">
+                <div>
+                  <mat-form-field class="add-mock-times-field"
+                                  appearance="outline">
+                    <mat-label>Número de Questões
+                    </mat-label>
+                    <span matTextPrefix><fa-icon [icon]="faTimes" />&nbsp;</span>
+                    <input matInput
+                           type="text"
+                           placeholder="ex.: 10"
+                           inputmode="numeric"
+                           formControlName="times">
+                  </mat-form-field>
+                  @if (addMockQuestionsFromGroup.controls['times'].touched &&
+                  addMockQuestionsFromGroup.controls['times'].invalid) {
+                  <div>
+                    @if (addMockQuestionsFromGroup.controls['times'].hasError('min')) {
+                    <mat-error>O número de questões precisa ser pelo menos 1.</mat-error>
+                    }
+                    @if (addMockQuestionsFromGroup.controls['times'].hasError('max')) {
+                    <mat-error>Para a disciplina selecionada, o número máximo de questões disponíveis é
+                      {{addMockQuestionsFromGroup.controls['times'].getError('max').max}}.</mat-error>
+                    }
+                  </div>
+                  }
+                </div>
+                <div class="flex items-baseline">
+                  <div class="flex-1">
+                    <app-subject-selector (selectedEmitter)="onSelectAddMockQuestionSubject($event)"
+                                          [markAsTouched]="markAddMockQuestionFormGroupSubjectAsTouched"
+                                          [required]="true" />
+                  </div>
+                  <div class="width-40">
+                    <span
+                          [matTooltip]="addMockQuestionsFromGroup.controls['times'].invalid ? 'Para esse botão ficar disponível, o formulário precisa ser válido': ''">
+                      <button mat-mini-fab
+                              color="primary"
+                              [disabled]="addMockQuestionsFromGroup.controls['times'].invalid"
+                              (click)="addMockQuestionSubject()">
+                        <fa-icon [icon]="faCirclePlus" />
+                      </button>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </mat-card-content>
+        </mat-card>
+      </ng-container>
+    </div>
+  </form>
+  <div class="add-edit-actions">
+    <div class="start-actions">
+      @if (isEdit()) {
+      <button mat-raised-button
+              (click)="remove()"
+              color="warn"
+              [disabled]="loading()">
+        <fa-icon [icon]="faTrash"></fa-icon>
+        <span> Apagar </span>
+      </button>
+      }
+    </div>
+    <div class="end-actions">
+      <button mat-raised-button
+              (click)="save()"
+              color="primary"
+              [disabled]="loading()">
+        <fa-icon [icon]="faSave"></fa-icon>
+        <span> {{isEdit() ? 'Salvar alterações' : 'Salvar'}} </span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<ng-template #assessmentQuestions>
+  <div class="assessment-questions-wrap">
+    <div cdkDropList
+         (cdkDropListDropped)="drop($event)"
+         class="drop-list">
+      <div class="question-wrap list-item"
+           *ngFor="let control of form.controls['questions'].controls; index as $index; trackBy: trackBy"
+           cdkDrag>
+        <div class="draggable-padding"></div>
+        <mat-card class="mat-mdc-elevation-specific mat-elevation-z5">
+          <mat-card-content>
+            <app-question-selector (selectedEmitter)="onUpdateSelectedQuestion($event, $index)"
+                                   [initialRecord]="control.value"
+                                   [required]="true"
+                                   [prefix]="$index + 1" />
+          </mat-card-content>
+          <mat-card-actions>
+            <button mat-icon-button
+                    (click)="removeQuestion($index)"
+                    color="warn"
+                    [matTooltip]="'Remover questão nº '+$index + 1">
+              <fa-icon [icon]="faTimes" />
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+    </div>
+
+    <mat-card class="mat-mdc-elevation-specific mat-elevation-z0 no-side-padding">
+      <mat-card-header>
+        <mat-card-title>
+          <fa-icon [icon]="faAdd" />&nbsp;
+          Adicionar novas questões</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form class="add-assessment-question-form">
+          <div class="form-field-full-wrap">
+            <div class="flex items-baseline">
+              <div class="flex-1">
+                <app-question-selector (selectedEmitter)="onSelectAddAssessmentQuestion($event)"
+                                       [markAsTouched]="markAddAssessmentQuestionFormControlAsTouched"
+                                       [clear]="clearAddAssessmentQuestionFormControl"
+                                       [required]="true" />
+              </div>
+              <div class="width-40">
+                <span
+                      [matTooltip]="addAssesmentQuestionsFormControl.invalid ? 'Para esse botão ficar disponível, o formulário precisa ser válido': ''">
+                  <button mat-mini-fab
+                          color="primary"
+                          type="button"
+                          [disabled]="addAssesmentQuestionsFormControl.invalid"
+                          (click)="addAssessmentQuestion()">
+                    <fa-icon [icon]="faCirclePlus" />
+                  </button>
+                </span>
+              </div>
+            </div>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+  </div>
+</ng-template>

@@ -1,0 +1,197 @@
+<div class="add-edit-header">
+  <button mat-icon-button
+          (click)="navigateToList()">
+    <fa-icon [icon]="faArrowLeft"></fa-icon>
+  </button>
+  <h3 class="list-label">{{isEdit() ? 'Editar' : 'Criar'}} {{labels.labelCapitalized}}</h3>
+</div>
+<div class="add-edit-body">
+  <div class="stats"
+       *ngIf="updatedUser() as user">
+    <div class="stats-body">
+      <span><fa-icon [icon]="faFingerprint"></fa-icon>&nbsp;Id:</span>
+      <span>{{user.id}}</span>
+
+      <span><fa-icon [icon]="faClock"></fa-icon>&nbsp;Criado em:</span>
+      <span>{{user.createdDateTime | date:'long':'pt-BR'}}</span>
+      @if (user.createdAt !== user.updatedAt) {
+      <span><fa-icon [icon]="faClock"></fa-icon>&nbsp;Última edição em:</span>
+      <span>{{user.updatedDateTime | date:'long':'pt-BR'}}</span>
+      }
+    </div>
+  </div>
+  <form [formGroup]="form">
+    <div class="form-field-pair-wrap">
+      <mat-form-field appearance="outline">
+        <mat-label>Nome</mat-label>
+        <span matTextPrefix><fa-icon [icon]="faFont"></fa-icon> &nbsp;</span>
+        <input matInput
+               type="text"
+               placeholder="Seu Nome Completo"
+               maxlength="100"
+               formControlName="name">
+        @if (form.controls['name'].touched && form.controls['name'].invalid) {
+        <div>
+          @if (form.controls['name'].hasError('required')) {
+          <mat-error>Insira seu nome completo</mat-error>
+          }
+          @if (form.controls['name'].hasError('minlength')) {
+          <mat-error>O nome deve ter pelo menos 2 caracteres</mat-error>
+          }
+          @if (form.controls['name'].hasError('maxlength')) {
+          <mat-error>O nome deve ter até 100 caracteres</mat-error>
+          }
+        </div>
+        }
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>E-mail</mat-label>
+        <span matTextPrefix><fa-icon [icon]="faEnvelope"></fa-icon> &nbsp;</span>
+        <input matInput
+               type="email"
+               placeholder="seu@email.com"
+               maxlength="50"
+               formControlName="email">
+        @if (form.controls['email'].touched && form.controls['email'].invalid) {
+        <div>
+          @if (form.controls['email'].hasError('required')) {
+          <mat-error>Insira seu e-mail</mat-error>
+          }
+          @if (form.controls['email'].hasError('minlength')) {
+          <mat-error>O e-mail deve ter pelo menos 6 caracteres</mat-error>
+          }
+          @if (form.controls['email'].hasError('maxlength')) {
+          <mat-error>O e-mail deve ter até 50 caracteres</mat-error>
+          }
+          @if (form.controls['email'].hasError('pattern')) {
+          <mat-error>Insira um e-mail válido</mat-error>
+          }
+        </div>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="form-field-pair-wrap">
+
+      <mat-form-field appearance="outline">
+        <mat-label>CPF</mat-label>
+        <span matTextPrefix><fa-icon [icon]="faIdCard"></fa-icon> &nbsp;</span>
+        <input matInput
+               type="text"
+               inputmode="numeric"
+               placeholder="000.000.000-00"
+               maxlength="14"
+               formControlName="cpf"
+               appCpf>
+        @if (form.controls['cpf'].touched && form.controls['cpf'].invalid) {
+        <div>
+
+          @if (form.controls['cpf'].hasError('minlength')) {
+          <mat-error>O CPF deve ter pelo menos 11 números</mat-error>
+          }
+          @if (form.controls['cpf'].hasError('maxlength')) {
+          <mat-error>O CPF deve ter até 11 números</mat-error>
+          }
+
+        </div>
+        }
+
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>
+          <fa-icon [icon]="faCrown"></fa-icon>
+          Privilégio</mat-label>
+        <mat-select formControlName="role">
+          @for (role of userRoles; track role) {
+          <mat-option [value]="role.value">{{role.label}}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="passwords">
+      <div class="form-field-pair-wrap">
+        <mat-form-field appearance="outline">
+          <mat-label>Senha</mat-label>
+          <span matTextPrefix><fa-icon [icon]="faLock"></fa-icon> &nbsp;</span>
+          <input matInput
+                 [type]="showPassword() ? 'text' : 'password'"
+                 maxlength="20"
+                 formControlName="password">
+          <button type="button"
+                  mat-icon-button
+                  matSuffix
+                  (click)="toggleShowPassword()"
+                  [attr.aria-label]="'Hide password'">
+            <fa-icon [icon]="showPassword() ? faEyeSlash : faEye"></fa-icon>
+          </button>
+          @if (form.controls['password'].touched && form.controls['password'].invalid) {
+          <div>
+            @if (form.controls['password'].hasError('required')) {
+            <mat-error>Insira uma senha</mat-error>
+            }
+            @if (form.controls['password'].hasError('pattern')) {
+            <mat-error>A senha deve ter entre 8 e 20 caracteres, pelo menos uma letra, uma letra maiúscula, um
+              número
+              e
+              um símbolo</mat-error>
+            }
+          </div>
+          }
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Confirme sua senha</mat-label>
+          <span matTextPrefix><fa-icon [icon]="faLock"></fa-icon> &nbsp;</span>
+          <input matInput
+                 [type]="showConfirmPassword() ? 'text' : 'password'"
+                 maxlength="20"
+                 formControlName="confirmPassword">
+          <button type="button"
+                  mat-icon-button
+                  matSuffix
+                  (click)="toggleShowConfirmPassword()"
+                  [attr.aria-label]="'Hide password'">
+            <fa-icon [icon]="showConfirmPassword() ? faEyeSlash : faEye"></fa-icon>
+          </button>
+          @if (form.controls['confirmPassword'].touched && form.controls['confirmPassword'].invalid)
+          {
+          <div>
+            @if (form.controls['confirmPassword'].hasError('required')) {
+            <mat-error>Confirme sua senha</mat-error>
+            }
+            @if (form.controls['confirmPassword'].hasError('matchPasswords')) {
+            <mat-error>As senhas estão diferentes</mat-error>
+            }
+          </div>
+          }
+        </mat-form-field>
+      </div>
+    </div>
+
+
+  </form>
+  <div class="add-edit-actions">
+    <div class="start-actions">
+      @if (isEdit()) {
+      <button mat-raised-button
+              (click)="remove()"
+              color="warn"
+              [disabled]="loading()">
+        <fa-icon [icon]="faTrash"></fa-icon>
+        <span> Apagar </span>
+      </button>
+      }
+    </div>
+    <div class="end-actions">
+
+      <button type="button"
+              mat-raised-button
+              (click)="save()"
+              color="primary"
+              [disabled]="loading()">
+        <fa-icon [icon]="faSave"></fa-icon>
+        <span> {{isEdit() ? 'Salvar alterações' : 'Salvar'}} </span>
+      </button>
+    </div>
+  </div>
+</div>

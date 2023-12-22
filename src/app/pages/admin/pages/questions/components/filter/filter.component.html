@@ -1,0 +1,146 @@
+<mat-stepper [linear]="false"
+             #stepper
+             (selectedIndexChange)="onSelectedIndexChange($event)">
+  <mat-step [stepControl]="firstFormGroup">
+    <form [formGroup]="firstFormGroup">
+      <ng-template matStepLabel>Filtro</ng-template>
+      <div class="form-field-pair-wrap">
+        <div
+             [ngClass]="{'form-field-pair-wrap': !!firstFormGroup.controls['boardIds'].value.length, 'form-field-full-wrap': !firstFormGroup.controls['boardIds'].value.length}">
+          @if (firstFormGroup.controls['boardIds'].value.length) {
+          <div>
+            Bancas selecionadas
+            <mat-chip-listbox>
+              @for (board of firstFormGroup.controls['boardIds'].value; track $index) {
+              <mat-chip-row>{{board.name}}
+                <button matChipRemove
+                        (click)="removeBoardAt($index)">
+                  <fa-icon [icon]="faTimes" />
+                </button>
+              </mat-chip-row>
+              }
+            </mat-chip-listbox>
+          </div>
+          }
+          <app-board-selector (selectedEmitter)="onSelectedBoard($event)"
+                              [clear]="clearBoardSelector" />
+        </div>
+        <div class="form-field-pair-wrap">
+          <app-year-selector [year]="firstFormGroup.controls['year'].value"
+                             (selectedEmitter)="onYearSelected($event)" />
+          <mat-checkbox (change)="checkStartingYear($event.checked)">
+            Procurar questões a partir desse ano
+          </mat-checkbox>
+        </div>
+      </div>
+
+      <div class="form-field-pair-wrap">
+        <app-institution-selector (selectedEmitter)="onSelectInstitution($event)" />
+        <mat-form-field appearance="outline">
+          <mat-label>Nível de Escolaridade
+          </mat-label>
+          <span matTextPrefix><fa-icon [icon]="faGraduationCap"></fa-icon>&nbsp;</span>
+          <mat-select formControlName="educationStage">
+            <mat-option [value]="undefined">
+              Não especificado
+            </mat-option>
+            @for (option of educationStageOptions; track option) {
+            <mat-option [value]="option.value">{{option.label}}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div>
+        <button mat-button
+                matStepperNext>
+          Continuar
+          <fa-icon [icon]="faArrowRight" /></button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="subjectsFormArray">
+    <ng-template matStepLabel>Disciplinas</ng-template>
+    @if (dataSource().length) {
+    <div class="subjects-table-wrap">
+      <table mat-table
+             [dataSource]="dataSource()"
+             class="mat-elevation-z8">
+
+
+        <ng-container matColumnDef="name">
+          <th mat-header-cell
+              *matHeaderCellDef> Nome </th>
+          <td mat-cell
+              *matCellDef="let item"> {{item.subject.name}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="quantity">
+          <th mat-header-cell
+              *matHeaderCellDef> Quantidade </th>
+          <td class="padded-cell"
+              mat-cell
+              *matCellDef="let item; let i = index">
+            <mat-form-field appearance="outline"
+                            [formGroup]="subjectsFormArray.controls[i]">
+              <mat-label>Quantidade</mat-label>
+              <span matTextPrefix><fa-icon [icon]="faHashtag"></fa-icon> &nbsp;</span>
+              <input matInput
+                     type="text"
+                     inputmode="numeric"
+                     placeholder="5"
+                     maxlength="14"
+                     formControlName="quantity">
+              @if (subjectsFormArray.controls[i].controls['quantity'].touched &&
+              subjectsFormArray.controls[i].controls['quantity'].invalid) {
+              <div>
+
+                @if (subjectsFormArray.controls[i].controls['quantity'].hasError('max')) {
+                <mat-error>O número limite de questões dessa disciplina é
+                  {{subjectsFormArray.controls[i].controls['quantity'].getError('max').max}}
+                </mat-error>
+                }
+
+              </div>
+              }
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="total">
+          <th mat-header-cell
+              *matHeaderCellDef> Questões disponíveis </th>
+          <td mat-cell
+              *matCellDef="let item"> {{item.total}} </td>
+        </ng-container>
+
+        <tr mat-header-row
+            *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row
+            *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+    }
+    <div>
+      <button mat-button
+              matStepperPrevious>
+        <fa-icon [icon]="faArrowLeft" />
+        Voltar</button>
+      <button mat-button
+              matStepperNext>Continuar
+        <fa-icon [icon]="faArrowRight" /></button>
+    </div>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>Confirmação</ng-template>
+    <p>Vamos lá!</p>
+    <p>Os critérios foram definidos. Para prosseguir, clique em confirmar</p>
+    <div>
+      <button mat-button
+              matStepperPrevious>
+        <fa-icon [icon]="faArrowLeft" />
+        Voltar</button>
+      <button mat-button
+              (click)="filter()">Confirmar</button>
+    </div>
+  </mat-step>
+</mat-stepper>

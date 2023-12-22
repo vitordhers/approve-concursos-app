@@ -1,0 +1,134 @@
+<mat-card *ngIf="question() as question"
+          class="question-card">
+  <mat-card-header>
+    @if(questionNo) {
+    <div class="avatar"
+         mat-card-avatar>
+      <app-icon-number-sequence [no]="questionNo" />
+    </div>
+    }
+    <mat-card-title>
+      <span class="code">
+        <span>{{question.code}}</span>
+      </span>
+
+      @if(question?.year) {
+      <span>
+        <span class="subtitle">Ano: </span>
+        <span>{{question.year}}</span>
+      </span>
+      }
+      @if(subject()) {
+      <span>
+        <span class="subtitle">Disciplina:</span>
+        <a>
+          {{subject()?.name}}
+        </a>
+      </span>
+      }
+      @if(institution()) {
+      <span>
+        <span class="subtitle">Órgão:</span>
+        <a>
+          {{institution()?.name}}
+        </a>
+      </span>
+      }
+      <!-- @if(exam()) {
+        <span>
+          <span class="subtitle">Prova:</span>
+          <a>
+            {{exam()?.name}}
+          </a>
+        </span>
+      } -->
+      @if(board()) {
+      <span>
+        <span class="subtitle">Banca:</span>
+        <a>
+          {{board()?.name}}
+        </a>
+      </span>
+      }
+    </mat-card-title>
+    <mat-card-subtitle>
+      <p>
+        {{question.prompt}}
+      </p>
+    </mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+
+    @if(question.illustration) {
+    <div class="image-wrap">
+      <img mat-card-image
+           [ngSrc]="question.illustration | serverImg"
+           fill>
+    </div>
+    }
+    <div class="alternatives">
+      <mat-selection-list [multiple]="false"
+                          (selectionChange)="chooseAnswer()"
+                          [disabled]="answerMap().get(question.id) !== undefined && correctAnswer === undefined"
+                          [ngClass]="{'disable-selection': answeredAt}">
+        @for (alternative of question.alternatives; track $index) {
+        <mat-list-option [value]="$index"
+                         [selected]="answerMap().get(question.id) === $index"
+                         [disableRipple]="!!answeredAt">
+          <span class="alternative-letter"
+                [ngClass]="{'selected-solve': selectedIndex() === $index, 'selected-solved':(answerMap().get(question.id) === $index && answeredAt), 'correct': correctAnswer === $index}"
+                [matTooltip]="$index | alternativeTooltip:(answerMap().get(question.id) || selectedIndex()):correctAnswer"
+                matListItemIcon>
+            <fa-icon [icon]="$index | letterIndexToAplhabetIcon"></fa-icon>
+          </span>
+          <p>
+            {{alternative.statement}}
+          </p>
+        </mat-list-option>
+
+        }
+      </mat-selection-list>
+    </div>
+  </mat-card-content>
+
+  <mat-card-actions class="actions">
+    @if (answerMap().get(question.id) === undefined) {
+    <button mat-flat-button
+            color="primary"
+            (click)="answer()"
+            class="answer-button">
+      <fa-icon [icon]="faPenClip" />
+      Responder
+    </button>
+    } @else {
+    <p>
+      @if (!answeredAtDate) {
+      <fa-icon [icon]="faCheck" />
+      Alternativa <b>{{selectedAnswer() | letterIndexToAplhabetChar}}</b> gravada com sucesso
+      } @else {
+      @if (
+      answerMap().get(question.id) === correctAnswer;
+      ) {
+      <fa-icon class="correct"
+               [icon]="faSquareCheck" />
+      } @else {
+      <fa-icon class="wrong"
+               [icon]="faSquareXmark" />
+      }
+      Questão resolvida em {{answeredAtDate.toLocaleDateString('pt-br', localeDateStringOptions)}}
+      }
+    </p>
+    <div>
+      <h4>
+        <fa-icon [icon]="faCheckDouble" /> Gabarito
+      </h4>
+      @if (question.answerExplanation) {
+      <p>{{question.answerExplanation}}</p>
+      } @else {
+      <p>A questão <span class="code">{{question.code}}</span> não não possui gabarito</p>
+      }
+    </div>
+    }
+  </mat-card-actions>
+</mat-card>

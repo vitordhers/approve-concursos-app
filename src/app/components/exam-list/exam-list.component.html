@@ -1,0 +1,57 @@
+<div class="content-wrap">
+  @if (loadingData()) {
+  <app-loader />
+  }
+  @if ((loadedExams() || []).length > 0) {
+  <div class="search-wrap">
+    <mat-form-field appearance="outline">
+      <input matInput
+             placeholder="Código ou nome"
+             [formControl]="searchControl">
+      <button matSuffix
+              mat-icon-button
+              (click)="isUsingSearch() ? clearSearch() : search()">
+        <fa-icon [icon]="isUsingSearch() ? faTimes : faMagnifyingGlass"
+                 size="sm"></fa-icon>
+      </button>
+    </mat-form-field>
+    <div>
+      @if (searchControl.touched && searchControl.hasError('minlength')) {
+      <mat-error>A pesquisa não pode estar vazia</mat-error>
+      }
+    </div>
+  </div>
+  }
+  @if (isUsingSearch()) {
+  <div> Resultados da busca <i>{{searchControl.value}}</i></div>
+  }
+  <div class="grid-3-wrap">
+    @if (!isUsingSearch()) {
+    @if ((loadedExams() || []).length > 0) {
+    @for (exam of loadedExams(); track $index) {
+    <app-exam-card [exam]="exam"></app-exam-card>
+    }
+    } @else {
+    <div>Nenhum{{labels.defArticle === 'o' ? '' : 'a'}} {{labels.label}} disponível</div>
+    }
+    } @else {
+    @if ((searchedExams() || []).length > 0) {
+    @for (exam of searchedExams(); track $index) {
+    <app-exam-card [exam]="exam"></app-exam-card>
+    }
+    } @else {
+    <div>Nenhum{{labels.defArticle === 'o' ? '' : 'a'}} {{labels.label}} encontrad{{labels.defArticle}} para sua busca
+    </div>
+    }
+    }
+  </div>
+  @if ((loadedExams() || []).length > 0 && !isUsingSearch()) {
+  <mat-paginator [pageSizeOptions]="pageSizeOptions"
+                 [pageSize]="currentPageSize"
+                 [length]="type === examType.MOCK ?  examsService.totalMockRecords() : examsService.totalAssessmentRecords()"
+                 showFirstLastButtons
+                 (page)="onPageEvent($event)"
+                 [hidePageSize]="(type === examType.MOCK ?  examsService.totalMockRecords() : examsService.totalAssessmentRecords()) < pageSizeOptions[0]">
+  </mat-paginator>
+  }
+</div>

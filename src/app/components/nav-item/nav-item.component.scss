@@ -1,0 +1,27 @@
+.padded {
+  padding-inline-start: 20px !important;
+}
+
+.title-wrap {
+  display: flex;
+  align-items: center;
+  padding: 5px 15px;
+  gap: 10px;
+  font-size: 14px;
+}
+
+mat-nav-list.mdc-list {
+  padding: 0px;
+}
+
+mat-form-field {
+  margin: 0px 5px !important;
+}
+
+mat-panel-title {
+  color: var(--mat-expansion-header-text-color);
+  transition: color 0.3s ease-in-out;
+  &.active {
+    color: var(--mat-option-selected-state-label-text-color);
+  }
+}

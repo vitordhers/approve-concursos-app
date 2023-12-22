@@ -1,0 +1,18 @@
+<mat-toolbar class="toolbar"
+             color="accent">
+  <div>
+    <button mat-icon-button
+            (click)="onSideNavButtonClick()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <title>Questões</title>
+  </div>
+  @if (!userService.isLoggedIn()) {
+  <button mat-raised-button
+          (click)="openAuth()"
+          color="primary">
+    <fa-icon [icon]="faHome"></fa-icon>
+    <span> Entrar </span>
+  </button>
+  }
+</mat-toolbar>

@@ -1,0 +1,144 @@
+.code {
+  background-color: #c8c8c8;
+  padding: 5px 7.5px;
+  border-radius: 12px;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--primary-color);
+}
+
+mat-card-title {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.alternative-letter {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--accent-color);
+  transition: all 200ms ease-in-out;
+
+  fa-icon {
+    transition: all 200ms ease-in-out;
+    color: var(--accent-color);
+  }
+
+  &.selected-solve {
+    border: 1px solid #fff;
+    background-color: var(--primary-color);
+
+    fa-icon {
+      color: #fff;
+    }
+  }
+
+  &.selected-solved {
+    border: 1px solid #fff;
+    background-color: var(--warn-color);
+
+    fa-icon {
+      color: #fff;
+    }
+  }
+
+  &.correct {
+    border: 1px solid #fff;
+    background-color: var(--success-color);
+
+    fa-icon {
+      color: #fff;
+    }
+  }
+
+  &.correct.selected-solved {
+    border: 1px solid #fff;
+
+    background: linear-gradient(
+      to right,
+      var(--success-color) 50%,
+      var(--primary-color) 50%
+    );
+
+    fa-icon {
+      color: #fff;
+    }
+  }
+}
+
+.alternatives {
+  ::ng-deep {
+    .mdc-list-item__end {
+      display: none;
+    }
+  }
+}
+
+.subtitle {
+  font-weight: 600;
+}
+
+.question-card {
+  ::ng-deep {
+    .mat-mdc-card-header-text {
+      width: 100% !important;
+    }
+  }
+}
+
+.image-wrap {
+  position: relative;
+  img {
+    position: relative !important;
+    width: auto !important;
+    height: 100% !important;
+  }
+}
+
+.answer-button {
+  color: #fff;
+  fa-icon {
+    color: #fff;
+  }
+}
+
+mat-card-subtitle p {
+  color: #000;
+}
+
+.disable-selection {
+  mat-list-option {
+    pointer-events: none !important;
+  }
+  ::ng-deep {
+    .mdc-list-item {
+      pointer-events: none !important;
+      cursor: default !important;
+    }
+  }
+}
+
+.correct {
+  color: greenyellow;
+}
+
+.wrong {
+  color: orangered;
+}
+
+mat-card-actions.actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}

@@ -1,0 +1,342 @@
+<mat-toolbar class="toolbar"
+             color="primary">
+  <h3>
+    <fa-icon [icon]="toolbarIcon()"></fa-icon>
+    {{toolbarTitle()}}
+  </h3>
+  @if (currentTabIndex() !== 1) {
+
+  <button mat-icon-button
+          type="button"
+          (click)="setTabIndex(1)"><fa-icon
+             [icon]="currentTabIndex() === 0 ? faArrowRight : faArrowLeft"></fa-icon></button>
+  } @else {
+  <button mat-icon-button
+          tabindex="-1"
+          type="button"
+          (click)="dismiss()"> <fa-icon [icon]="faXmark"></fa-icon></button>
+  }
+</mat-toolbar>
+<main>
+  <mat-tab-group dynamicHeight
+                 preserveContent
+                 [selectedIndex]="currentTabIndex()"
+                 class="headerless-tabs">
+    <mat-tab>
+      <ng-template matTabContent>
+        <div class="signup-form">
+          <form [formGroup]="signUpForm">
+
+            <mat-form-field appearance="outline">
+              <mat-label>Nome</mat-label>
+              <span matTextPrefix><fa-icon [icon]="faFont"></fa-icon> &nbsp;</span>
+              <input matInput
+                     type="text"
+                     placeholder="Seu Nome Completo"
+                     maxlength="100"
+                     formControlName="name"
+                     autocomplete="off">
+              @if (signUpForm.controls['name'].touched && signUpForm.controls['name'].invalid) {
+              <div>
+                @if (signUpForm.controls['name'].hasError('required')) {
+                <mat-error>Insira seu nome completo</mat-error>
+                }
+                @if (signUpForm.controls['name'].hasError('minlength')) {
+                <mat-error>O nome deve ter pelo menos 2 caracteres</mat-error>
+                }
+                @if (signUpForm.controls['name'].hasError('maxlength')) {
+                <mat-error>O nome deve ter até 100 caracteres</mat-error>
+                }
+              </div>
+              }
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>E-mail</mat-label>
+              <span matTextPrefix><fa-icon [icon]="faEnvelope"></fa-icon> &nbsp;</span>
+              <input matInput
+                     type="email"
+                     placeholder="seu@email.com"
+                     maxlength="50"
+                     formControlName="email"
+                     autocomplete="off">
+              @if (signUpForm.controls['email'].touched && signUpForm.controls['email'].invalid) {
+              <div>
+                @if (signUpForm.controls['email'].hasError('required')) {
+                <mat-error>Insira seu e-mail</mat-error>
+                }
+                @if (signUpForm.controls['email'].hasError('minlength')) {
+                <mat-error>O e-mail deve ter pelo menos 6 caracteres</mat-error>
+                }
+                @if (signUpForm.controls['email'].hasError('maxlength')) {
+                <mat-error>O e-mail deve ter até 50 caracteres</mat-error>
+                }
+                @if (signUpForm.controls['email'].hasError('pattern')) {
+                <mat-error>Insira um e-mail válido</mat-error>
+                }
+              </div>
+              }
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>CPF</mat-label>
+              <span matTextPrefix><fa-icon [icon]="faIdCard"></fa-icon> &nbsp;</span>
+              <input matInput
+                     type="text"
+                     inputmode="numeric"
+                     placeholder="000.000.000-00"
+                     maxlength="14"
+                     formControlName="cpf"
+                     autocomplete="off"
+                     appCpf>
+              @if (signUpForm.controls['cpf'].touched && signUpForm.controls['cpf'].invalid) {
+              <div>
+
+                @if (signUpForm.controls['cpf'].hasError('minlength')) {
+                <mat-error>O CPF deve ter pelo menos 11 números</mat-error>
+                }
+                @if (signUpForm.controls['cpf'].hasError('maxlength')) {
+                <mat-error>O CPF deve ter até 11 números</mat-error>
+                }
+
+              </div>
+              }
+            </mat-form-field>
+            <div class="passwords">
+              <div>
+                <mat-form-field appearance="outline">
+                  <mat-label>Senha</mat-label>
+                  <span matTextPrefix><fa-icon [icon]="faLock"></fa-icon> &nbsp;</span>
+                  <input matInput
+                         [type]="showSignUpPassword() ? 'text' : 'password'"
+                         maxlength="20"
+                         formControlName="password"
+                         autocomplete="off">
+                  <button type="button"
+                          mat-icon-button
+                          matSuffix
+                          (click)="toggleShowPassword('signup')"
+                          [attr.aria-label]="'Hide password'">
+                    <fa-icon [icon]="showSignUpPassword() ? faEyeSlash : faEye"></fa-icon>
+                  </button>
+                  @if (signUpForm.controls['password'].touched && signUpForm.controls['password'].invalid) {
+                  <div>
+                    @if (signUpForm.controls['password'].hasError('required')) {
+                    <mat-error>Insira uma senha</mat-error>
+                    }
+                    @if (signUpForm.controls['password'].hasError('pattern')) {
+                    <mat-error>A senha deve ter entre 8 e 20 caracteres, pelo menos uma letra, uma letra maiúscula, um
+                      número
+                      e
+                      um símbolo</mat-error>
+                    }
+                  </div>
+                  }
+                </mat-form-field>
+              </div>
+              <div>
+                <mat-form-field appearance="outline">
+                  <mat-label>Confirme sua senha</mat-label>
+                  <span matTextPrefix><fa-icon [icon]="faLock"></fa-icon> &nbsp;</span>
+                  <input matInput
+                         [type]="showSignUpConfirmPassword() ? 'text' : 'password'"
+                         maxlength="20"
+                         formControlName="confirmPassword"
+                         autocomplete="off">
+                  <button type="button"
+                          mat-icon-button
+                          matSuffix
+                          (click)="toggleShowPassword('signupConfirm')"
+                          [attr.aria-label]="'Hide password'">
+                    <fa-icon [icon]="showSignUpConfirmPassword() ? faEyeSlash : faEye"></fa-icon>
+                  </button>
+                  @if (signUpForm.controls['confirmPassword'].touched && signUpForm.controls['confirmPassword'].invalid)
+                  {
+                  <div>
+                    @if (signUpForm.controls['confirmPassword'].hasError('required')) {
+                    <mat-error>Confirme sua senha</mat-error>
+                    }
+                    @if (signUpForm.controls['confirmPassword'].hasError('matchPasswords')) {
+                    <mat-error>As senhas estão diferentes</mat-error>
+                    }
+                  </div>
+                  }
+                </mat-form-field>
+              </div>
+            </div>
+
+
+            <div class="signup-actions">
+              <div class="start">
+
+              </div>
+              <div class="end">
+                <button type="button"
+                        mat-raised-button
+                        [disabled]="signUpLoading()"
+                        color="accent"
+                        (click)="signUp()">
+                  <span class="button-content-wrap">
+                    @if(signUpLoading()) {
+                    <mat-spinner [diameter]="14"></mat-spinner> Cadastrando...
+                    } @else {
+                    Cadastrar <fa-icon [icon]="faArrowRight"></fa-icon>
+                    }
+                  </span>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </ng-template>
+
+    </mat-tab>
+    <mat-tab>
+      <div class="signin-form">
+        <form [formGroup]="signInForm">
+          <mat-form-field appearance="outline">
+            <mat-label>E-mail</mat-label>
+            <span matTextPrefix><fa-icon [icon]="faEnvelope"></fa-icon> &nbsp;</span>
+            <input matInput
+                   type="email"
+                   placeholder="seu@email.com"
+                   maxlength="50"
+                   formControlName="email"
+                   [autocomplete]="useAutoComplete() ? 'email' : 'off'">
+            @if (signInForm.controls['email'].touched && signInForm.controls['email'].invalid) {
+            <div>
+              @if (signInForm.controls['email'].hasError('required')) {
+              <mat-error>Insira seu e-mail</mat-error>
+              }
+              @if (signInForm.controls['email'].hasError('minlength')) {
+              <mat-error>O e-mail deve ter pelo menos 6 caracteres</mat-error>
+              }
+              @if (signInForm.controls['email'].hasError('maxlength')) {
+              <mat-error>O e-mail deve ter até 50 caracteres</mat-error>
+              }
+              @if (signInForm.controls['email'].hasError('pattern')) {
+              <mat-error>Insira um e-mail válido</mat-error>
+              }
+            </div>
+            }
+
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Senha</mat-label>
+            <span matTextPrefix><fa-icon [icon]="faLock"></fa-icon> &nbsp;</span>
+            <input matInput
+                   [type]="showSignInPassword() ? 'text' : 'password'"
+                   maxlength="20"
+                   formControlName="password"
+                   [autocomplete]="useAutoComplete() ? 'password' : 'off'">
+            <button type="button"
+                    mat-icon-button
+                    matSuffix
+                    (click)="toggleShowPassword('signin')"
+                    [attr.aria-label]="'Hide password'">
+              <fa-icon [icon]="showSignInPassword() ? faEyeSlash : faEye"></fa-icon>
+            </button>
+            @if (signInForm.controls['password'].touched && signInForm.controls['password'].invalid) {
+            <div>
+              @if (signInForm.controls['password'].hasError('required')) {
+              <mat-error>Insira sua senha</mat-error>
+              }
+              @if (signInForm.controls['password'].hasError('pattern')) {
+              <mat-error>A senha deve ter entre 8 e 20 caracteres, pelo menos uma letra, uma letra maiúscula, um número
+                e
+                um símbolo</mat-error>
+              }
+            </div>
+            }
+          </mat-form-field>
+          <div>
+            <mat-checkbox class="example-margin"
+                          color="primary"
+                          formControlName="rememberMe">Lembrar de mim!</mat-checkbox>
+          </div>
+          <div class="signin-actions">
+            <div class="start">
+
+            </div>
+            <div class="end">
+              <button type="button"
+                      mat-raised-button
+                      [disabled]="signInLoading()"
+                      (click)="signIn()"
+                      color="accent">
+                <span class="button-content-wrap">
+                  @if(signInLoading()) {
+
+                  <mat-spinner [diameter]="14"></mat-spinner> Entrando...
+                  } @else {
+
+                  Entrar <fa-icon [icon]="faArrowRight"></fa-icon>
+                  }
+                </span>
+              </button>
+            </div>
+          </div>
+          <p>
+            Esqueceu sua senha? Clique <a class="text-link"
+               (click)="setTabIndex(2)">aqui</a> para recuperar.
+          </p>
+          <p>Ainda não tem conta? <a class="text-link"
+               (click)="setTabIndex(0)">Criar uma nova conta</a>.</p>
+        </form>
+      </div>
+    </mat-tab>
+    <mat-tab>
+      <ng-template matTabContent>
+        <div class="recover-password-form">
+          <form [formGroup]="passwordRecoverForm">
+            <mat-form-field appearance="outline">
+              <mat-label>E-mail</mat-label>
+              <span matTextPrefix><fa-icon [icon]="faEnvelope"></fa-icon> &nbsp;</span>
+              <input matInput
+                     type="email"
+                     placeholder="seu@email.com"
+                     maxlength="50"
+                     formControlName="email"
+                     autocomplete="off">
+              @if (passwordRecoverForm.controls['email'].touched && signUpForm.controls['email'].invalid) {
+              <div>
+                @if (passwordRecoverForm.controls['email'].hasError('required')) {
+                <mat-error>Insira seu e-mail</mat-error>
+                }
+                @if (passwordRecoverForm.controls['email'].hasError('minlength')) {
+                <mat-error>O e-mail deve ter pelo menos 6 caracteres</mat-error>
+                }
+                @if (passwordRecoverForm.controls['email'].hasError('maxlength')) {
+                <mat-error>O e-mail deve ter até 50 caracteres</mat-error>
+                }
+                @if (passwordRecoverForm.controls['email'].hasError('pattern')) {
+                <mat-error>Insira um e-mail válido</mat-error>
+                }
+              </div>
+              }
+            </mat-form-field>
+            <div class="password-recover-actions">
+              <div class="start">
+
+              </div>
+              <div class="end">
+                <button type="button"
+                        mat-raised-button
+                        [disabled]="recoverPasswordLoading()"
+                        color="accent">
+                  <span class="button-content-wrap">
+                    @if(recoverPasswordLoading()) {
+                    <mat-spinner [diameter]="14"></mat-spinner> Enviando email...
+                    } @else {
+                    Recuperar senha <fa-icon [icon]="faPaperPlane"></fa-icon>
+                    }
+                  </span>
+
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
+
+</main>

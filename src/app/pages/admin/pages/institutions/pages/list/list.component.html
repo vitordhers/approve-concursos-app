@@ -1,0 +1,109 @@
+<div class="list-wrap">
+  <button mat-raised-button
+          role="button"
+          color="primary"
+          (click)="navigateToAdd()">
+    <fa-icon [icon]="faAdd"></fa-icon>
+    Criar
+  </button>
+  <h3 class="list-label">{{labels.pluralCapitalized}}</h3>
+</div>
+@if (loadedInstitutions()?.length) {
+<div class="table-wrap">
+  <table mat-table
+         [dataSource]="loadedInstitutions() || []"
+         class="mat-elevation-z0">
+
+
+    <ng-container matColumnDef="thumb">
+      <th mat-header-cell
+          *matHeaderCellDef></th>
+      <td class="avatar-wrap"
+          mat-cell
+          *matCellDef="let element">
+        <mat-card>
+
+          <img mat-card-avatar
+               [src]="element?.thumb? (element.thumb | serverImg ): 'assets/img/none.jpg'">
+        </mat-card>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="id">
+      <th mat-header-cell
+          *matHeaderCellDef> <fa-icon [icon]="faFingerprint"></fa-icon> Id </th>
+      <td mat-cell
+          *matCellDef="let element"> {{element.id}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="name">
+      <th mat-header-cell
+          *matHeaderCellDef> <fa-icon [icon]="faFont"></fa-icon> Nome </th>
+      <td mat-cell
+          *matCellDef="let element"> {{element.name}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="updatedAt">
+      <th mat-header-cell
+          *matHeaderCellDef> <fa-icon [icon]="faClock"></fa-icon>{{labels.defArticle === 'o' ? 'Atualizado' :
+        'Atualizada'}}</th>
+      <td mat-cell
+          *matCellDef="let element"> {{element.updatedDateTime | date:'short':'pt-BR'}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell
+          *matHeaderCellDef> Ações </th>
+      <td mat-cell
+          *matCellDef="let element">
+        <button mat-icon-button
+                [matMenuTriggerData]="{element: element}"
+                [matMenuTriggerFor]="menu">
+          <fa-icon [icon]="faBars"></fa-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <ng-template matMenuContent
+                       let-element="element">
+            <button (click)="navigateToEdit(element.id)"
+                    mat-menu-item>
+              <button mat-button
+                      color="primary">
+                <fa-icon [icon]="faPenToSquare"></fa-icon>
+                Editar
+              </button>
+            </button>
+            <button mat-menu-item
+                    [disabled]="loadingActions()"
+                    (click)="remove(element)">
+              <button mat-button
+                      color="warn">
+                <fa-icon [icon]="faTrash"></fa-icon>
+                Excluir
+              </button>
+            </button>
+          </ng-template>
+        </mat-menu>
+      </td>
+    </ng-container>
+
+
+    <tr mat-header-row
+        *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+    <tr mat-row
+        *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>
+<div class="paginator-wrap">
+  <mat-paginator [pageSizeOptions]="pageSizeOptions"
+                 [pageSize]="currentPageSize"
+                 [length]="institutionService.totalRecords()"
+                 showFirstLastButtons
+                 (page)="onPageEvent($event)"
+                 [hidePageSize]="institutionService.totalRecords() < pageSizeOptions[0]">
+  </mat-paginator>
+</div>
+} @else {
+<div>
+  Você ainda não possui {{labels.plural}} {{labels.defArticle === 'o'? 'registrados' : 'registradas'}}
+</div>
+}

@@ -1,0 +1,37 @@
+<div class="header">
+
+  <h3>O que cai nest{{labels.defArticle === 'o'? 'e': 'a'}} {{labels.label}} </h3>
+
+  <button mat-icon-button
+          type="button"
+          (click)="dismiss()">
+    <fa-icon [icon]="faTimes" />
+  </button>
+</div>
+
+<div class="body">
+  <table mat-table
+         [dataSource]="subjectRelations()"
+         class="mat-elevation-z0">
+
+    <ng-container matColumnDef="name">
+      <th mat-header-cell
+          *matHeaderCellDef> Disciplina </th>
+      <td mat-cell
+          *matCellDef="let element"> {{element.name}} </td>
+    </ng-container>
+
+    <!-- Symbol Column -->
+    <ng-container matColumnDef="total">
+      <th mat-header-cell
+          *matHeaderCellDef> Total </th>
+      <td mat-cell
+          *matCellDef="let element"> {{element.total}} </td>
+    </ng-container>
+
+    <tr mat-header-row
+        *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row
+        *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>

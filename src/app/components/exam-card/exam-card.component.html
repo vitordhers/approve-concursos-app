@@ -1,0 +1,50 @@
+@if (exam) {
+<mat-card [ngClass]="[(exam.code | codeToColorClass)]">
+  <mat-card-header>
+    <div mat-card-avatar>
+      <img *ngIf="institution() as institution; else mockTest"
+           height="40"
+           width="40"
+           mat-card-avatar
+           [ngSrc]="institution.thumb ? (institution.thumb | serverImg ): 'assets/img/none.jpg'">
+    </div>
+    <mat-card-title>{{exam.name}}</mat-card-title>
+    @if (exam.year) {
+    <mat-card-subtitle>{{exam.year}}</mat-card-subtitle>
+    }
+  </mat-card-header>
+
+  <mat-card-content>
+    <p>
+      {{exam.questionsIds.length || 0}} questões
+    </p>
+  </mat-card-content>
+  <mat-card-actions>
+    <mat-list>
+      <mat-list-item (click)="navigateToExamId(exam.id)">
+        <span>Resolver agora</span>
+        <button mat-icon-button
+                matListItemMeta
+                class="link-button">
+          <fa-icon [icon]="faCircleRight" />
+        </button>
+      </mat-list-item>
+      <mat-divider />
+      <mat-list-item (click)="openExamSummaryModal()">
+        <span>O que cai?</span>
+        <button mat-icon-button
+                matListItemMeta
+                class="link-button">
+          <fa-icon [icon]="faTableList" />
+        </button>
+      </mat-list-item>
+    </mat-list>
+
+  </mat-card-actions>
+</mat-card>
+}
+
+<ng-template #mockTest>
+  <fa-icon class="avatar-icon"
+           [icon]="exam?.type === examType.MOCK ? faListCheck : faListOl" />
+</ng-template>

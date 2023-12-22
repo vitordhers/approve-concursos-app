@@ -1,0 +1,2374 @@
+{
+  "version": "6.0",
+  "nxVersion": "17.1.3",
+  "deps": {
+    "@angular/animations": "^17.0.0",
+    "@angular/cdk": "^17.0.1",
+    "@angular/common": "^17.0.0",
+    "@angular/compiler": "^17.0.0",
+    "@angular/core": "^17.0.0",
+    "@angular/forms": "^17.0.0",
+    "@angular/material": "^17.0.1",
+    "@angular/material-moment-adapter": "^17.0.2",
+    "@angular/platform-browser": "^17.0.0",
+    "@angular/platform-browser-dynamic": "^17.0.0",
+    "@angular/platform-server": "^17.0.0",
+    "@angular/router": "^17.0.0",
+    "@angular/ssr": "^17.0.3",
+    "@fortawesome/angular-fontawesome": "^0.14.0",
+    "@fortawesome/fontawesome-svg-core": "^6.4.2",
+    "@fortawesome/free-solid-svg-icons": "^6.4.2",
+    "chartjs-plugin-datalabels": "^2.2.0",
+    "crypto-js": "^4.2.0",
+    "express": "^4.18.2",
+    "jwt-decode": "^4.0.0",
+    "lodash": "^4.17.21",
+    "ng2-charts": "^5.0.4",
+    "rxjs": "~7.8.0",
+    "sweetalert2": "^11.10.1",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.14.2",
+    "@angular-devkit/build-angular": "^17.0.3",
+    "@angular-devkit/core": "^17.0.3",
+    "@angular-devkit/schematics": "^17.0.3",
+    "@angular/cli": "^17.0.3",
+    "@angular/compiler-cli": "^17.0.0",
+    "@schematics/angular": "^17.0.3",
+    "@types/crypto-js": "^4.2.1",
+    "@types/express": "^4.17.17",
+    "@types/jasmine": "~5.1.0",
+    "@types/lodash": "^4.14.202",
+    "@types/node": "^18.18.0",
+    "jasmine-core": "~5.1.0",
+    "karma": "~6.4.0",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
+    "typescript": "~5.2.2"
+  },
+  "pathMappings": {},
+  "nxJsonPlugins": [],
+  "fileMap": {
+    "nonProjectFiles": [],
+    "projectFileMap": {
+      "questions-app": [
+        {
+          "file": ".editorconfig",
+          "hash": "6686520031028425313"
+        },
+        {
+          "file": ".gitignore",
+          "hash": "13044518069027839699"
+        },
+        {
+          "file": ".nx/cache/cloud/2312.20.5.hotfix1/index.js",
+          "hash": "1256334651020539446",
+          "deps": [
+            "npm:os",
+            "npm:assert",
+            "npm:buffer",
+            "npm:zlib",
+            "npm:events",
+            "npm:fs",
+            "npm:path",
+            [
+              "npm:fs",
+              "dynamic"
+            ],
+            [
+              "npm:path",
+              "dynamic"
+            ],
+            [
+              "npm:os",
+              "dynamic"
+            ],
+            [
+              "npm:child_process",
+              "dynamic"
+            ],
+            [
+              "npm:crypto",
+              "dynamic"
+            ],
+            [
+              "npm:tty",
+              "dynamic"
+            ],
+            [
+              "npm:util",
+              "dynamic"
+            ],
+            [
+              "npm:url",
+              "dynamic"
+            ],
+            [
+              "npm:http",
+              "dynamic"
+            ],
+            [
+              "npm:https",
+              "dynamic"
+            ],
+            [
+              "npm:stream",
+              "dynamic"
+            ],
+            [
+              "npm:assert",
+              "dynamic"
+            ],
+            [
+              "npm:zlib",
+              "dynamic"
+            ],
+            [
+              "npm:perf_hooks",
+              "dynamic"
+            ],
+            [
+              "npm:events",
+              "dynamic"
+            ],
+            [
+              "npm:string_decoder",
+              "dynamic"
+            ],
+            [
+              "npm:constants",
+              "dynamic"
+            ]
+          ]
+        },
+        {
+          "file": ".nx/cache/cloud/2312.20.5.hotfix1/lib/daemon/process-run-end.js",
+          "hash": "9588888742567630796",
+          "deps": [
+            "npm:path",
+            "npm:os",
+            "npm:assert",
+            "npm:buffer",
+            "npm:zlib",
+            "npm:events",
+            "npm:fs",
+            [
+              "npm:fs",
+              "dynamic"
+            ],
+            [
+              "npm:path",
+              "dynamic"
+            ],
+            [
+              "npm:os",
+              "dynamic"
+            ],
+            [
+              "npm:child_process",
+              "dynamic"
+            ],
+            [
+              "npm:crypto",
+              "dynamic"
+            ],
+            [
+              "npm:tty",
+              "dynamic"
+            ],
+            [
+              "npm:util",
+              "dynamic"
+            ],
+            [
+              "npm:url",
+              "dynamic"
+            ],
+            [
+              "npm:http",
+              "dynamic"
+            ],
+            [
+              "npm:https",
+              "dynamic"
+            ],
+            [
+              "npm:stream",
+              "dynamic"
+            ],
+            [
+              "npm:assert",
+              "dynamic"
+            ],
+            [
+              "npm:zlib",
+              "dynamic"
+            ],
+            [
+              "npm:perf_hooks",
+              "dynamic"
+            ],
+            [
+              "npm:events",
+              "dynamic"
+            ],
+            [
+              "npm:string_decoder",
+              "dynamic"
+            ]
+          ]
+        },
+        {
+          "file": ".nx/cache/cloud/2312.20.5.hotfix1/lib/heartbeat/heartbeat-process.js",
+          "hash": "12818312279569447028",
+          "deps": [
+            "npm:os",
+            "npm:fs",
+            "npm:path",
+            [
+              "npm:fs",
+              "dynamic"
+            ],
+            [
+              "npm:path",
+              "dynamic"
+            ],
+            [
+              "npm:os",
+              "dynamic"
+            ],
+            [
+              "npm:child_process",
+              "dynamic"
+            ],
+            [
+              "npm:crypto",
+              "dynamic"
+            ],
+            [
+              "npm:tty",
+              "dynamic"
+            ],
+            [
+              "npm:util",
+              "dynamic"
+            ],
+            [
+              "npm:url",
+              "dynamic"
+            ],
+            [
+              "npm:http",
+              "dynamic"
+            ],
+            [
+              "npm:https",
+              "dynamic"
+            ],
+            [
+              "npm:stream",
+              "dynamic"
+            ],
+            [
+              "npm:assert",
+              "dynamic"
+            ],
+            [
+              "npm:zlib",
+              "dynamic"
+            ],
+            [
+              "npm:perf_hooks",
+              "dynamic"
+            ]
+          ]
+        },
+        {
+          "file": ".nx/cache/cloud/2312.20.5.hotfix1/package.json",
+          "hash": "11687418979936424737"
+        },
+        {
+          "file": ".nx/cache/cloud/verify.lock",
+          "hash": "147943324111005398"
+        },
+        {
+          "file": ".nx/cache/d/daemon.log",
+          "hash": "4839937034800873328"
+        },
+        {
+          "file": ".nx/cache/d/server-process.json",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": ".nx/cache/file-map.json",
+          "hash": "11339186576127087783"
+        },
+        {
+          "file": ".nx/cache/lockfile.hash",
+          "hash": "1026774565424871767"
+        },
+        {
+          "file": ".nx/cache/parsed-lock-file.json",
+          "hash": "3266461990328617455"
+        },
+        {
+          "file": ".nx/cache/project-graph.json",
+          "hash": "17655252043745153225"
+        },
+        {
+          "file": ".nx/cache/terminalOutputs/13102533895812195138",
+          "hash": "8445454879513074014"
+        },
+        {
+          "file": ".nx/cache/terminalOutputs/18022623777043170363",
+          "hash": "2478974865157023093"
+        },
+        {
+          "file": ".nx/cache/terminalOutputs/5901109750134091223",
+          "hash": "10776592003943837713"
+        },
+        {
+          "file": ".nx/cache/terminalOutputs/6800260353862824108",
+          "hash": "7164343206849873512"
+        },
+        {
+          "file": ".vscode/extensions.json",
+          "hash": "12343942279124280405"
+        },
+        {
+          "file": ".vscode/launch.json",
+          "hash": "17038929134016848735"
+        },
+        {
+          "file": ".vscode/tasks.json",
+          "hash": "5336636969995539451"
+        },
+        {
+          "file": "README.md",
+          "hash": "6348668608661227754"
+        },
+        {
+          "file": "package-lock.json",
+          "hash": "18009973445267177538"
+        },
+        {
+          "file": "package.json",
+          "hash": "11929002227057893563",
+          "deps": [
+            "npm:@angular/animations",
+            "npm:@angular/cdk",
+            "npm:@angular/common",
+            "npm:@angular/compiler",
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "npm:@angular/material",
+            "npm:@angular/material-moment-adapter",
+            "npm:@angular/platform-browser",
+            "npm:@angular/platform-browser-dynamic",
+            "npm:@angular/platform-server",
+            "npm:@angular/router",
+            "npm:@angular/ssr",
+            "npm:@fortawesome/angular-fontawesome",
+            "npm:@fortawesome/fontawesome-svg-core",
+            "npm:@fortawesome/free-solid-svg-icons",
+            "npm:chartjs-plugin-datalabels",
+            "npm:crypto-js",
+            "npm:express",
+            "npm:jwt-decode",
+            "npm:lodash",
+            "npm:ng2-charts",
+            "npm:rxjs",
+            "npm:sweetalert2",
+            "npm:tslib",
+            "npm:zone.js",
+            "npm:@angular-devkit/build-angular",
+            "npm:@angular-devkit/core",
+            "npm:@angular-devkit/schematics",
+            "npm:@angular/cli",
+            "npm:@angular/compiler-cli",
+            "npm:@schematics/angular",
+            "npm:@types/crypto-js",
+            "npm:@types/express",
+            "npm:@types/jasmine",
+            "npm:@types/lodash",
+            "npm:@types/node",
+            "npm:jasmine-core",
+            "npm:karma",
+            "npm:karma-chrome-launcher",
+            "npm:karma-coverage",
+            "npm:karma-jasmine",
+            "npm:karma-jasmine-html-reporter",
+            "npm:typescript"
+          ]
+        },
+        {
+          "file": "project.json",
+          "hash": "8876929992038208196"
+        },
+        {
+          "file": "server.ts",
+          "hash": "7713808127824314998",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/ssr",
+            "npm:express",
+            "npm:node:url",
+            "npm:node:path"
+          ]
+        },
+        {
+          "file": "src/app/app.component.html",
+          "hash": "17816966185630879015"
+        },
+        {
+          "file": "src/app/app.component.sass",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/app.component.ts",
+          "hash": "11885586034428729288",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "src/app/app.config.server.ts",
+          "hash": "14750464052796800194",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/platform-server"
+          ]
+        },
+        {
+          "file": "src/app/app.config.ts",
+          "hash": "490493709462370435",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/router",
+            "npm:@angular/platform-browser",
+            "npm:@angular/common"
+          ]
+        },
+        {
+          "file": "src/app/app.routes.ts",
+          "hash": "12245230553554277268",
+          "deps": [
+            "npm:@angular/router",
+            "npm:@angular/common"
+          ]
+        },
+        {
+          "file": "src/app/components/answerable-question/answerable-question.component.html",
+          "hash": "3400679676315769265"
+        },
+        {
+          "file": "src/app/components/answerable-question/answerable-question.component.scss",
+          "hash": "201765365338240059"
+        },
+        {
+          "file": "src/app/components/answerable-question/answerable-question.component.spec.ts",
+          "hash": "1709417147484602737",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/components/answerable-question/answerable-question.component.ts",
+          "hash": "18196118067790844504",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/material",
+            "npm:rxjs",
+            "npm:@angular/forms",
+            "npm:@fortawesome/angular-fontawesome",
+            "npm:@fortawesome/free-solid-svg-icons",
+            "npm:lodash"
+          ]
+        },
+        {
+          "file": "src/app/components/board-selector/board-selector.component.html",
+          "hash": "1824000854306725689"
+        },
+        {
+          "file": "src/app/components/board-selector/board-selector.component.scss",
+          "hash": "1375838110362171609"
+        },
+        {
+          "file": "src/app/components/board-selector/board-selector.component.spec.ts",
+          "hash": "14028594919068036231",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/components/board-selector/board-selector.component.ts",
+          "hash": "4271298470062204894",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/forms",
+            "npm:@angular/material",
+            "npm:@fortawesome/angular-fontawesome",
+            "npm:rxjs",
+            "npm:lodash"
+          ]
+        },
+        {
+          "file": "src/app/components/carousel/carousel.component.html",
+          "hash": "8238557551746227256"
+        },
+        {
+          "file": "src/app/components/carousel/carousel.component.scss",
+          "hash": "14498391440489607414"
+        },
+        {
+          "file": "src/app/components/carousel/carousel.component.spec.ts",
+          "hash": "15259748842711746208",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/components/carousel/carousel.component.ts",
+          "hash": "4520908110994038730",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common"
+          ]
+        },
+        {
+          "file": "src/app/components/exam-card/exam-card.component.html",
+          "hash": "14881545427773791692"
+        },
+        {
+          "file": "src/app/components/exam-card/exam-card.component.scss",
+          "hash": "9167226910324694702"
+        },
+        {
+          "file": "src/app/components/exam-card/exam-card.component.spec.ts",
+          "hash": "11402542172782586015",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/components/exam-card/exam-card.component.ts",
+          "hash": "16714036908425289037",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/material",
+            "npm:@fortawesome/angular-fontawesome",
+            "npm:@fortawesome/free-solid-svg-icons",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "src/app/components/exam-list/exam-list.component.html",
+          "hash": "5629513977702207125"
+        },
+        {
+          "file": "src/app/components/exam-list/exam-list.component.scss",
+          "hash": "9511619261305712712"
+        },
+        {
+          "file": "src/app/components/exam-list/exam-list.component.spec.ts",
+          "hash": "8083466764294311871",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/components/exam-list/exam-list.component.ts",
+          "hash": "8130883677119394807",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:rxjs",
+            "npm:@angular/material",
+            "npm:@fortawesome/angular-fontawesome",
+            "npm:@fortawesome/free-solid-svg-icons",
+            "npm:@angular/forms"
+          ]
+        },
+        {
+          "file": "src/app/components/exam-summary/exam-summary.component.html",
+          "hash": "9015513817023127685"
+        },
+        {
+          "file": "src/app/components/exam-summary/exam-summary.component.scss",
+          "hash": "16534894844293546764"
+        },
+        {
+          "file": "src/app/components/exam-summary/exam-summary.component.spec.ts",
+          "hash": "4364977553358672753",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/components/exam-summary/exam-summary.component.ts",
+          "hash": "16171883554463128111",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/cdk",
+            "npm:lodash",
+            "npm:@angular/material",
+            "npm:@fortawesome/angular-fontawesome",
+            "npm:@fortawesome/free-solid-svg-icons"
+          ]
+        },
+        {
+          "file": "src/app/components/file-uploader/file-uploader.component.html",
+          "hash": "4931941893127461881"
+        },
+        {
+          "file": "src/app/components/file-uploader/file-uploader.component.scss",
+          "hash": "10529271018937455097"
+        },
+        {
+          "file": "src/app/components/file-uploader/file-uploader.component.spec.ts",
+          "hash": "16925084553631087988",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/components/file-uploader/file-uploader.component.ts",
+          "hash": "2073119388707460098",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/material",
+            "npm:@fortawesome/angular-fontawesome",
+            "npm:@fortawesome/free-solid-svg-icons",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "src/app/components/file-uploader/functions/resize-base64-img.function.ts",
+          "hash": "12756101019496750979"
+        },
+        {
+          "file": "src/app/components/file-uploader/interface/img-upload-preview.interface.ts",
+          "hash": "14696848078848893197"
+        },
+        {
+          "file": "src/app/components/header/header.component.html",
+          "hash": "5661752341115456987"
+        },
+        {
+          "file": "src/app/components/header/header.component.scss",
+          "hash": "16846994578635637473"
+        },
+        {
+          "file": "src/app/components/header/header.component.ts",
+          "hash": "7176723143841249952",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/material",
+            "npm:@fortawesome/angular-fontawesome",
+            "npm:@fortawesome/free-solid-svg-icons"
+          ]
+        },
+        {
+          "file": "src/app/components/icon-number-sequence/icon-number-sequence.component.html",
+          "hash": "16990689583894237964"
+        },
+        {
+          "file": "src/app/components/icon-number-sequence/icon-number-sequence.component.sass",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/components/icon-number-sequence/icon-number-sequence.component.spec.ts",
+          "hash": "2250958587524954623",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/components/icon-number-sequence/icon-number-sequence.component.ts",
+          "hash": "14929206329224534273",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@fortawesome/free-solid-svg-icons",
+            "npm:@fortawesome/angular-fontawesome"
+          ]
+        },
+        {
+          "file": "src/app/components/institution-selector/institution-selector.component.html",
+          "hash": "1824000854306725689"
+        },
+        {
+          "file": "src/app/components/institution-selector/institution-selector.component.scss",
+          "hash": "1375838110362171609"
+        },
+        {
+          "file": "src/app/components/institution-selector/institution-selector.component.spec.ts",
+          "hash": "6864522026584706594",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/components/institution-selector/institution-selector.component.ts",
+          "hash": "438956921947930403",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/forms",
+            "npm:@angular/material",
+            "npm:@fortawesome/angular-fontawesome",
+            "npm:rxjs",
+            "npm:lodash"
+          ]
+        },
+        {
+          "file": "src/app/components/modals/auth/auth.component.html",
+          "hash": "17086796019233129972"
+        },
+        {
+          "file": "src/app/components/modals/auth/auth.component.scss",
+          "hash": "9779832022960781465"
+        },
+        {
+          "file": "src/app/components/modals/auth/auth.component.ts",
+          "hash": "14492361151021634119",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/forms",
+            "npm:@angular/material",
+            "npm:@fortawesome/angular-fontawesome",
+            "npm:@fortawesome/free-solid-svg-icons",
+            "npm:rxjs",
+            "npm:@angular/cdk",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "src/app/components/modals/auth/constants/autocomplete-storage-key.const.ts",
+          "hash": "17136352399914502239"
+        },
+        {
+          "file": "src/app/components/modals/auth/constants/email-regex.const.ts",
+          "hash": "7316617751435976586"
+        },
+        {
+          "file": "src/app/components/modals/auth/constants/grecaptcha.const.ts",
+          "hash": "16801580186867341189"
+        },
+        {
+          "file": "src/app/components/modals/auth/constants/strong-password-regex.const.ts",
+          "hash": "12543311506885009009"
+        },
+        {
+          "file": "src/app/components/modals/auth/functions/match-passwords-validator.function.ts",
+          "hash": "17563637007826568909",
+          "deps": [
+            "npm:@angular/forms"
+          ]
+        },
+        {
+          "file": "src/app/components/modals/auth/interface/autocomplete-options.interface.ts",
+          "hash": "15847446845681396756"
+        },
+        {
+          "file": "src/app/components/modals/auth/interface/dialog-data.interface.ts",
+          "hash": "2605730387528436592"
+        },
+        {
+          "file": "src/app/components/nav-item/nav-item.component.html",
+          "hash": "16792464052388953616"
+        },
+        {
+          "file": "src/app/components/nav-item/nav-item.component.scss",
+          "hash": "10081182717235498926"
+        },
+        {
+          "file": "src/app/components/nav-item/nav-item.component.ts",
+          "hash": "8767418366666259227",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/material",
+            "npm:@fortawesome/angular-fontawesome",
+            "npm:@angular/forms"
+          ]
+        },
+        {
+          "file": "src/app/components/performance-cards/performance-cards.component.html",
+          "hash": "4240976583438315098"
+        },
+        {
+          "file": "src/app/components/performance-cards/performance-cards.component.scss",
+          "hash": "5702809619618672646"
+        },
+        {
+          "file": "src/app/components/performance-cards/performance-cards.component.spec.ts",
+          "hash": "2663125709265667427",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/components/performance-cards/performance-cards.component.ts",
+          "hash": "8828930688609805318",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/router",
+            "npm:@angular/material",
+            "npm:@fortawesome/angular-fontawesome",
+            "npm:@fortawesome/free-solid-svg-icons"
+          ]
+        },
+        {
+          "file": "src/app/components/question-selector/question-selector.component.html",
+          "hash": "8123681791532904318"
+        },
+        {
+          "file": "src/app/components/question-selector/question-selector.component.scss",
+          "hash": "1375838110362171609"
+        },
+        {
+          "file": "src/app/components/question-selector/question-selector.component.ts",
+          "hash": "8950866508812253834",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/forms",
+            "npm:@angular/material",
+            "npm:@fortawesome/angular-fontawesome",
+            "npm:rxjs",
+            "npm:@fortawesome/free-solid-svg-icons"
+          ]
+        },
+        {
+          "file": "src/app/components/questionnaire/questionnaire.component.html",
+          "hash": "11285385395598433865"
+        },
+        {
+          "file": "src/app/components/questionnaire/questionnaire.component.scss",
+          "hash": "12156422826697325396"
+        },
+        {
+          "file": "src/app/components/questionnaire/questionnaire.component.spec.ts",
+          "hash": "16123376113712704262",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/components/questionnaire/questionnaire.component.ts",
+          "hash": "3501325719214884029",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/material",
+            "npm:@fortawesome/angular-fontawesome",
+            "npm:lodash",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "src/app/components/subject-selector/subject-selector.component.html",
+          "hash": "14375606002359917336"
+        },
+        {
+          "file": "src/app/components/subject-selector/subject-selector.component.scss",
+          "hash": "1375838110362171609"
+        },
+        {
+          "file": "src/app/components/subject-selector/subject-selector.component.spec.ts",
+          "hash": "12307991513522525916",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/components/subject-selector/subject-selector.component.ts",
+          "hash": "6480979901627169105",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/forms",
+            "npm:@angular/material",
+            "npm:@fortawesome/angular-fontawesome",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "src/app/components/year-selector/year-selector.component.html",
+          "hash": "18417943736727571183"
+        },
+        {
+          "file": "src/app/components/year-selector/year-selector.component.scss",
+          "hash": "1375838110362171609"
+        },
+        {
+          "file": "src/app/components/year-selector/year-selector.component.spec.ts",
+          "hash": "4802485653822808008",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/components/year-selector/year-selector.component.ts",
+          "hash": "7726240845420907262",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/forms",
+            "npm:moment",
+            "npm:rxjs",
+            "npm:@angular/material",
+            "npm:@angular/material-moment-adapter"
+          ]
+        },
+        {
+          "file": "src/app/models/base-entity.model.ts",
+          "hash": "11695212579133695479"
+        },
+        {
+          "file": "src/app/models/board.model.ts",
+          "hash": "16353882199763725312"
+        },
+        {
+          "file": "src/app/models/exam.model.ts",
+          "hash": "2271193466376251161"
+        },
+        {
+          "file": "src/app/models/institution.model.ts",
+          "hash": "2859455759926796372"
+        },
+        {
+          "file": "src/app/models/question.model.ts",
+          "hash": "5363210901957697317"
+        },
+        {
+          "file": "src/app/models/subject.model.ts",
+          "hash": "7224458822575671223"
+        },
+        {
+          "file": "src/app/models/user.model.ts",
+          "hash": "1315316133587521955"
+        },
+        {
+          "file": "src/app/notification/constants/toast-mixin.const.ts",
+          "hash": "9125390220894151150",
+          "deps": [
+            "npm:sweetalert2"
+          ]
+        },
+        {
+          "file": "src/app/notification/functions/fire-generic-error.function.ts",
+          "hash": "16427890989289787600"
+        },
+        {
+          "file": "src/app/notification/functions/fire-generic-success.function.ts",
+          "hash": "7569177942276679511"
+        },
+        {
+          "file": "src/app/notification/functions/fire-toast.function.ts",
+          "hash": "1137863131267592088",
+          "deps": [
+            "npm:sweetalert2"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/admin.component.html",
+          "hash": "17816966185630879015"
+        },
+        {
+          "file": "src/app/pages/admin/admin.component.sass",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/pages/admin/admin.component.spec.ts",
+          "hash": "60600668318874055",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/admin.component.ts",
+          "hash": "7902485243028864860",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/pages/boards/boards.component.html",
+          "hash": "17816966185630879015"
+        },
+        {
+          "file": "src/app/pages/admin/pages/boards/boards.component.sass",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/pages/admin/pages/boards/boards.component.spec.ts",
+          "hash": "9504918913021063208",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/pages/boards/boards.component.ts",
+          "hash": "18107909598602983265",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/pages/boards/pages/add-edit/add-edit.component.html",
+          "hash": "7561285073240314979"
+        },
+        {
+          "file": "src/app/pages/admin/pages/boards/pages/add-edit/add-edit.component.sass",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/pages/admin/pages/boards/pages/add-edit/add-edit.component.spec.ts",
+          "hash": "17308552093054279107",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/pages/boards/pages/add-edit/add-edit.component.ts",
+          "hash": "1008544594770938916",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:rxjs",
+            "npm:@angular/router",
+            "npm:@angular/forms",
+            "npm:@angular/material",
+            "npm:@fortawesome/free-solid-svg-icons",
+            "npm:@fortawesome/angular-fontawesome",
+            "npm:sweetalert2"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/pages/boards/pages/list/list.component.html",
+          "hash": "9813051922689096151"
+        },
+        {
+          "file": "src/app/pages/admin/pages/boards/pages/list/list.component.sass",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/pages/admin/pages/boards/pages/list/list.component.spec.ts",
+          "hash": "7596927726405882929",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/pages/boards/pages/list/list.component.ts",
+          "hash": "18391794188645454911",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:rxjs",
+            "npm:@angular/router",
+            "npm:@angular/material",
+            "npm:@fortawesome/free-solid-svg-icons",
+            "npm:@fortawesome/angular-fontawesome",
+            "npm:sweetalert2"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/pages/exams/exams.component.html",
+          "hash": "848395303240231261"
+        },
+        {
+          "file": "src/app/pages/admin/pages/exams/exams.component.sass",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/pages/admin/pages/exams/exams.component.spec.ts",
+          "hash": "15942951420594645560",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/pages/exams/exams.component.ts",
+          "hash": "13479615383055460998",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/pages/exams/pages/add-edit/add-edit.component.html",
+          "hash": "9972059350342422335"
+        },
+        {
+          "file": "src/app/pages/admin/pages/exams/pages/add-edit/add-edit.component.scss",
+          "hash": "8844466280195479509"
+        },
+        {
+          "file": "src/app/pages/admin/pages/exams/pages/add-edit/add-edit.component.ts",
+          "hash": "208888591870416306",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:rxjs",
+            "npm:@angular/router",
+            "npm:@angular/forms",
+            "npm:@angular/material",
+            "npm:@fortawesome/free-solid-svg-icons",
+            "npm:@fortawesome/angular-fontawesome",
+            "npm:sweetalert2",
+            "npm:@angular/cdk",
+            "npm:lodash"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/pages/exams/pages/list/list.component.html",
+          "hash": "15474931683865234021"
+        },
+        {
+          "file": "src/app/pages/admin/pages/exams/pages/list/list.component.sass",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/pages/admin/pages/exams/pages/list/list.component.spec.ts",
+          "hash": "7596927726405882929",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/pages/exams/pages/list/list.component.ts",
+          "hash": "13342945934326275941",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:rxjs",
+            "npm:@angular/router",
+            "npm:@angular/material",
+            "npm:@fortawesome/free-solid-svg-icons",
+            "npm:@fortawesome/angular-fontawesome",
+            "npm:sweetalert2"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/pages/institutions/institutions.component.html",
+          "hash": "17816966185630879015"
+        },
+        {
+          "file": "src/app/pages/admin/pages/institutions/institutions.component.sass",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/pages/admin/pages/institutions/institutions.component.spec.ts",
+          "hash": "5002727102458296822",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/pages/institutions/institutions.component.ts",
+          "hash": "14164116878051349711",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/pages/institutions/pages/add-edit/add-edit.component.html",
+          "hash": "2138730579302427110"
+        },
+        {
+          "file": "src/app/pages/admin/pages/institutions/pages/add-edit/add-edit.component.scss",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/pages/admin/pages/institutions/pages/add-edit/add-edit.component.spec.ts",
+          "hash": "17308552093054279107",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/pages/institutions/pages/add-edit/add-edit.component.ts",
+          "hash": "16201529079692638816",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:rxjs",
+            "npm:@angular/router",
+            "npm:@angular/forms",
+            "npm:@angular/material",
+            "npm:@fortawesome/free-solid-svg-icons",
+            "npm:@fortawesome/angular-fontawesome",
+            "npm:sweetalert2"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/pages/institutions/pages/list/list.component.html",
+          "hash": "8913536379998724803"
+        },
+        {
+          "file": "src/app/pages/admin/pages/institutions/pages/list/list.component.sass",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/pages/admin/pages/institutions/pages/list/list.component.spec.ts",
+          "hash": "7596927726405882929",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/pages/institutions/pages/list/list.component.ts",
+          "hash": "11075858465324889974",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:rxjs",
+            "npm:@angular/router",
+            "npm:@angular/material",
+            "npm:@fortawesome/free-solid-svg-icons",
+            "npm:@fortawesome/angular-fontawesome",
+            "npm:sweetalert2"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/pages/questions/components/filter/filter.component.html",
+          "hash": "12096259246416396588"
+        },
+        {
+          "file": "src/app/pages/admin/pages/questions/components/filter/filter.component.scss",
+          "hash": "6280766271143656071"
+        },
+        {
+          "file": "src/app/pages/admin/pages/questions/components/filter/filter.component.spec.ts",
+          "hash": "6088538879737091209",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/pages/questions/components/filter/filter.component.ts",
+          "hash": "17865516719003302998",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/material",
+            "npm:@angular/forms",
+            "npm:rxjs",
+            "npm:@fortawesome/angular-fontawesome",
+            "npm:@fortawesome/free-solid-svg-icons",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/pages/questions/pages/add-edit/add-edit.component.html",
+          "hash": "17332771692846132414"
+        },
+        {
+          "file": "src/app/pages/admin/pages/questions/pages/add-edit/add-edit.component.scss",
+          "hash": "8395063019110508600"
+        },
+        {
+          "file": "src/app/pages/admin/pages/questions/pages/add-edit/add-edit.component.spec.ts",
+          "hash": "17308552093054279107",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/pages/questions/pages/add-edit/add-edit.component.ts",
+          "hash": "14149651413791178017",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:rxjs",
+            "npm:@angular/router",
+            "npm:@angular/forms",
+            "npm:@angular/material",
+            "npm:@fortawesome/free-solid-svg-icons",
+            "npm:@fortawesome/angular-fontawesome",
+            "npm:sweetalert2",
+            "npm:lodash"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/pages/questions/pages/list/list.component.html",
+          "hash": "9457753047222084181"
+        },
+        {
+          "file": "src/app/pages/admin/pages/questions/pages/list/list.component.spec.ts",
+          "hash": "7596927726405882929",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/pages/questions/pages/list/list.component.ts",
+          "hash": "3547497686645497559",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:rxjs",
+            "npm:@angular/router",
+            "npm:@angular/material",
+            "npm:@fortawesome/free-solid-svg-icons",
+            "npm:@fortawesome/angular-fontawesome",
+            "npm:sweetalert2",
+            "npm:@angular/forms"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/pages/questions/questions.component.html",
+          "hash": "17816966185630879015"
+        },
+        {
+          "file": "src/app/pages/admin/pages/questions/questions.component.sass",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/pages/admin/pages/questions/questions.component.spec.ts",
+          "hash": "3591215635505886321",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/pages/questions/questions.component.ts",
+          "hash": "13228871717800295857",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/pages/subjects/pages/add-edit/add-edit.component.html",
+          "hash": "6919225913670289593"
+        },
+        {
+          "file": "src/app/pages/admin/pages/subjects/pages/add-edit/add-edit.component.scss",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/pages/admin/pages/subjects/pages/add-edit/add-edit.component.spec.ts",
+          "hash": "17308552093054279107",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/pages/subjects/pages/add-edit/add-edit.component.ts",
+          "hash": "4969532710863491315",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:rxjs",
+            "npm:@angular/router",
+            "npm:@angular/forms",
+            "npm:@angular/material",
+            "npm:@fortawesome/free-solid-svg-icons",
+            "npm:@fortawesome/angular-fontawesome",
+            "npm:sweetalert2"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/pages/subjects/pages/list/list.component.html",
+          "hash": "5421197022540720550"
+        },
+        {
+          "file": "src/app/pages/admin/pages/subjects/pages/list/list.component.sass",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/pages/admin/pages/subjects/pages/list/list.component.spec.ts",
+          "hash": "7596927726405882929",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/pages/subjects/pages/list/list.component.ts",
+          "hash": "6541313708377360597",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:rxjs",
+            "npm:@angular/router",
+            "npm:@angular/material",
+            "npm:@fortawesome/angular-fontawesome",
+            "npm:@fortawesome/free-solid-svg-icons",
+            "npm:sweetalert2"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/pages/subjects/subjects.component.html",
+          "hash": "17816966185630879015"
+        },
+        {
+          "file": "src/app/pages/admin/pages/subjects/subjects.component.sass",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/pages/admin/pages/subjects/subjects.component.ts",
+          "hash": "498926298059439643",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/pages/users/users.component.html",
+          "hash": "17816966185630879015"
+        },
+        {
+          "file": "src/app/pages/admin/pages/users/users.component.sass",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/pages/admin/pages/users/users.component.spec.ts",
+          "hash": "4779276166417826391",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/pages/users/users.component.ts",
+          "hash": "52611979881776019",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "src/app/pages/dashboard/dashboard.component.html",
+          "hash": "1543818058471168697"
+        },
+        {
+          "file": "src/app/pages/dashboard/dashboard.component.scss",
+          "hash": "10386527244229608708"
+        },
+        {
+          "file": "src/app/pages/dashboard/dashboard.component.ts",
+          "hash": "3800456573495896049",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/material",
+            "npm:@fortawesome/angular-fontawesome",
+            "npm:@fortawesome/free-solid-svg-icons",
+            "npm:@angular/router",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "src/app/pages/dashboard/enums/nav-section-type.enum.ts",
+          "hash": "1640836675072192851"
+        },
+        {
+          "file": "src/app/pages/dashboard/interfaces/nav-section.interface.ts",
+          "hash": "16009354997052026893",
+          "deps": [
+            "npm:@fortawesome/fontawesome-svg-core"
+          ]
+        },
+        {
+          "file": "src/app/pages/history/history.component.html",
+          "hash": "12319998218302652783"
+        },
+        {
+          "file": "src/app/pages/history/history.component.sass",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/pages/history/history.component.spec.ts",
+          "hash": "2904760365867134951",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/pages/history/history.component.ts",
+          "hash": "15551556908225154594",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:rxjs",
+            "npm:lodash",
+            "npm:@angular/material"
+          ]
+        },
+        {
+          "file": "src/app/pages/home/constants/chart-option.const.ts",
+          "hash": "16653677011216297206"
+        },
+        {
+          "file": "src/app/pages/home/constants/charts-data.const.ts",
+          "hash": "1867549644603123468",
+          "deps": [
+            "npm:chart.js"
+          ]
+        },
+        {
+          "file": "src/app/pages/home/home.component.html",
+          "hash": "15203457644892291991"
+        },
+        {
+          "file": "src/app/pages/home/home.component.scss",
+          "hash": "296692116481831993"
+        },
+        {
+          "file": "src/app/pages/home/home.component.spec.ts",
+          "hash": "5533293743300657749",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/pages/home/home.component.ts",
+          "hash": "6893010088542173475",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/material",
+            "npm:@fortawesome/angular-fontawesome",
+            "npm:@fortawesome/free-solid-svg-icons",
+            "npm:@angular/router",
+            "npm:chart.js",
+            "npm:ng2-charts",
+            "npm:@angular/forms"
+          ]
+        },
+        {
+          "file": "src/app/pages/questions/questions.component.html",
+          "hash": "11266278850389328738"
+        },
+        {
+          "file": "src/app/pages/questions/questions.component.sass",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/pages/questions/questions.component.spec.ts",
+          "hash": "3591215635505886321",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/pages/questions/questions.component.ts",
+          "hash": "12122910301351327858",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/router",
+            "npm:rxjs",
+            "npm:@angular/material"
+          ]
+        },
+        {
+          "file": "src/app/pages/study/study.component.html",
+          "hash": "1128048961616930652"
+        },
+        {
+          "file": "src/app/pages/study/study.component.scss",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/pages/study/study.component.spec.ts",
+          "hash": "18307742520284195217",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/pages/study/study.component.ts",
+          "hash": "12586021727750012134",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/material",
+            "npm:@fortawesome/angular-fontawesome",
+            "npm:@fortawesome/free-solid-svg-icons",
+            "npm:@angular/router",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "src/app/services/admin/boards/board.service.ts",
+          "hash": "7036183141260700199",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:rxjs",
+            "npm:lodash"
+          ]
+        },
+        {
+          "file": "src/app/services/admin/boards/interfaces/add-board-dto.interface.ts",
+          "hash": "16738260814891253529"
+        },
+        {
+          "file": "src/app/services/admin/boards/interfaces/edit-board-dto.interface.ts",
+          "hash": "738469954293161929"
+        },
+        {
+          "file": "src/app/services/admin/entity-relation.service.ts",
+          "hash": "6208141870597754614",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/services/admin/exams/exams.service.ts",
+          "hash": "10842520600970987663",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:rxjs",
+            "npm:lodash"
+          ]
+        },
+        {
+          "file": "src/app/services/admin/exams/interfaces/add-assessment-exam-dto.interface.ts",
+          "hash": "6394046128311792500"
+        },
+        {
+          "file": "src/app/services/admin/exams/interfaces/add-mock-exam-dto.interface.ts",
+          "hash": "1780095154150753204"
+        },
+        {
+          "file": "src/app/services/admin/exams/interfaces/edit-assessment-exam-dto.interface.ts",
+          "hash": "2733231617538075830"
+        },
+        {
+          "file": "src/app/services/admin/exams/interfaces/edit-mock-exam-dto.interface.ts",
+          "hash": "7928209542072789523"
+        },
+        {
+          "file": "src/app/services/admin/institution/institution.service.ts",
+          "hash": "15306614309502211841",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:rxjs",
+            "npm:lodash"
+          ]
+        },
+        {
+          "file": "src/app/services/admin/institution/interfaces/add-institution-dto.interface.ts",
+          "hash": "3601975301958407549"
+        },
+        {
+          "file": "src/app/services/admin/institution/interfaces/edit-institution-dto.interface.ts",
+          "hash": "14434829087736518235"
+        },
+        {
+          "file": "src/app/services/admin/questions/interfaces/add-question-dto.interface.ts",
+          "hash": "4796673234221743027"
+        },
+        {
+          "file": "src/app/services/admin/questions/interfaces/edit-question-dto.interface.ts",
+          "hash": "12837827996494300558"
+        },
+        {
+          "file": "src/app/services/admin/questions/questions-admin.service.ts",
+          "hash": "12350412451366156198",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:rxjs",
+            "npm:lodash"
+          ]
+        },
+        {
+          "file": "src/app/services/admin/subjects/interfaces/add-subject-dto.interface.ts",
+          "hash": "11212528130884629920"
+        },
+        {
+          "file": "src/app/services/admin/subjects/interfaces/edit-subject-dto.interface.ts",
+          "hash": "2759067003825859218"
+        },
+        {
+          "file": "src/app/services/admin/subjects/subject.service.ts",
+          "hash": "770462404470748307",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:rxjs",
+            "npm:lodash"
+          ]
+        },
+        {
+          "file": "src/app/services/auth/access-token-interceptor.service.ts",
+          "hash": "4836835990931917465",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "src/app/services/auth/auth.service.ts",
+          "hash": "16755273906434723529",
+          "deps": [
+            "npm:@angular/core",
+            "npm:rxjs",
+            "npm:jwt-decode",
+            "npm:@angular/common",
+            "npm:@angular/router",
+            "npm:lodash"
+          ]
+        },
+        {
+          "file": "src/app/services/auth/constants/access-token-excluded-endpoints.const.ts",
+          "hash": "16348693621315418406"
+        },
+        {
+          "file": "src/app/services/auth/interfaces/signin-dto.interface.ts",
+          "hash": "11682882029600308413"
+        },
+        {
+          "file": "src/app/services/boards.service.ts",
+          "hash": "6856583046620157752",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:rxjs",
+            "npm:lodash"
+          ]
+        },
+        {
+          "file": "src/app/services/entity-relations.service.ts",
+          "hash": "13263387471853433693",
+          "deps": [
+            "npm:@angular/core",
+            "npm:lodash"
+          ]
+        },
+        {
+          "file": "src/app/services/exams.service.ts",
+          "hash": "5080797478150372935",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:rxjs",
+            "npm:lodash"
+          ]
+        },
+        {
+          "file": "src/app/services/institutions.service.ts",
+          "hash": "4473928767288404350",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:rxjs",
+            "npm:lodash"
+          ]
+        },
+        {
+          "file": "src/app/services/interfaces/answer-dto.interface.ts",
+          "hash": "2847234735945541098"
+        },
+        {
+          "file": "src/app/services/modal.service.ts",
+          "hash": "11884400934352973620",
+          "deps": [
+            "npm:@angular/cdk",
+            "npm:@angular/core",
+            "npm:@angular/material"
+          ]
+        },
+        {
+          "file": "src/app/services/platform.service.ts",
+          "hash": "14054813120524865680",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/cdk"
+          ]
+        },
+        {
+          "file": "src/app/services/questions.service.ts",
+          "hash": "17884677837245132934",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:rxjs",
+            "npm:lodash"
+          ]
+        },
+        {
+          "file": "src/app/services/recaptcha-badge.service.ts",
+          "hash": "13934630916878706859",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/services/storage.service.ts",
+          "hash": "8502041016764749130",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/services/subjects.service.ts",
+          "hash": "16689241636154065511",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:rxjs",
+            "npm:lodash"
+          ]
+        },
+        {
+          "file": "src/app/services/upload/functions/error-mgmt.function.ts",
+          "hash": "9988953801872144004",
+          "deps": [
+            "npm:@angular/common",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "src/app/services/upload/interfaces/uploaded-img.interface.ts",
+          "hash": "9754226213259358222"
+        },
+        {
+          "file": "src/app/services/upload/upload.service.ts",
+          "hash": "15286456182304812051",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "src/app/services/user/interfaces/signup-dto.interface.ts",
+          "hash": "1748740082144072936"
+        },
+        {
+          "file": "src/app/services/user/user.service.ts",
+          "hash": "17484590234267901680",
+          "deps": [
+            "npm:@angular/core",
+            "npm:rxjs",
+            "npm:@angular/common",
+            "npm:lodash"
+          ]
+        },
+        {
+          "file": "src/app/shared/config/default-pagination-size.const.ts",
+          "hash": "16059084640182457049"
+        },
+        {
+          "file": "src/app/shared/config/default-question-pagination-size.const.ts",
+          "hash": "17401752671102840605"
+        },
+        {
+          "file": "src/app/shared/config/locale-date-string-options.const.ts",
+          "hash": "13437142833572946857"
+        },
+        {
+          "file": "src/app/shared/config/pagination-intl.model.ts",
+          "hash": "5200485127950796229",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/material"
+          ]
+        },
+        {
+          "file": "src/app/shared/constants/assessment-exam-labels.const.ts",
+          "hash": "5858453485842538104",
+          "deps": [
+            "npm:@fortawesome/free-solid-svg-icons"
+          ]
+        },
+        {
+          "file": "src/app/shared/constants/board-record-labels.const.ts",
+          "hash": "12480607647146824457",
+          "deps": [
+            "npm:@fortawesome/free-solid-svg-icons"
+          ]
+        },
+        {
+          "file": "src/app/shared/constants/date-formats.const.ts",
+          "hash": "3254122003326515491"
+        },
+        {
+          "file": "src/app/shared/constants/education-stage-options.ts",
+          "hash": "854618662464130445"
+        },
+        {
+          "file": "src/app/shared/constants/institution-labels.const.ts",
+          "hash": "7850107352269898119",
+          "deps": [
+            "npm:@fortawesome/free-solid-svg-icons"
+          ]
+        },
+        {
+          "file": "src/app/shared/constants/mock-exam-labels.const.ts",
+          "hash": "1148500785039669725",
+          "deps": [
+            "npm:@fortawesome/free-solid-svg-icons"
+          ]
+        },
+        {
+          "file": "src/app/shared/constants/pagination-sizes.const.ts",
+          "hash": "10989081947675491694"
+        },
+        {
+          "file": "src/app/shared/constants/question-pagination-sizes.const.ts",
+          "hash": "13388393446033336841"
+        },
+        {
+          "file": "src/app/shared/constants/question-record-labels.const.ts",
+          "hash": "3532155802894636742",
+          "deps": [
+            "npm:@fortawesome/free-solid-svg-icons"
+          ]
+        },
+        {
+          "file": "src/app/shared/constants/subject-record-labels.const.ts",
+          "hash": "5902846504493768009",
+          "deps": [
+            "npm:@fortawesome/free-solid-svg-icons"
+          ]
+        },
+        {
+          "file": "src/app/shared/constants/ufs.const.ts",
+          "hash": "9285260220625819662"
+        },
+        {
+          "file": "src/app/shared/directives/cpf.directive.ts",
+          "hash": "11040464349585865250",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "src/app/shared/directives/letters-numbers-and-dash-only.directive.ts",
+          "hash": "5635148480597760008",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "src/app/shared/directives/phonebr.directive.ts",
+          "hash": "7831550765319573836",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "src/app/shared/enums/education-stage.ts",
+          "hash": "9713710733397235375"
+        },
+        {
+          "file": "src/app/shared/enums/entity.enum.ts",
+          "hash": "3813050925219961076"
+        },
+        {
+          "file": "src/app/shared/enums/exam-type.enum.ts",
+          "hash": "9356260234013524181"
+        },
+        {
+          "file": "src/app/shared/enums/filter-type.enum.ts",
+          "hash": "9654052985543459515"
+        },
+        {
+          "file": "src/app/shared/enums/login-provider.enum.ts",
+          "hash": "5026216235358413958"
+        },
+        {
+          "file": "src/app/shared/enums/ufs.enum.ts",
+          "hash": "13665267281793555134"
+        },
+        {
+          "file": "src/app/shared/enums/user-role.enum.ts",
+          "hash": "13337520292611069406"
+        },
+        {
+          "file": "src/app/shared/functions/display-fn-selectors.function.ts",
+          "hash": "13413754690752309164"
+        },
+        {
+          "file": "src/app/shared/functions/generate-hash.function.ts",
+          "hash": "4640839090601631960",
+          "deps": [
+            "npm:crypto-js"
+          ]
+        },
+        {
+          "file": "src/app/shared/interfaces/answer.interface.ts",
+          "hash": "2605879397979690545"
+        },
+        {
+          "file": "src/app/shared/interfaces/credentials.interface.ts",
+          "hash": "16787492153585168363"
+        },
+        {
+          "file": "src/app/shared/interfaces/decoded-token.interface.ts",
+          "hash": "17977290827382530691",
+          "deps": [
+            "npm:jwt-decode"
+          ]
+        },
+        {
+          "file": "src/app/shared/interfaces/filters.interface.ts",
+          "hash": "15771580498998856717"
+        },
+        {
+          "file": "src/app/shared/interfaces/formatted-response.interface.ts",
+          "hash": "15053096527558398555"
+        },
+        {
+          "file": "src/app/shared/interfaces/paginated-response.interface.ts",
+          "hash": "12489387086522779860"
+        },
+        {
+          "file": "src/app/shared/interfaces/record-labels.interface.ts",
+          "hash": "13283346535447306752",
+          "deps": [
+            "npm:@fortawesome/fontawesome-svg-core"
+          ]
+        },
+        {
+          "file": "src/app/shared/interfaces/relation.interface.ts",
+          "hash": "2101853169842107549"
+        },
+        {
+          "file": "src/app/shared/models/custom-form-validators.model.ts",
+          "hash": "16826837020785000958",
+          "deps": [
+            "npm:@angular/forms",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "src/app/shared/pipes/alternative-tooltip.pipe.ts",
+          "hash": "4119261019137797606",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/shared/pipes/code-to-color-class.pipe.ts",
+          "hash": "9632030928287902914",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/shared/pipes/letter-index-to-char.pipe.ts",
+          "hash": "15564165138056730692",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/shared/pipes/letter-index-to-icon.pipe.ts",
+          "hash": "1727589709775828940",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@fortawesome/fontawesome-svg-core",
+            "npm:@fortawesome/free-solid-svg-icons"
+          ]
+        },
+        {
+          "file": "src/app/shared/pipes/object.pipe.ts",
+          "hash": "7985148517435066947",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/shared/pipes/server-img-pipe.pipe.spec.ts",
+          "hash": "7093833051034345730"
+        },
+        {
+          "file": "src/app/shared/pipes/server-img.pipe.ts",
+          "hash": "10046490227659835967",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/assets/.gitkeep",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/assets/img/icon1.png",
+          "hash": "695359625117286750"
+        },
+        {
+          "file": "src/assets/img/icon2.png",
+          "hash": "17457244412309430831"
+        },
+        {
+          "file": "src/assets/img/icon3.jpg",
+          "hash": "8973352566743641125"
+        },
+        {
+          "file": "src/assets/img/icon4.jpg",
+          "hash": "7167817243378300857"
+        },
+        {
+          "file": "src/assets/img/none.jpg",
+          "hash": "6120451841841189420"
+        },
+        {
+          "file": "src/assets/img/none_lg.jpg",
+          "hash": "11264545140441130274"
+        },
+        {
+          "file": "src/assets/img/screen1.png",
+          "hash": "106252148188544345"
+        },
+        {
+          "file": "src/assets/img/screen2.png",
+          "hash": "4566610051820584159"
+        },
+        {
+          "file": "src/assets/img/screen3.png",
+          "hash": "17006881357037867618"
+        },
+        {
+          "file": "src/assets/img/study0.jpeg",
+          "hash": "2679527501095847500"
+        },
+        {
+          "file": "src/assets/img/study1.jpg",
+          "hash": "2387562245404547974"
+        },
+        {
+          "file": "src/assets/img/study2.jpg",
+          "hash": "4453129308494085243"
+        },
+        {
+          "file": "src/assets/img/study3.jpg",
+          "hash": "619810489264010646"
+        },
+        {
+          "file": "src/assets/img/study4.jpg",
+          "hash": "58115796010013286"
+        },
+        {
+          "file": "src/custom-theme.scss",
+          "hash": "12043713091007172791"
+        },
+        {
+          "file": "src/environments/environment.ts",
+          "hash": "11676822516338315020"
+        },
+        {
+          "file": "src/favicon.ico",
+          "hash": "3988961587069885523"
+        },
+        {
+          "file": "src/index.html",
+          "hash": "2496386132969113103"
+        },
+        {
+          "file": "src/main.server.ts",
+          "hash": "11653607448136507287",
+          "deps": [
+            "npm:@angular/platform-browser"
+          ]
+        },
+        {
+          "file": "src/main.ts",
+          "hash": "4927504514031276065",
+          "deps": [
+            "npm:@angular/platform-browser"
+          ]
+        },
+        {
+          "file": "src/styles.scss",
+          "hash": "15096516609727112729"
+        },
+        {
+          "file": "tsconfig.app.json",
+          "hash": "17948364081101022842"
+        },
+        {
+          "file": "tsconfig.json",
+          "hash": "8074232012119176151"
+        },
+        {
+          "file": "tsconfig.spec.json",
+          "hash": "15575553540147145788"
+        },
+        {
+          "file": "src/app/components/footer/footer.component.html",
+          "hash": "1154602466256791268"
+        },
+        {
+          "file": "src/app/components/footer/footer.component.scss",
+          "hash": "8870396928789076435"
+        },
+        {
+          "file": "src/app/components/footer/footer.component.ts",
+          "hash": "211332123103962362",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common"
+          ]
+        },
+        {
+          "file": "src/app/components/loader/loader.component.html",
+          "hash": "17504367040740093250"
+        },
+        {
+          "file": "src/app/components/loader/loader.component.scss",
+          "hash": "2640095591023136418"
+        },
+        {
+          "file": "src/app/components/loader/loader.component.spec.ts",
+          "hash": "12039471125075213101",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/components/loader/loader.component.ts",
+          "hash": "17262837642774233394",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/material"
+          ]
+        },
+        {
+          "file": "src/app/components/logo/logo.component.html",
+          "hash": "7591405066522225131"
+        },
+        {
+          "file": "src/app/components/logo/logo.component.ts",
+          "hash": "8746071483036954436",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common"
+          ]
+        },
+        {
+          "file": "src/app/components/logo/logo.component.scss",
+          "hash": "759424012283745765"
+        },
+        {
+          "file": "src/app/pages/admin/pages/users/pages/add-edit/add-edit.component.ts",
+          "hash": "14163038510885349653",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:rxjs",
+            "npm:@angular/router",
+            "npm:@angular/forms",
+            "npm:@angular/material",
+            "npm:@fortawesome/free-solid-svg-icons",
+            "npm:@fortawesome/angular-fontawesome",
+            "npm:sweetalert2"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/pages/users/pages/list/list.component.html",
+          "hash": "9750652926942646228"
+        },
+        {
+          "file": "src/app/pages/admin/pages/users/pages/list/list.component.sass",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/pages/admin/pages/users/pages/add-edit/add-edit.component.scss",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/pages/admin/pages/users/pages/list/list.component.ts",
+          "hash": "15966255713723887813",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:rxjs",
+            "npm:@angular/router",
+            "npm:@angular/material",
+            "npm:@fortawesome/angular-fontawesome",
+            "npm:@fortawesome/free-solid-svg-icons",
+            "npm:sweetalert2"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/pages/users/pages/list/list.component.spec.ts",
+          "hash": "7596927726405882929",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/pages/users/pages/add-edit/add-edit.component.spec.ts",
+          "hash": "17308552093054279107",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/pages/users/pages/add-edit/add-edit.component.html",
+          "hash": "15461991140040102748"
+        },
+        {
+          "file": "src/app/shared/constants/user-record-labels.const.ts",
+          "hash": "14795598825337848530",
+          "deps": [
+            "npm:@fortawesome/free-solid-svg-icons"
+          ]
+        },
+        {
+          "file": "src/app/services/admin/users/interfaces/add-user-dto.interface.ts",
+          "hash": "4738194764315812705"
+        },
+        {
+          "file": "src/app/services/admin/users/interfaces/edit-user-dto.interface.ts",
+          "hash": "9604668509318470727"
+        },
+        {
+          "file": "src/app/services/admin/users/users.service.ts",
+          "hash": "13148981126284840175",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:rxjs",
+            "npm:lodash"
+          ]
+        },
+        {
+          "file": "src/app/pages/admin/pages/questions/pages/list/list.component.scss",
+          "hash": "5626185988257796625"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,63 @@
+.toolbar {
+  min-width: 600px;
+  display: flex;
+  justify-content: space-between;
+  @media (width <= 768px) {
+    min-width: 100vw;
+  }
+}
+
+main {
+  padding: 10px;
+
+  form {
+    padding: 10px;
+  }
+
+  .signup-form,
+  .signin-form,
+  .recover-password-form {
+    padding: 10px;
+    width: 100%;
+  }
+
+  .signup-form {
+    .passwords {
+      display: flex;
+      gap: 10px;
+
+      @media (width <= 768px) {
+        flex-direction: column;
+        gap: 0px;
+      }
+
+      div {
+        width: 50%;
+        @media (width <= 768px) {
+          width: 100%;
+        }
+      }
+    }
+  }
+
+  [class*="-actions"] {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+
+    .start {
+      justify-self: start;
+    }
+    .end {
+      justify-self: end;
+    }
+  }
+
+  mat-form-field {
+    width: 100%;
+  }
+}
+
+.button-content-wrap {
+  display: flex;
+  gap: 5px;
+}

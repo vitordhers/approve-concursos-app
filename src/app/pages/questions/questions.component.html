@@ -1,0 +1,9 @@
+@if (currentFragment() === 'filtro') {
+<app-filter />
+} @else {
+<app-questionnaire [_loadedFilteredQuestions]="loadedFilteredQuestions"
+                   [totalFilteredQuestions]="loadedFilteredQuestionsTotal()"
+                   (pageEventEmitter)="onExamPagination($event)"
+                   [_loadedExamQuestions]="loadedExamQuestions"
+                   [totalExamQuestions]="loadedExamQuestionsTotal()" />
+}

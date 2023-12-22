@@ -1,0 +1,38 @@
+<app-header (toggleHeader)="toggleSideNav()"></app-header>
+<mat-sidenav-container>
+  <mat-sidenav mode="side"
+               [opened]="sideNavOpen()">
+    @if(userService.isLoggedIn()) {
+    <mat-list role="list">
+      <mat-list-item>
+        <p>Bem vindo, <b>{{this.userService.user()?.name}}</b> 🤗</p>
+      </mat-list-item>
+    </mat-list>
+    }
+    <mat-nav-list>
+      @for (section of displayedSections(); track section.uri) {
+      <app-nav-item [section]="section"
+                    [currentUrl]="currentUrl()"></app-nav-item>
+      }
+      @if (userService.isLoggedIn()) {
+      <mat-list-item (click)="logout()">
+        <a matListItemTitle>
+          <mat-accordion>
+            <mat-expansion-panel class="mat-elevation-z0"
+                                 hideToggle>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <fa-icon [icon]="faRightFromBracket"></fa-icon> &nbsp; Sair
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </a>
+      </mat-list-item>
+      }
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

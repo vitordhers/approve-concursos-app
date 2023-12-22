@@ -1,0 +1,17 @@
+<div class="wrapper">
+  @if (loadedRecords().length) {
+  @for (answer of loadedRecords(); track $index) {
+  <app-answerable-question [_question]="answer.question"
+                           [prevAnswer]="answer.answeredAlternativeIndex"
+                           [correctAnswer]="answer.question.correctIndex"
+                           [answeredAt]="answer.at" />
+  }
+  }
+  <mat-paginator [pageSizeOptions]="pageSizeOptions"
+                 [pageSize]="currentPageSize"
+                 [length]="totalRecords()"
+                 showFirstLastButtons
+                 (page)="onPageEvent($event)"
+                 [hidePageSize]="totalRecords() < pageSizeOptions[0]">
+  </mat-paginator>
+</div>

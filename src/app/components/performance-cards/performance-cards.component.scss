@@ -1,0 +1,59 @@
+.performance-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  padding: 20px;
+}
+
+.performance-avatar {
+  fa-icon {
+    font-size: 40px !important;
+  }
+}
+
+mat-card {
+  border-radius: 20px !important;
+  overflow: hidden;
+}
+
+.solved-questions-card {
+  background-color: var(--primary-color);
+  color: #fff;
+}
+
+.correct-questions-card {
+  background-color: var(--success-color);
+  color: #fff;
+}
+
+.wrong-questions-card {
+  background-color: orangered;
+  color: #fff;
+}
+
+.overall-performance-card {
+  background-color: #9527e3;
+  color: #fff;
+}
+
+mat-card-actions {
+  backdrop-filter: brightness(80%);
+}
+
+mat-card-content div {
+  width: 100%;
+  font-size: 16px;
+  text-align: right;
+}
+
+h4 {
+  font-weight: 500;
+}
+
+.link-button {
+  all: unset;
+  cursor: pointer;
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}

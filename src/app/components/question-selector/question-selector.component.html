@@ -1,0 +1,62 @@
+@if (formControl) {
+<div>
+  <mat-form-field appearance="outline">
+    <mat-label>
+      @if (prefix) {
+      <fa-icon [icon]="labels.icon" />&nbsp;
+      }
+      {{labels.labelCapitalized}}
+      @if (prefix) {
+      nº {{prefix}}
+      }
+    </mat-label>
+    <span matTextPrefix>
+      @if (prefix) {
+      <span matTooltip="Número da questão">
+        <fa-icon [icon]="faHashtag" />
+        <app-icon-number-sequence [no]="prefix" />
+        &nbsp;&nbsp;
+      </span>
+      } @else {
+      <fa-icon [icon]="labels.icon" />&nbsp;&nbsp;
+      }
+    </span>
+    <input type="text"
+           matInput
+           [formControl]="formControl"
+           [matAutocomplete]="institutionAutocomplete"
+           #institutionAutoCompleteTrigger>
+    <mat-autocomplete #institutionAutocomplete="matAutocomplete"
+                      [displayWith]="displayFn"
+                      (optionSelected)="onOptionSelected($event)">
+      <ng-container *ngIf="searchedRecords$ | async as searchedRecords">
+        @if (searchedRecords.length && formControl.value !== '' &&
+        formControl.value !== undefined) {
+        @for (record of searchedRecords; track record) {
+        <mat-option [value]="record">
+          <mat-card class="autocomplete-card">
+            <mat-card-header>
+              <mat-card-title><fa-icon [icon]="faBarcode" />&nbsp;{{record.code}}</mat-card-title>
+            </mat-card-header>
+          </mat-card>
+        </mat-option>
+        }
+        } @else {
+        @if (formControl.value !== '' && formControl.value !== undefined) {
+        <mat-option disabled>
+          <div>Nenhum{{labels.defArticle === 'o'? '': 'a'}} {{labels.label}} foi encontrad{{labels.defArticle}} para a
+            busca
+            {{formControl.value}}</div>
+        </mat-option>
+        }
+        }
+      </ng-container>
+    </mat-autocomplete>
+  </mat-form-field>
+  @if (formControl.touched && formControl.invalid) {
+  <div>
+    <mat-error>{{labels.defArticle | uppercase}} {{labels.label}} é obrigatóri{{labels.defArticle}}</mat-error>
+  </div>
+  }
+</div>
+}

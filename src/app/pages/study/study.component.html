@@ -1,0 +1,29 @@
+@if (currentIndex() !== undefined) {
+<mat-tab-group (selectedIndexChange)="tabChanged($event)"
+               mat-align-tabs="start"
+               [selectedIndex]="currentIndex()">
+  <mat-tab label="Desempenho">
+    <ng-template mat-tab-label><fa-icon [icon]="faChartSimple" />&nbsp; Meu Desempenho</ng-template>
+    <ng-template matTabContent>
+
+      <app-performance-cards />
+
+    </ng-template>
+  </mat-tab>
+  <mat-tab label="Simulados">
+    <ng-template mat-tab-label><fa-icon [icon]="faListCheck" />&nbsp; Simulados</ng-template>
+    <ng-template matTabContent>
+
+      <app-exam-list [type]="examType.MOCK"></app-exam-list>
+    </ng-template>
+  </mat-tab>
+  <mat-tab label="Provas">
+    <ng-template mat-tab-label> <fa-icon [icon]="faListOl" />&nbsp; Provas</ng-template>
+    <ng-template matTabContent>
+
+      <app-exam-list [type]="examType.ASSESSMENT"></app-exam-list>
+
+    </ng-template>
+  </mat-tab>
+</mat-tab-group>
+}

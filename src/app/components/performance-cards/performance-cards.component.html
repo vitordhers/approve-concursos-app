@@ -1,0 +1,118 @@
+<div class="performance-cards">
+  <mat-card class="solved-questions-card">
+    <mat-card-header>
+      <div class="performance-avatar"
+           mat-card-avatar>
+        <fa-icon [icon]="faPenToSquare" />
+      </div>
+      <mat-card-title>
+        <h4>
+          Questões Resolvidas
+        </h4>
+      </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      @if (countTotal() !== undefined) {
+      <div>
+        {{countTotal()}}
+      </div>
+      }
+    </mat-card-content>
+    <mat-card-actions>
+      <a class="link-button"
+         [routerLink]="['/painel','questoes']">
+        <span>Resolver mais</span>
+        <fa-icon [icon]="faCircleRight" />
+      </a>
+    </mat-card-actions>
+  </mat-card>
+
+  <mat-card class="correct-questions-card">
+    <mat-card-header>
+      <div class="performance-avatar"
+           mat-card-avatar>
+        <fa-icon [icon]="faSquareCheck" />
+      </div>
+      <mat-card-title>
+        <h4>
+          Acertos
+        </h4>
+      </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      @if (correctTotal() !== undefined) {
+      <div>
+        {{correctTotal()}}
+      </div>
+      }
+    </mat-card-content>
+    <mat-card-actions>
+      <a class="link-button"
+         [routerLink]="['/painel','questoes']">
+        <span>Resolver mais</span>
+        <fa-icon [icon]="faCircleRight" />
+      </a>
+    </mat-card-actions>
+  </mat-card>
+
+
+  <mat-card class="wrong-questions-card">
+    <mat-card-header>
+      <div class="performance-avatar"
+           mat-card-avatar>
+        <fa-icon [icon]="faSquareXmark" />
+      </div>
+      <mat-card-title>
+        <h4>
+          Erros
+        </h4>
+      </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      @if (wrongTotal() !== undefined) {
+      <div>
+        {{wrongTotal()}}
+      </div>
+      }
+    </mat-card-content>
+    <mat-card-actions>
+      <a class="link-button"
+         [routerLink]="['/painel','questoes']">
+        <span>Resolver questões erradas</span>
+        <fa-icon [icon]="faCircleRight" />
+      </a>
+    </mat-card-actions>
+  </mat-card>
+
+  <mat-card class="overall-performance-card">
+    <mat-card-header>
+      <div class="performance-avatar"
+           mat-card-avatar>
+        <fa-icon [icon]="faChartColumn" />
+      </div>
+      <mat-card-title>
+        <h4>
+          Aproveitamento
+        </h4>
+      </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      @if (overallPerformance() !== undefined) {
+      <div>
+        {{overallPerformance() | percent}}
+      </div>
+      }
+    </mat-card-content>
+    <mat-card-actions>
+      <a class="link-button"
+         [routerLink]="['/painel','questoes']">
+        <span>Melhorar</span>
+        <fa-icon [icon]="faCircleRight" />
+      </a>
+    </mat-card-actions>
+  </mat-card>
+</div>

@@ -1,0 +1,9 @@
+.search-wrap {
+  display: flex;
+  // justify-content: center;
+
+  mat-form-field {
+    padding: 20px;
+    width: 60%;
+  }
+}

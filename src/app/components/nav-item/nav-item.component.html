@@ -1,0 +1,86 @@
+@if (currentTemplateRef() && section) {
+<mat-list-item [disableRipple]="section.type !== 0"
+               (click)="section.action && section.type === 0 ? section.action() : null"
+               [activated]="section.type === 0 && activatedUrl()">
+  <div [ngClass]="{'padded': section.isSubsection}">
+    <ng-container *ngTemplateOutlet="currentTemplateRef(); context: {
+        title: section.title,
+        type: section.type,
+        icon: section.icon,
+        subsections: section.subsections,
+        uri: section.uri,
+        action: section.action,
+        isSubsection: section.isSubsection
+        }">
+    </ng-container>
+  </div>
+</mat-list-item>
+}
+
+<ng-template #expandableSection
+             let-title="title"
+             let-icon="icon"
+             let-isSubsection="isSubsection"
+             let-subsections="subsections"
+             let-uri="uri">
+  <mat-accordion>
+    <mat-expansion-panel class="mat-elevation-z0"
+                         [expanded]="!isSubsection || activatedUrl()">
+      <mat-expansion-panel-header>
+        <mat-panel-title [ngClass]="{'active': activatedUrl()}">
+          <fa-icon [icon]="icon"></fa-icon> &nbsp; {{title}}
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <mat-nav-list>
+        @for (subsection of subsections; track section?.uri) {
+        <app-nav-item [section]="subsection"
+                      [currentUrl]="currentUrl"></app-nav-item>
+        }
+      </mat-nav-list>
+    </mat-expansion-panel>
+  </mat-accordion>
+</ng-template>
+
+<ng-template #linkSection
+             let-title="title"
+             let-icon="icon"
+             let-action="action"
+             let-uri="uri"
+             let-isSubsection="isSubsection">
+  @if(isSubsection) {
+
+  <div matListItemTitle
+       class="title-wrap">
+    <fa-icon [icon]="icon"></fa-icon> {{title}}
+  </div>
+  } @else {
+  <mat-accordion>
+    <mat-expansion-panel class="mat-elevation-z0"
+                         hideToggle>
+      <mat-expansion-panel-header>
+        <mat-panel-title [ngClass]="{'active': activatedUrl()}">
+          <fa-icon [icon]="icon"></fa-icon> &nbsp; {{title}}
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+    </mat-expansion-panel>
+  </mat-accordion>
+  }
+</ng-template>
+
+<ng-template #searchSection
+             let-title="title"
+             let-icon="icon"
+             let-uri="uri"
+             let-action="action">
+  <mat-form-field appearance="outline">
+    <input matInput
+           [placeholder]="title"
+           [formControl]="search">
+    <button matSuffix
+            mat-icon-button
+            (click)="action(search.value)">
+      <fa-icon [icon]="icon"
+               size="sm"></fa-icon>
+    </button>
+  </mat-form-field>
+</ng-template>

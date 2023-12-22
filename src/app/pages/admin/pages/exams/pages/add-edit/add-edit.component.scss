@@ -1,0 +1,58 @@
+.add-mock-times-field {
+  width: 100%;
+}
+
+.add-mock-question-form {
+  margin-top: 15px;
+}
+
+.no-side-padding {
+  mat-card-header,
+  mat-card-content {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+}
+
+.mat-elevation-z4 {
+  margin: 5px;
+}
+
+.mat-elevation-z5 {
+  margin: 10px 0px;
+}
+
+.drop-list {
+  // display: grid;
+  // grid-template-columns: repeat(10, 1fr);
+  // gap: 20px;
+  overflow: hidden;
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.drop-list.cdk-drop-list-dragging .list-item:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.question-wrap {
+  display: flex;
+
+  .draggable-padding {
+    width: 25px;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+    height: auto;
+    background-color: rgb(188, 255, 197);
+    background-image: radial-gradient(white 25%, transparent 0);
+    background-size: 12px 12px;
+    margin: 10px 0px;
+    cursor: move;
+  }
+}

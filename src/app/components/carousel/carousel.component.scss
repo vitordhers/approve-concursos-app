@@ -1,0 +1,26 @@
+.carousel-container {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+}
+
+.carousel-container > div {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+.carousel-container > div.active {
+  opacity: 1;
+}
+
+img {
+  height: auto;
+  max-width: 100% !important;
+  object-fit: cover;
+}
