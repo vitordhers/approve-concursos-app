@@ -13,16 +13,13 @@
   <mat-tab label="Simulados">
     <ng-template mat-tab-label><fa-icon [icon]="faListCheck" />&nbsp; Simulados</ng-template>
     <ng-template matTabContent>
-
-      <app-exam-list [type]="examType.MOCK"></app-exam-list>
+      <app-exam-list [type]="examType.MOCK" />
     </ng-template>
   </mat-tab>
   <mat-tab label="Provas">
     <ng-template mat-tab-label> <fa-icon [icon]="faListOl" />&nbsp; Provas</ng-template>
     <ng-template matTabContent>
-
-      <app-exam-list [type]="examType.ASSESSMENT"></app-exam-list>
-
+      <app-exam-list [type]="examType.ASSESSMENT" />
     </ng-template>
   </mat-tab>
 </mat-tab-group>

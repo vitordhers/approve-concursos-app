@@ -34,7 +34,7 @@
       <mat-nav-list>
         @for (subsection of subsections; track section?.uri) {
         <app-nav-item [section]="subsection"
-                      [currentUrl]="currentUrl"></app-nav-item>
+                      [currentUrl]="currentUrl" />
         }
       </mat-nav-list>
     </mat-expansion-panel>

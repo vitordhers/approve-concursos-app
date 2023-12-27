@@ -29,7 +29,7 @@
     @if (!isUsingSearch()) {
     @if ((loadedExams() || []).length > 0) {
     @for (exam of loadedExams(); track $index) {
-    <app-exam-card [exam]="exam"></app-exam-card>
+    <app-exam-card [exam]="exam" />
     }
     } @else {
     <div>Nenhum{{labels.defArticle === 'o' ? '' : 'a'}} {{labels.label}} disponível</div>
@@ -37,7 +37,7 @@
     } @else {
     @if ((searchedExams() || []).length > 0) {
     @for (exam of searchedExams(); track $index) {
-    <app-exam-card [exam]="exam"></app-exam-card>
+    <app-exam-card [exam]="exam" />
     }
     } @else {
     <div>Nenhum{{labels.defArticle === 'o' ? '' : 'a'}} {{labels.label}} encontrad{{labels.defArticle}} para sua busca

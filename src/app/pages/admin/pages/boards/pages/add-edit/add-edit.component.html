@@ -49,7 +49,7 @@
       <h4><fa-icon [icon]="faImage" /> Imagem d{{labels.defArticle}} {{labels.labelCapitalized}}</h4>
       <app-file-uploader [imgSrc]="form.controls['img'].value"
                          [generateThumbnail]="true"
-                         (emitPreview)="patchPreview($event)"></app-file-uploader>
+                         (emitPreview)="patchPreview($event)" />
     </div>
   </form>
   <div class="add-edit-actions">

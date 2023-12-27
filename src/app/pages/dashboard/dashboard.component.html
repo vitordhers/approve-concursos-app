@@ -1,4 +1,4 @@
-<app-header (toggleHeader)="toggleSideNav()"></app-header>
+<app-header (toggleHeader)="toggleSideNav()" />
 <mat-sidenav-container>
   <mat-sidenav mode="side"
                [opened]="sideNavOpen()">
@@ -12,7 +12,7 @@
     <mat-nav-list>
       @for (section of displayedSections(); track section.uri) {
       <app-nav-item [section]="section"
-                    [currentUrl]="currentUrl()"></app-nav-item>
+                    [currentUrl]="currentUrl()" />
       }
       @if (userService.isLoggedIn()) {
       <mat-list-item (click)="logout()">
