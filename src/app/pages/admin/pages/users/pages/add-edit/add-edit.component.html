@@ -1,7 +1,7 @@
 <div class="add-edit-header">
   <button mat-icon-button
           (click)="navigateToList()">
-    <fa-icon [icon]="faArrowLeft"></fa-icon>
+    <fa-icon [icon]="faArrowLeft" />
   </button>
   <h3 class="list-label">{{isEdit() ? 'Editar' : 'Criar'}} {{labels.labelCapitalized}}</h3>
 </div>
@@ -9,13 +9,13 @@
   <div class="stats"
        *ngIf="updatedUser() as user">
     <div class="stats-body">
-      <span><fa-icon [icon]="faFingerprint"></fa-icon>&nbsp;Id:</span>
+      <span><fa-icon [icon]="faFingerprint" />&nbsp;Id:</span>
       <span>{{user.id}}</span>
 
-      <span><fa-icon [icon]="faClock"></fa-icon>&nbsp;Criado em:</span>
+      <span><fa-icon [icon]="faClock" />&nbsp;Criado em:</span>
       <span>{{user.createdDateTime | date:'long':'pt-BR'}}</span>
       @if (user.createdAt !== user.updatedAt) {
-      <span><fa-icon [icon]="faClock"></fa-icon>&nbsp;Última edição em:</span>
+      <span><fa-icon [icon]="faClock" />&nbsp;Última edição em:</span>
       <span>{{user.updatedDateTime | date:'long':'pt-BR'}}</span>
       }
     </div>
@@ -24,7 +24,7 @@
     <div class="form-field-pair-wrap">
       <mat-form-field appearance="outline">
         <mat-label>Nome</mat-label>
-        <span matTextPrefix><fa-icon [icon]="faFont"></fa-icon> &nbsp;</span>
+        <span matTextPrefix><fa-icon [icon]="faFont" /> &nbsp;</span>
         <input matInput
                type="text"
                placeholder="Seu Nome Completo"
@@ -46,7 +46,7 @@
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label>E-mail</mat-label>
-        <span matTextPrefix><fa-icon [icon]="faEnvelope"></fa-icon> &nbsp;</span>
+        <span matTextPrefix><fa-icon [icon]="faEnvelope" /> &nbsp;</span>
         <input matInput
                type="email"
                placeholder="seu@email.com"
@@ -75,7 +75,7 @@
 
       <mat-form-field appearance="outline">
         <mat-label>CPF</mat-label>
-        <span matTextPrefix><fa-icon [icon]="faIdCard"></fa-icon> &nbsp;</span>
+        <span matTextPrefix><fa-icon [icon]="faIdCard" /> &nbsp;</span>
         <input matInput
                type="text"
                inputmode="numeric"
@@ -99,7 +99,7 @@
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label>
-          <fa-icon [icon]="faCrown"></fa-icon>
+          <fa-icon [icon]="faCrown" />
           Privilégio</mat-label>
         <mat-select formControlName="role">
           @for (role of userRoles; track role) {
@@ -113,7 +113,7 @@
       <div class="form-field-pair-wrap">
         <mat-form-field appearance="outline">
           <mat-label>Senha</mat-label>
-          <span matTextPrefix><fa-icon [icon]="faLock"></fa-icon> &nbsp;</span>
+          <span matTextPrefix><fa-icon [icon]="faLock" /> &nbsp;</span>
           <input matInput
                  [type]="showPassword() ? 'text' : 'password'"
                  maxlength="20"
@@ -123,7 +123,7 @@
                   matSuffix
                   (click)="toggleShowPassword()"
                   [attr.aria-label]="'Hide password'">
-            <fa-icon [icon]="showPassword() ? faEyeSlash : faEye"></fa-icon>
+            <fa-icon [icon]="showPassword() ? faEyeSlash : faEye" />
           </button>
           @if (form.controls['password'].touched && form.controls['password'].invalid) {
           <div>
@@ -141,7 +141,7 @@
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>Confirme sua senha</mat-label>
-          <span matTextPrefix><fa-icon [icon]="faLock"></fa-icon> &nbsp;</span>
+          <span matTextPrefix><fa-icon [icon]="faLock" /> &nbsp;</span>
           <input matInput
                  [type]="showConfirmPassword() ? 'text' : 'password'"
                  maxlength="20"
@@ -151,7 +151,7 @@
                   matSuffix
                   (click)="toggleShowConfirmPassword()"
                   [attr.aria-label]="'Hide password'">
-            <fa-icon [icon]="showConfirmPassword() ? faEyeSlash : faEye"></fa-icon>
+            <fa-icon [icon]="showConfirmPassword() ? faEyeSlash : faEye" />
           </button>
           @if (form.controls['confirmPassword'].touched && form.controls['confirmPassword'].invalid)
           {
@@ -177,7 +177,7 @@
               (click)="remove()"
               color="warn"
               [disabled]="loading()">
-        <fa-icon [icon]="faTrash"></fa-icon>
+        <fa-icon [icon]="faTrash" />
         <span> Apagar </span>
       </button>
       }
@@ -189,7 +189,7 @@
               (click)="save()"
               color="primary"
               [disabled]="loading()">
-        <fa-icon [icon]="faSave"></fa-icon>
+        <fa-icon [icon]="faSave" />
         <span> {{isEdit() ? 'Salvar alterações' : 'Salvar'}} </span>
       </button>
     </div>

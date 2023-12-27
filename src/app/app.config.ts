@@ -14,9 +14,10 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
     importProvidersFrom(HttpClientModule),
     {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AccessTokenInterceptor,
-      multi: true,
+        provide: HTTP_INTERCEPTORS,
+        useClass: AccessTokenInterceptor,
+        multi: true,
     },
-  ],
+    provideAnimations()
+],
 };

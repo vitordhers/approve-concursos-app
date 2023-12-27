@@ -3,7 +3,7 @@
           role="button"
           color="primary"
           (click)="navigateToAdd()">
-    <fa-icon [icon]="faAdd"></fa-icon>
+    <fa-icon [icon]="faAdd" />
     Criar
   </button>
   <h3 class="list-label">{{labels.pluralCapitalized}}</h3>
@@ -31,21 +31,21 @@
 
     <ng-container matColumnDef="id">
       <th mat-header-cell
-          *matHeaderCellDef> <fa-icon [icon]="faFingerprint"></fa-icon> Id </th>
+          *matHeaderCellDef> <fa-icon [icon]="faFingerprint" /> Id </th>
       <td mat-cell
           *matCellDef="let element"> {{element.id}} </td>
     </ng-container>
 
     <ng-container matColumnDef="name">
       <th mat-header-cell
-          *matHeaderCellDef> <fa-icon [icon]="faFont"></fa-icon> Nome </th>
+          *matHeaderCellDef> <fa-icon [icon]="faFont" /> Nome </th>
       <td mat-cell
           *matCellDef="let element"> {{element.name}} </td>
     </ng-container>
 
     <ng-container matColumnDef="updatedAt">
       <th mat-header-cell
-          *matHeaderCellDef> <fa-icon [icon]="faClock"></fa-icon>{{labels.defArticle === 'o' ? 'Atualizado' :
+          *matHeaderCellDef> <fa-icon [icon]="faClock" />{{labels.defArticle === 'o' ? 'Atualizado' :
         'Atualizada'}}</th>
       <td mat-cell
           *matCellDef="let element"> {{element.updatedDateTime | date:'short':'pt-BR'}} </td>
@@ -59,7 +59,7 @@
         <button mat-icon-button
                 [matMenuTriggerData]="{element: element}"
                 [matMenuTriggerFor]="menu">
-          <fa-icon [icon]="faBars"></fa-icon>
+          <fa-icon [icon]="faBars" />
         </button>
         <mat-menu #menu="matMenu">
           <ng-template matMenuContent
@@ -68,7 +68,7 @@
                     mat-menu-item>
               <button mat-button
                       color="primary">
-                <fa-icon [icon]="faPenToSquare"></fa-icon>
+                <fa-icon [icon]="faPenToSquare" />
                 Editar
               </button>
             </button>
@@ -77,7 +77,7 @@
                     (click)="remove(element)">
               <button mat-button
                       color="warn">
-                <fa-icon [icon]="faTrash"></fa-icon>
+                <fa-icon [icon]="faTrash" />
                 Excluir
               </button>
             </button>

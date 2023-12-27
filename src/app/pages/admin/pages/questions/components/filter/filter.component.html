@@ -39,7 +39,7 @@
         <mat-form-field appearance="outline">
           <mat-label>Nível de Escolaridade
           </mat-label>
-          <span matTextPrefix><fa-icon [icon]="faGraduationCap"></fa-icon>&nbsp;</span>
+          <span matTextPrefix><fa-icon [icon]="faGraduationCap" />&nbsp;</span>
           <mat-select formControlName="educationStage">
             <mat-option [value]="undefined">
               Não especificado
@@ -83,7 +83,7 @@
             <mat-form-field appearance="outline"
                             [formGroup]="subjectsFormArray.controls[i]">
               <mat-label>Quantidade</mat-label>
-              <span matTextPrefix><fa-icon [icon]="faHashtag"></fa-icon> &nbsp;</span>
+              <span matTextPrefix><fa-icon [icon]="faHashtag" /> &nbsp;</span>
               <input matInput
                      type="text"
                      inputmode="numeric"

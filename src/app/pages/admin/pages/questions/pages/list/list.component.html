@@ -7,14 +7,14 @@
           role="button"
           color="primary"
           (click)="navigateToAdd()">
-    <fa-icon [icon]="faAdd"></fa-icon>
+    <fa-icon [icon]="faAdd" />
     Criar
   </button>
   <button mat-raised-button
           role="button"
           color="accent"
           (click)="showFilters()">
-    <fa-icon [icon]="faFilter"></fa-icon>
+    <fa-icon [icon]="faFilter" />
     Adicionar filtros
   </button>
   <mat-form-field appearance="outline">
@@ -25,7 +25,7 @@
             mat-icon-button
             (click)="search()">
       <fa-icon [icon]="faMagnifyingGlass"
-               size="sm"></fa-icon>
+               size="sm" />
     </button>
   </mat-form-field>
 </div>
@@ -37,21 +37,21 @@
 
     <ng-container matColumnDef="id">
       <th mat-header-cell
-          *matHeaderCellDef> <fa-icon [icon]="faFingerprint"></fa-icon> Id </th>
+          *matHeaderCellDef> <fa-icon [icon]="faFingerprint" /> Id </th>
       <td mat-cell
           *matCellDef="let element"> {{element.id}} </td>
     </ng-container>
 
     <ng-container matColumnDef="code">
       <th mat-header-cell
-          *matHeaderCellDef> <fa-icon [icon]="faFont"></fa-icon> Código </th>
+          *matHeaderCellDef> <fa-icon [icon]="faFont" /> Código </th>
       <td mat-cell
           *matCellDef="let element"> {{element.code}} </td>
     </ng-container>
 
     <ng-container matColumnDef="updatedAt">
       <th mat-header-cell
-          *matHeaderCellDef> <fa-icon [icon]="faClock"></fa-icon>{{labels.defArticle === 'o' ? 'Atualizado' :
+          *matHeaderCellDef> <fa-icon [icon]="faClock" />{{labels.defArticle === 'o' ? 'Atualizado' :
         'Atualizada'}}</th>
       <td mat-cell
           *matCellDef="let element"> {{element.updatedDateTime | date:'short':'pt-BR'}} </td>
@@ -65,7 +65,7 @@
         <button mat-icon-button
                 [matMenuTriggerData]="{element: element}"
                 [matMenuTriggerFor]="menu">
-          <fa-icon [icon]="faBars"></fa-icon>
+          <fa-icon [icon]="faBars" />
         </button>
         <mat-menu #menu="matMenu">
           <ng-template matMenuContent
@@ -74,7 +74,7 @@
                     mat-menu-item>
               <button mat-button
                       color="primary">
-                <fa-icon [icon]="faPenToSquare"></fa-icon>
+                <fa-icon [icon]="faPenToSquare" />
                 Editar
               </button>
             </button>
@@ -83,7 +83,7 @@
                     (click)="remove(element)">
               <button mat-button
                       color="warn">
-                <fa-icon [icon]="faTrash"></fa-icon>
+                <fa-icon [icon]="faTrash" />
                 Excluir
               </button>
             </button>

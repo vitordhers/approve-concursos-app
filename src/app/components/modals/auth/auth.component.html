@@ -1,7 +1,7 @@
 <mat-toolbar class="toolbar"
              color="primary">
   <h3>
-    <fa-icon [icon]="toolbarIcon()"></fa-icon>
+    <fa-icon [icon]="toolbarIcon()" />
     {{toolbarTitle()}}
   </h3>
   @if (currentTabIndex() !== 1) {
@@ -9,12 +9,12 @@
   <button mat-icon-button
           type="button"
           (click)="setTabIndex(1)"><fa-icon
-             [icon]="currentTabIndex() === 0 ? faArrowRight : faArrowLeft"></fa-icon></button>
+             [icon]="currentTabIndex() === 0 ? faArrowRight : faArrowLeft" /></button>
   } @else {
   <button mat-icon-button
           tabindex="-1"
           type="button"
-          (click)="dismiss()"> <fa-icon [icon]="faXmark"></fa-icon></button>
+          (click)="dismiss()"> <fa-icon [icon]="faXmark" /></button>
   }
 </mat-toolbar>
 <main>
@@ -29,7 +29,7 @@
 
             <mat-form-field appearance="outline">
               <mat-label>Nome</mat-label>
-              <span matTextPrefix><fa-icon [icon]="faFont"></fa-icon> &nbsp;</span>
+              <span matTextPrefix><fa-icon [icon]="faFont" /> &nbsp;</span>
               <input matInput
                      type="text"
                      placeholder="Seu Nome Completo"
@@ -52,7 +52,7 @@
             </mat-form-field>
             <mat-form-field appearance="outline">
               <mat-label>E-mail</mat-label>
-              <span matTextPrefix><fa-icon [icon]="faEnvelope"></fa-icon> &nbsp;</span>
+              <span matTextPrefix><fa-icon [icon]="faEnvelope" /> &nbsp;</span>
               <input matInput
                      type="email"
                      placeholder="seu@email.com"
@@ -78,7 +78,7 @@
             </mat-form-field>
             <mat-form-field appearance="outline">
               <mat-label>CPF</mat-label>
-              <span matTextPrefix><fa-icon [icon]="faIdCard"></fa-icon> &nbsp;</span>
+              <span matTextPrefix><fa-icon [icon]="faIdCard" /> &nbsp;</span>
               <input matInput
                      type="text"
                      inputmode="numeric"
@@ -104,7 +104,7 @@
               <div>
                 <mat-form-field appearance="outline">
                   <mat-label>Senha</mat-label>
-                  <span matTextPrefix><fa-icon [icon]="faLock"></fa-icon> &nbsp;</span>
+                  <span matTextPrefix><fa-icon [icon]="faLock" /> &nbsp;</span>
                   <input matInput
                          [type]="showSignUpPassword() ? 'text' : 'password'"
                          maxlength="20"
@@ -115,7 +115,7 @@
                           matSuffix
                           (click)="toggleShowPassword('signup')"
                           [attr.aria-label]="'Hide password'">
-                    <fa-icon [icon]="showSignUpPassword() ? faEyeSlash : faEye"></fa-icon>
+                    <fa-icon [icon]="showSignUpPassword() ? faEyeSlash : faEye" />
                   </button>
                   @if (signUpForm.controls['password'].touched && signUpForm.controls['password'].invalid) {
                   <div>
@@ -135,7 +135,7 @@
               <div>
                 <mat-form-field appearance="outline">
                   <mat-label>Confirme sua senha</mat-label>
-                  <span matTextPrefix><fa-icon [icon]="faLock"></fa-icon> &nbsp;</span>
+                  <span matTextPrefix><fa-icon [icon]="faLock" /> &nbsp;</span>
                   <input matInput
                          [type]="showSignUpConfirmPassword() ? 'text' : 'password'"
                          maxlength="20"
@@ -146,7 +146,7 @@
                           matSuffix
                           (click)="toggleShowPassword('signupConfirm')"
                           [attr.aria-label]="'Hide password'">
-                    <fa-icon [icon]="showSignUpConfirmPassword() ? faEyeSlash : faEye"></fa-icon>
+                    <fa-icon [icon]="showSignUpConfirmPassword() ? faEyeSlash : faEye" />
                   </button>
                   @if (signUpForm.controls['confirmPassword'].touched && signUpForm.controls['confirmPassword'].invalid)
                   {
@@ -178,7 +178,7 @@
                     @if(signUpLoading()) {
                     <mat-spinner [diameter]="14"></mat-spinner> Cadastrando...
                     } @else {
-                    Cadastrar <fa-icon [icon]="faArrowRight"></fa-icon>
+                    Cadastrar <fa-icon [icon]="faArrowRight" />
                     }
                   </span>
                 </button>
@@ -194,7 +194,7 @@
         <form [formGroup]="signInForm">
           <mat-form-field appearance="outline">
             <mat-label>E-mail</mat-label>
-            <span matTextPrefix><fa-icon [icon]="faEnvelope"></fa-icon> &nbsp;</span>
+            <span matTextPrefix><fa-icon [icon]="faEnvelope" /> &nbsp;</span>
             <input matInput
                    type="email"
                    placeholder="seu@email.com"
@@ -221,7 +221,7 @@
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Senha</mat-label>
-            <span matTextPrefix><fa-icon [icon]="faLock"></fa-icon> &nbsp;</span>
+            <span matTextPrefix><fa-icon [icon]="faLock" /> &nbsp;</span>
             <input matInput
                    [type]="showSignInPassword() ? 'text' : 'password'"
                    maxlength="20"
@@ -232,7 +232,7 @@
                     matSuffix
                     (click)="toggleShowPassword('signin')"
                     [attr.aria-label]="'Hide password'">
-              <fa-icon [icon]="showSignInPassword() ? faEyeSlash : faEye"></fa-icon>
+              <fa-icon [icon]="showSignInPassword() ? faEyeSlash : faEye" />
             </button>
             @if (signInForm.controls['password'].touched && signInForm.controls['password'].invalid) {
             <div>
@@ -268,7 +268,7 @@
                   <mat-spinner [diameter]="14"></mat-spinner> Entrando...
                   } @else {
 
-                  Entrar <fa-icon [icon]="faArrowRight"></fa-icon>
+                  Entrar <fa-icon [icon]="faArrowRight" />
                   }
                 </span>
               </button>
@@ -289,7 +289,7 @@
           <form [formGroup]="passwordRecoverForm">
             <mat-form-field appearance="outline">
               <mat-label>E-mail</mat-label>
-              <span matTextPrefix><fa-icon [icon]="faEnvelope"></fa-icon> &nbsp;</span>
+              <span matTextPrefix><fa-icon [icon]="faEnvelope" /> &nbsp;</span>
               <input matInput
                      type="email"
                      placeholder="seu@email.com"
@@ -326,7 +326,7 @@
                     @if(recoverPasswordLoading()) {
                     <mat-spinner [diameter]="14"></mat-spinner> Enviando email...
                     } @else {
-                    Recuperar senha <fa-icon [icon]="faPaperPlane"></fa-icon>
+                    Recuperar senha <fa-icon [icon]="faPaperPlane" />
                     }
                   </span>
 

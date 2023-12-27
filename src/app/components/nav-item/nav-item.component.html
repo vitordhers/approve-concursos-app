@@ -28,7 +28,7 @@
                          [expanded]="!isSubsection || activatedUrl()">
       <mat-expansion-panel-header>
         <mat-panel-title [ngClass]="{'active': activatedUrl()}">
-          <fa-icon [icon]="icon"></fa-icon> &nbsp; {{title}}
+          <fa-icon [icon]="icon" /> &nbsp; {{title}}
         </mat-panel-title>
       </mat-expansion-panel-header>
       <mat-nav-list>
@@ -51,7 +51,7 @@
 
   <div matListItemTitle
        class="title-wrap">
-    <fa-icon [icon]="icon"></fa-icon> {{title}}
+    <fa-icon [icon]="icon" /> {{title}}
   </div>
   } @else {
   <mat-accordion>
@@ -59,7 +59,7 @@
                          hideToggle>
       <mat-expansion-panel-header>
         <mat-panel-title [ngClass]="{'active': activatedUrl()}">
-          <fa-icon [icon]="icon"></fa-icon> &nbsp; {{title}}
+          <fa-icon [icon]="icon" /> &nbsp; {{title}}
         </mat-panel-title>
       </mat-expansion-panel-header>
     </mat-expansion-panel>
@@ -80,7 +80,7 @@
             mat-icon-button
             (click)="action(search.value)">
       <fa-icon [icon]="icon"
-               size="sm"></fa-icon>
+               size="sm" />
     </button>
   </mat-form-field>
 </ng-template>

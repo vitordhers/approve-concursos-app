@@ -1,7 +1,7 @@
 <div class="add-edit-header">
   <button mat-icon-button
           (click)="navigateToList()">
-    <fa-icon [icon]="faArrowLeft"></fa-icon>
+    <fa-icon [icon]="faArrowLeft" />
   </button>
   <h3 class="list-label">{{isEdit() ? 'Editar' : 'Criar'}} {{labels.labelCapitalized}}</h3>
 </div>
@@ -9,13 +9,13 @@
   <div class="stats"
        *ngIf="updatedInstitution() as institution">
     <div class="stats-body">
-      <span><fa-icon [icon]="faFingerprint"></fa-icon>&nbsp;Id:</span>
+      <span><fa-icon [icon]="faFingerprint" />&nbsp;Id:</span>
       <span>{{institution.id}}</span>
 
-      <span><fa-icon [icon]="faClock"></fa-icon>&nbsp;Criado em:</span>
+      <span><fa-icon [icon]="faClock" />&nbsp;Criado em:</span>
       <span>{{institution.createdDateTime | date:'long':'pt-BR'}}</span>
       @if (institution.createdAt !== institution.updatedAt) {
-      <span><fa-icon [icon]="faClock"></fa-icon>&nbsp;Última edição em:</span>
+      <span><fa-icon [icon]="faClock" />&nbsp;Última edição em:</span>
       <span>{{institution.updatedDateTime | date:'long':'pt-BR'}}</span>
       }
     </div>
@@ -24,7 +24,7 @@
     <div class="form-field-pair-wrap">
       <mat-form-field appearance="outline">
         <mat-label>Nome</mat-label>
-        <span matTextPrefix><fa-icon [icon]="faFont"></fa-icon> &nbsp;</span>
+        <span matTextPrefix><fa-icon [icon]="faFont" /> &nbsp;</span>
         <input matInput
                type="text"
                placeholder="Nome d{{labels.defArticle}} {{labels.label}}"
@@ -46,7 +46,7 @@
       </mat-form-field>
     </div>
     <div class="form-field-full-wrap">
-      <h4><fa-icon [icon]="faImage"></fa-icon> Imagem d{{labels.defArticle}} {{labels.labelCapitalized}}</h4>
+      <h4><fa-icon [icon]="faImage" /> Imagem d{{labels.defArticle}} {{labels.labelCapitalized}}</h4>
       <app-file-uploader [imgSrc]="form.controls['img'].value"
                          [generateThumbnail]="true"
                          (emitPreview)="patchPreview($event)"></app-file-uploader>
@@ -59,7 +59,7 @@
               (click)="remove()"
               color="warn"
               [disabled]="loading()">
-        <fa-icon [icon]="faTrash"></fa-icon>
+        <fa-icon [icon]="faTrash" />
         <span> Apagar </span>
       </button>
       }
@@ -69,7 +69,7 @@
               (click)="save()"
               color="primary"
               [disabled]="loading()">
-        <fa-icon [icon]="faSave"></fa-icon>
+        <fa-icon [icon]="faSave" />
         <span> {{isEdit() ? 'Salvar alterações' : 'Salvar'}} </span>
       </button>
     </div>

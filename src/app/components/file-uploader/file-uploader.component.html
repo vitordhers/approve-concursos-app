@@ -9,7 +9,7 @@
        priority />
   <fa-icon class="upload-action"
            [ngClass]="{'displayed': imageHovered()}"
-           [icon]="imgSrc === 'assets/img/products/none.jpg' ? faCloudArrowUp : faRotateRight"></fa-icon>
+           [icon]="imgSrc === 'assets/img/products/none.jpg' ? faCloudArrowUp : faRotateRight" />
   @if(displayProgressBar()) {
   <mat-progress-bar mode="determinate"
                     [value]="progress()"></mat-progress-bar>

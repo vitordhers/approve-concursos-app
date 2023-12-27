@@ -80,7 +80,7 @@
                 [ngClass]="{'selected-solve': selectedIndex() === $index, 'selected-solved':(answerMap().get(question.id) === $index && answeredAt), 'correct': correctAnswer === $index}"
                 [matTooltip]="$index | alternativeTooltip:(answerMap().get(question.id) || selectedIndex()):correctAnswer"
                 matListItemIcon>
-            <fa-icon [icon]="$index | letterIndexToAplhabetIcon"></fa-icon>
+            <fa-icon [icon]="$index | letterIndexToAplhabetIcon" />
           </span>
           <p>
             {{alternative.statement}}
@@ -119,6 +119,7 @@
       Questão resolvida em {{answeredAtDate.toLocaleDateString('pt-br', localeDateStringOptions)}}
       }
     </p>
+    @if (answeredAtDate) {
     <div>
       <h4>
         <fa-icon [icon]="faCheckDouble" /> Gabarito
@@ -129,6 +130,7 @@
       <p>A questão <span class="code">{{question.code}}</span> não não possui gabarito</p>
       }
     </div>
+    }
     }
   </mat-card-actions>
 </mat-card>

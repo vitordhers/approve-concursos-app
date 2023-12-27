@@ -1,7 +1,7 @@
 <div class="add-edit-header">
   <button mat-icon-button
           (click)="navigateToList()">
-    <fa-icon [icon]="faArrowLeft"></fa-icon>
+    <fa-icon [icon]="faArrowLeft" />
   </button>
   <h3 class="list-label">{{isEdit() ? 'Editar' : 'Criar'}} {{labels.labelCapitalized}}</h3>
 </div>
@@ -9,14 +9,14 @@
   <div class="stats"
        *ngIf="updatedRecord() as record">
     <div class="stats-body">
-      <span><fa-icon [icon]="faFingerprint"></fa-icon>&nbsp;Id:</span>
+      <span><fa-icon [icon]="faFingerprint" />&nbsp;Id:</span>
       <span>{{record.id}}</span>
-      <span><fa-icon [icon]="faBarcode"></fa-icon>&nbsp;Código:</span>
+      <span><fa-icon [icon]="faBarcode" />&nbsp;Código:</span>
       <span>{{record.code}}</span>
-      <span><fa-icon [icon]="faClock"></fa-icon>&nbsp;Criado em:</span>
+      <span><fa-icon [icon]="faClock" />&nbsp;Criado em:</span>
       <span>{{record.createdDateTime | date:'long':'pt-BR'}}</span>
       @if (record.createdAt !== record.updatedAt) {
-      <span><fa-icon [icon]="faClock"></fa-icon>&nbsp;Última edição em:</span>
+      <span><fa-icon [icon]="faClock" />&nbsp;Última edição em:</span>
       <span>{{record.updatedDateTime | date:'long':'pt-BR'}}</span>
       }
     </div>
@@ -27,7 +27,7 @@
       <mat-form-field appearance="outline">
         <mat-label>Código
         </mat-label>
-        <span matTextPrefix><fa-icon [icon]="faBarcode"></fa-icon>&nbsp;</span>
+        <span matTextPrefix><fa-icon [icon]="faBarcode" />&nbsp;</span>
         <input matInput
                type="text"
                placeholder="ex.: CESPE-PF-2014"
@@ -52,7 +52,7 @@
         }
         <span matTextSuffix>
           <fa-icon [icon]="faCircleInfo"
-                   matTooltip="Esse campo só pode ser editado durante a criação d{{labels.defArticle}} {{labels.labelCapitalized}}. Ele só aceita letras, números e travessões (-). Ele também deve ter um valor único."></fa-icon>
+                   matTooltip="Esse campo só pode ser editado durante a criação d{{labels.defArticle}} {{labels.labelCapitalized}}. Ele só aceita letras, números e travessões (-). Ele também deve ter um valor único." />
         </span>
       </mat-form-field>
     </div>
@@ -60,7 +60,7 @@
     <div class="form-field-full-wrap">
       <mat-form-field appearance="outline">
         <mat-label>Enunciado</mat-label>
-        <span matTextPrefix><fa-icon [icon]="faAlignJustify"></fa-icon> &nbsp;</span>
+        <span matTextPrefix><fa-icon [icon]="faAlignJustify" /> &nbsp;</span>
         <textarea matInput
                   type="text"
                   placeholder="ex.: Para se calcular a altura de uma torre, utilizou-se o seguinte procedimento ilustrado..."
@@ -83,13 +83,13 @@
       </mat-form-field>
     </div>
     <div class="form-field-full-wrap center">
-      <h4><fa-icon [icon]="faImage"></fa-icon> Ilustração d{{labels.defArticle}} {{labels.labelCapitalized}}</h4>
+      <h4><fa-icon [icon]="faImage" /> Ilustração d{{labels.defArticle}} {{labels.labelCapitalized}}</h4>
       <app-file-uploader [imgSrc]="form.controls['illustration'].value"
                          [generateThumbnail]="true"
                          (emitPreview)="patchPreview($event)"></app-file-uploader>
     </div>
     <div class="form-field-full-wrap">
-      <h4><fa-icon [icon]="faListUl"></fa-icon> Alternativas</h4>
+      <h4><fa-icon [icon]="faListUl" /> Alternativas</h4>
       <mat-radio-group formControlName="correctIndex">
         <div class="alternatives"
              formArrayName="alternatives">
@@ -99,7 +99,7 @@
             <mat-label>Alternativa {{$index | letterIndexToAplhabetChar}}
             </mat-label>
             <span matTextPrefix>
-              <fa-icon [icon]="$index | letterIndexToAplhabetIcon"></fa-icon>
+              <fa-icon [icon]="$index | letterIndexToAplhabetIcon" />
               <mat-radio-button [value]="$index"
                                 matTooltip="Clique aqui para escolher esta alternativa como correta"></mat-radio-button>
             </span>
@@ -127,7 +127,7 @@
                       (click)="removeAlternative($index)"
                       matTooltip="Remover alternativa"
                       color="warn">
-                <fa-icon [icon]="faCircleMinus"></fa-icon>
+                <fa-icon [icon]="faCircleMinus" />
               </button>
             </span>
           </mat-form-field>
@@ -167,7 +167,7 @@
                   (click)="pushNewAlternative()"
                   matTooltip="Adicionar alternativa"
                   color="primary">
-            <fa-icon [icon]="!form.controls['alternatives'].length ? faCirclePlus : faCircleCheck"></fa-icon>
+            <fa-icon [icon]="!form.controls['alternatives'].length ? faCirclePlus : faCircleCheck" />
           </button>
           }
         </span>
@@ -205,7 +205,7 @@
       <mat-form-field appearance="outline">
         <mat-label>Nível de Escolaridade
         </mat-label>
-        <span matTextPrefix><fa-icon [icon]="faGraduationCap"></fa-icon>&nbsp;</span>
+        <span matTextPrefix><fa-icon [icon]="faGraduationCap" />&nbsp;</span>
         <mat-select formControlName="educationStage">
           <mat-option [value]="undefined">
             Não especificado
@@ -222,7 +222,7 @@
                             [required]="true" />
       <mat-form-field appearance="outline">
         <mat-label>Prova</mat-label>
-        <span matTextPrefix><fa-icon [icon]="faListOl"></fa-icon>&nbsp;&nbsp;</span>
+        <span matTextPrefix><fa-icon [icon]="faListOl" />&nbsp;&nbsp;</span>
         <input type="text"
                matInput
                formControlName="examId"
@@ -257,7 +257,7 @@
               (click)="remove()"
               color="warn"
               [disabled]="loading()">
-        <fa-icon [icon]="faTrash"></fa-icon>
+        <fa-icon [icon]="faTrash" />
         <span> Apagar </span>
       </button>
       }
@@ -267,7 +267,7 @@
               (click)="save()"
               color="primary"
               [disabled]="loading()">
-        <fa-icon [icon]="faSave"></fa-icon>
+        <fa-icon [icon]="faSave" />
         <span> {{isEdit() ? 'Salvar alterações' : 'Salvar'}} </span>
       </button>
     </div>
