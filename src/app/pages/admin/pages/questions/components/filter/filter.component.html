@@ -5,7 +5,7 @@
     <form [formGroup]="firstFormGroup">
       <ng-template matStepLabel>Filtro</ng-template>
       <div class="form-field-pair-wrap">
-        <div
+        <div class="padded"
              [ngClass]="{'form-field-pair-wrap': !!firstFormGroup.controls['boardIds'].value.length, 'form-field-full-wrap': !firstFormGroup.controls['boardIds'].value.length}">
           @if (firstFormGroup.controls['boardIds'].value.length) {
           <div>
@@ -22,13 +22,16 @@
             </mat-chip-listbox>
           </div>
           }
-          <app-board-selector (selectedEmitter)="onSelectedBoard($event)"
-                              [clear]="clearBoardSelector" />
+          <div class="padded">
+            <app-board-selector (selectedEmitter)="onSelectedBoard($event)"
+                                [clear]="clearBoardSelector" />
+          </div>
         </div>
         <div class="form-field-pair-wrap">
           <app-year-selector [year]="firstFormGroup.controls['year'].value"
                              (selectedEmitter)="onYearSelected($event)" />
-          <mat-checkbox (change)="checkStartingYear($event.checked)">
+          <mat-checkbox color="primary"
+                        (change)="checkStartingYear($event.checked)">
             Procurar questões a partir desse ano
           </mat-checkbox>
         </div>
@@ -64,9 +67,7 @@
     <div class="subjects-table-wrap">
       <table mat-table
              [dataSource]="dataSource()"
-             class="mat-elevation-z8">
-
-
+             class="mat-elevation-z0">
         <ng-container matColumnDef="name">
           <th mat-header-cell
               *matHeaderCellDef> Nome </th>
@@ -119,6 +120,10 @@
             *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
     </div>
+    } @else {
+    <div>
+      Não Foram encontradas disciplinas para os filtros aplicados
+    </div>
     }
     <div>
       <button mat-button
@@ -126,7 +131,8 @@
         <fa-icon [icon]="faArrowLeft" />
         Voltar</button>
       <button mat-button
-              matStepperNext>Continuar
+              matStepperNext
+              [disabled]="dataSource().length === 0">Continuar
         <fa-icon [icon]="faArrowRight" /></button>
     </div>
   </mat-step>
@@ -140,7 +146,10 @@
         <fa-icon [icon]="faArrowLeft" />
         Voltar</button>
       <button mat-button
-              (click)="filter()">Confirmar</button>
+              (click)="filter()">
+        Confirmar
+        <fa-icon [icon]="faCircleCheck" />
+      </button>
     </div>
   </mat-step>
 </mat-stepper>

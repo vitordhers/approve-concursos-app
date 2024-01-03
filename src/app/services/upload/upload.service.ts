@@ -24,16 +24,13 @@ export class UploadService {
   constructor(private http: HttpClient) {}
 
   uploadImageAndThumbnail(
-    imgPreviewData: ImgUploadPreview,
-    subfolder: string
+    imgPreviewData: ImgUploadPreview
   ): Observable<HttpEvent<FormattedResponse<UploadedImg>>> {
     return this.ImgPreviewToBlob(imgPreviewData)
       .pipe(
         switchMap(([imageBlob, thumbnailBlob]) => {
           const formData = new FormData();
           if (!imageBlob && !thumbnailBlob) return EMPTY;
-
-          formData.append('subfolder', subfolder);
 
           if (imageBlob) {
             formData.append('image', imageBlob);

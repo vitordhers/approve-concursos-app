@@ -30,7 +30,7 @@
   </mat-form-field>
 </div>
 @if (loadedQuestions()?.length) {
-<div class="table-wrap">
+<div class="table-wrap scrollable">
   <table mat-table
          [dataSource]="loadedQuestions() || []"
          class="mat-elevation-z0">

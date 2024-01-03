@@ -19,7 +19,6 @@ import {
   EMPTY,
   Subject,
   combineLatest,
-  of,
   switchMap,
   takeUntil,
 } from 'rxjs';
@@ -27,7 +26,6 @@ import { QuestionnaireComponent } from '../../components/questionnaire/questionn
 import { QuestionsService } from '../../services/questions.service';
 import { FilterType } from '../../shared/enums/filter-type.enum';
 import { Question } from '../../models/question.model';
-import { PageEvent } from '@angular/material/paginator';
 import { ExamsService } from '../../services/exams.service';
 
 @Component({

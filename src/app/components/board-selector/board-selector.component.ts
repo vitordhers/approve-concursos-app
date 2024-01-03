@@ -57,9 +57,10 @@ import { cloneDeep } from 'lodash';
   styleUrl: './board-selector.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BoardSelectorComponent implements OnInit, OnDestroy {
+export class BoardSelectorComponent implements OnInit, OnChanges, OnDestroy {
   @Input() required = false;
-  @Input() loadValue?: Signal<Board | string | undefined>;
+  @Input() disabled = false;
+  @Input() loadValue?: Board | string;
   @Input() markAsTouched?: Signal<boolean>;
   @Output() selectedEmitter = new EventEmitter<Board>();
   @Input() clear?: Signal<boolean>;
@@ -73,21 +74,6 @@ export class BoardSelectorComponent implements OnInit, OnDestroy {
       this.formControl.markAsUntouched();
     }
     this.cd.detectChanges();
-  });
-
-  private loadValueEffect = effect(async () => {
-    if (!this.loadValue) return;
-    let loadedValue = this.loadValue();
-    if (!loadedValue) return;
-    if (typeof loadedValue === 'string') {
-      const loadedResult = await firstValueFrom(
-        this.boardService.getOne(loadedValue)
-      );
-      if (!loadedResult) return;
-      loadedValue = loadedResult;
-    }
-
-    this.formControl.patchValue(loadedValue, { emitEvent: false });
   });
 
   private clearEffect = effect(() => {
@@ -118,8 +104,25 @@ export class BoardSelectorComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    if (this.disabled) {
+      this.formControl.disable();
+    }
     if (!this.required) return;
     this.formControl.setValidators([Validators.required]);
+  }
+
+  async ngOnChanges(changes: SimpleChanges) {
+    if (!changes['loadValue']) return;
+    let loadedValue = changes['loadValue'].currentValue;
+    if (!loadedValue) return;
+    if (typeof loadedValue !== 'string') return;
+    const loadedResult = await firstValueFrom(
+      this.boardService.getOne(loadedValue)
+    );
+    if (!loadedResult) return;
+    loadedValue = loadedResult;
+
+    this.formControl.patchValue(loadedValue, { emitEvent: false });
   }
 
   displayFn = displayNameFn;
@@ -132,7 +135,6 @@ export class BoardSelectorComponent implements OnInit, OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
     this.touchedEffect.destroy();
-    this.loadValueEffect.destroy();
     this.clearEffect.destroy();
   }
 }

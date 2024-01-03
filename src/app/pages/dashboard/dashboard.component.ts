@@ -35,6 +35,7 @@ import {
   faListOl,
   faListUl,
   faSheetPlastic,
+  faFileExcel,
 } from '@fortawesome/free-solid-svg-icons';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { MatInputModule } from '@angular/material/input';
@@ -133,6 +134,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
               isSubsection: true,
               action: () => {
                 this.router.navigate(['painel', 'admin', 'questoes', 'criar']);
+              },
+            },
+            {
+              title: 'Adicionar com Excel',
+              type: NavSectionType.LINK,
+              uri: '/painel/admin/questoes/adicionar-por-excel',
+              icon: faFileExcel,
+              isSubsection: true,
+              action: () => {
+                this.router.navigate(['painel', 'admin', 'questoes', 'adicionar-por-excel']);
               },
             },
             {

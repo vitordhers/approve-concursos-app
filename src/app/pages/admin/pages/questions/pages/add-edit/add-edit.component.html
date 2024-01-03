@@ -1,275 +1,277 @@
-<div class="add-edit-header">
-  <button mat-icon-button
-          (click)="navigateToList()">
-    <fa-icon [icon]="faArrowLeft" />
-  </button>
-  <h3 class="list-label">{{isEdit() ? 'Editar' : 'Criar'}} {{labels.labelCapitalized}}</h3>
-</div>
-<div class="add-edit-body">
-  <div class="stats"
-       *ngIf="updatedRecord() as record">
-    <div class="stats-body">
-      <span><fa-icon [icon]="faFingerprint" />&nbsp;Id:</span>
-      <span>{{record.id}}</span>
-      <span><fa-icon [icon]="faBarcode" />&nbsp;Código:</span>
-      <span>{{record.code}}</span>
-      <span><fa-icon [icon]="faClock" />&nbsp;Criado em:</span>
-      <span>{{record.createdDateTime | date:'long':'pt-BR'}}</span>
-      @if (record.createdAt !== record.updatedAt) {
-      <span><fa-icon [icon]="faClock" />&nbsp;Última edição em:</span>
-      <span>{{record.updatedDateTime | date:'long':'pt-BR'}}</span>
-      }
-    </div>
+<div class="page">
+  <div class="add-edit-header">
+    <button mat-icon-button
+            (click)="navigateToList()">
+      <fa-icon [icon]="faArrowLeft" />
+    </button>
+    <h3 class="list-label">{{isEdit() ? 'Editar' : 'Criar'}} {{labels.labelCapitalized}}</h3>
   </div>
-  <form [formGroup]="form">
-    @if (!isEdit()) {
-    <div class="form-field-full-wrap">
-      <mat-form-field appearance="outline">
-        <mat-label>Código
-        </mat-label>
-        <span matTextPrefix><fa-icon [icon]="faBarcode" />&nbsp;</span>
-        <input matInput
-               type="text"
-               placeholder="ex.: CESPE-PF-2014"
-               maxlength="50"
-               formControlName="code"
-               appLettersNumbersAndDashOnly>
-        @if (form.controls['code'].touched && form.controls['code'].invalid) {
-        <div>
-          @if (form.controls['code'].hasError('codeTaken')) {
-          <mat-error>Este código já foi registrado</mat-error>
-          }
-          @if (form.controls['code'].hasError('required')) {
-          <mat-error>O código é obrigatório</mat-error>
-          }
-          @if (form.controls['code'].hasError('minlength')) {
-          <mat-error>O código deve ter pelo menos 5 caracteres</mat-error>
-          }
-          @if (form.controls['code'].hasError('maxlength')) {
-          <mat-error>O código deve ter até 50 caracteres</mat-error>
-          }
-        </div>
-        }
-        <span matTextSuffix>
-          <fa-icon [icon]="faCircleInfo"
-                   matTooltip="Esse campo só pode ser editado durante a criação d{{labels.defArticle}} {{labels.labelCapitalized}}. Ele só aceita letras, números e travessões (-). Ele também deve ter um valor único." />
-        </span>
-      </mat-form-field>
-    </div>
-    }
-    <div class="form-field-full-wrap">
-      <mat-form-field appearance="outline">
-        <mat-label>Enunciado</mat-label>
-        <span matTextPrefix><fa-icon [icon]="faAlignJustify" /> &nbsp;</span>
-        <textarea matInput
-                  type="text"
-                  placeholder="ex.: Para se calcular a altura de uma torre, utilizou-se o seguinte procedimento ilustrado..."
-                  maxlength="5000"
-                  formControlName="prompt">
-        </textarea>
-        @if (form.controls['prompt'].touched && form.controls['prompt'].invalid) {
-        <div>
-          @if (form.controls['prompt'].hasError('required')) {
-          <mat-error>O enunciado é obrigatório</mat-error>
-          }
-          @if (form.controls['prompt'].hasError('minlength')) {
-          <mat-error>O enunciado deve ter pelo menos 5 caracteres</mat-error>
-          }
-          @if (form.controls['prompt'].hasError('maxlength')) {
-          <mat-error>O enunciado deve ter até 5000 caracteres</mat-error>
-          }
-        </div>
-        }
-      </mat-form-field>
-    </div>
-    <div class="form-field-full-wrap center">
-      <h4><fa-icon [icon]="faImage" /> Ilustração d{{labels.defArticle}} {{labels.labelCapitalized}}</h4>
-      <app-file-uploader [imgSrc]="form.controls['illustration'].value"
-                         [generateThumbnail]="true"
-                         (emitPreview)="patchPreview($event)" />
-    </div>
-    <div class="form-field-full-wrap">
-      <h4><fa-icon [icon]="faListUl" /> Alternativas</h4>
-      <mat-radio-group formControlName="correctIndex">
-        <div class="alternatives"
-             formArrayName="alternatives">
-          @for (altControl of form.controls['alternatives'].controls; track $index) {
-          <mat-form-field appearance="outline"
-                          [formGroup]="altControl">
-            <mat-label>Alternativa {{$index | letterIndexToAplhabetChar}}
-            </mat-label>
-            <span matTextPrefix>
-              <fa-icon [icon]="$index | letterIndexToAplhabetIcon" />
-              <mat-radio-button [value]="$index"
-                                matTooltip="Clique aqui para escolher esta alternativa como correta"></mat-radio-button>
-            </span>
-            <textarea matInput
-                      type="text"
-                      placeholder="ex.: 4√3"
-                      maxlength="1000"
-                      formControlName="statement">
-          </textarea>
-            @if (altControl.controls['statement'].touched && altControl.controls['statement'].invalid) {
-            <div>
-              @if (altControl.controls['statement'].hasError('required')) {
-              <mat-error>A alternativa deve ter uma afirmativa</mat-error>
-              }
-              @if (altControl.controls['statement'].hasError('minlength')) {
-              <mat-error>A alternativa deve ter pelo menos 1 carácter</mat-error>
-              }
-              @if (altControl.controls['statement'].hasError('maxlength')) {
-              <mat-error>A alternativa deve ter até 1000 caracteres</mat-error>
-              }
-            </div>
-            }
-            <span matTextSuffix>
-              <button mat-icon-button
-                      (click)="removeAlternative($index)"
-                      matTooltip="Remover alternativa"
-                      color="warn">
-                <fa-icon [icon]="faCircleMinus" />
-              </button>
-            </span>
-          </mat-form-field>
-          }
-        </div>
-      </mat-radio-group>
-      @if (form.controls['alternatives'].touched && form.controls['alternatives'].invalid) {
-      <div>
-        @if (form.controls['alternatives'].hasError('atLeastTwo')) {
-        <mat-error>A questão deve ter pelo menos 2 alternativas</mat-error>
+  <div class="add-edit-body">
+    <div class="stats"
+         *ngIf="updatedRecord() as record">
+      <div class="stats-body">
+        <span><fa-icon [icon]="faFingerprint" />&nbsp;Id:</span>
+        <span>{{record.id}}</span>
+        <span><fa-icon [icon]="faBarcode" />&nbsp;Código:</span>
+        <span>{{record.code}}</span>
+        <span><fa-icon [icon]="faClock" />&nbsp;Criado em:</span>
+        <span>{{record.createdDateTime | date:'long':'pt-BR'}}</span>
+        @if (record.createdAt !== record.updatedAt) {
+        <span><fa-icon [icon]="faClock" />&nbsp;Última edição em:</span>
+        <span>{{record.updatedDateTime | date:'long':'pt-BR'}}</span>
         }
       </div>
-      }
-      <mat-form-field appearance="outline">
-        <mat-label>Nova alternativa
-        </mat-label>
-        <textarea matInput
-                  type="text"
-                  placeholder="Afirmação da nova alternativa"
-                  maxlength="1000"
-                  [formControl]="insertAlternativeStatementControl">
-        </textarea>
-        @if (insertAlternativeStatementControl.touched && insertAlternativeStatementControl.invalid) {
-        <div>
-          @if (insertAlternativeStatementControl.hasError('minlength')) {
-          <mat-error>A afirmativa deve ter pelo menos 1 carácter</mat-error>
+    </div>
+    <form [formGroup]="form">
+      @if (!isEdit()) {
+      <div class="form-field-full-wrap">
+        <mat-form-field appearance="outline">
+          <mat-label>Código
+          </mat-label>
+          <span matTextPrefix><fa-icon [icon]="faBarcode" />&nbsp;</span>
+          <input matInput
+                 type="text"
+                 placeholder="ex.: CESPE-PF-2014"
+                 maxlength="50"
+                 formControlName="code"
+                 appLettersNumbersAndDashOnly>
+          @if (form.controls['code'].touched && form.controls['code'].invalid) {
+          <div>
+            @if (form.controls['code'].hasError('codeTaken')) {
+            <mat-error>Este código já foi registrado</mat-error>
+            }
+            @if (form.controls['code'].hasError('required')) {
+            <mat-error>O código é obrigatório</mat-error>
+            }
+            @if (form.controls['code'].hasError('minlength')) {
+            <mat-error>O código deve ter pelo menos 5 caracteres</mat-error>
+            }
+            @if (form.controls['code'].hasError('maxlength')) {
+            <mat-error>O código deve ter até 50 caracteres</mat-error>
+            }
+          </div>
           }
-          @if (insertAlternativeStatementControl.hasError('maxlength')) {
-          <mat-error>A afirmativa deve ter até 1000 caracteres</mat-error>
+          <span matTextSuffix>
+            <fa-icon [icon]="faCircleInfo"
+                     matTooltip="Esse campo só pode ser editado durante a criação d{{labels.defArticle}} {{labels.labelCapitalized}}. Ele só aceita letras, números e travessões (-). Ele também deve ter um valor único." />
+          </span>
+        </mat-form-field>
+      </div>
+      }
+      <div class="form-field-full-wrap">
+        <mat-form-field appearance="outline">
+          <mat-label>Enunciado</mat-label>
+          <span matTextPrefix><fa-icon [icon]="faAlignJustify" /> &nbsp;</span>
+          <textarea matInput
+                    type="text"
+                    placeholder="ex.: Para se calcular a altura de uma torre, utilizou-se o seguinte procedimento ilustrado..."
+                    maxlength="5000"
+                    formControlName="prompt">
+          </textarea>
+          @if (form.controls['prompt'].touched && form.controls['prompt'].invalid) {
+          <div>
+            @if (form.controls['prompt'].hasError('required')) {
+            <mat-error>O enunciado é obrigatório</mat-error>
+            }
+            @if (form.controls['prompt'].hasError('minlength')) {
+            <mat-error>O enunciado deve ter pelo menos 5 caracteres</mat-error>
+            }
+            @if (form.controls['prompt'].hasError('maxlength')) {
+            <mat-error>O enunciado deve ter até 5000 caracteres</mat-error>
+            }
+          </div>
+          }
+        </mat-form-field>
+      </div>
+      <div class="form-field-full-wrap center">
+        <h4><fa-icon [icon]="faImage" /> Ilustração d{{labels.defArticle}} {{labels.labelCapitalized}}</h4>
+        <app-file-uploader [imgSrc]="form.controls['illustration'].value"
+                           [generateThumbnail]="true"
+                           (emitPreview)="patchPreview($event)" />
+      </div>
+      <div class="form-field-full-wrap">
+        <h4><fa-icon [icon]="faListUl" /> Alternativas</h4>
+        <mat-radio-group formControlName="correctIndex">
+          <div class="alternatives"
+               formArrayName="alternatives">
+            @for (altControl of form.controls['alternatives'].controls; track $index) {
+            <mat-form-field appearance="outline"
+                            [formGroup]="altControl">
+              <mat-label>Alternativa {{$index | letterIndexToAplhabetChar}}
+              </mat-label>
+              <span matTextPrefix>
+                <fa-icon [icon]="$index | letterIndexToAplhabetIcon" />
+                <mat-radio-button [value]="$index"
+                                  matTooltip="Clique aqui para escolher esta alternativa como correta"></mat-radio-button>
+              </span>
+              <textarea matInput
+                        type="text"
+                        placeholder="ex.: 4√3"
+                        maxlength="1000"
+                        formControlName="statement">
+            </textarea>
+              @if (altControl.controls['statement'].touched && altControl.controls['statement'].invalid) {
+              <div>
+                @if (altControl.controls['statement'].hasError('required')) {
+                <mat-error>A alternativa deve ter uma afirmativa</mat-error>
+                }
+                @if (altControl.controls['statement'].hasError('minlength')) {
+                <mat-error>A alternativa deve ter pelo menos 1 carácter</mat-error>
+                }
+                @if (altControl.controls['statement'].hasError('maxlength')) {
+                <mat-error>A alternativa deve ter até 1000 caracteres</mat-error>
+                }
+              </div>
+              }
+              <span matTextSuffix>
+                <button mat-icon-button
+                        (click)="removeAlternative($index)"
+                        matTooltip="Remover alternativa"
+                        color="warn">
+                  <fa-icon [icon]="faCircleMinus" />
+                </button>
+              </span>
+            </mat-form-field>
+            }
+          </div>
+        </mat-radio-group>
+        @if (form.controls['alternatives'].touched && form.controls['alternatives'].invalid) {
+        <div>
+          @if (form.controls['alternatives'].hasError('atLeastTwo')) {
+          <mat-error>A questão deve ter pelo menos 2 alternativas</mat-error>
           }
         </div>
         }
-        <span matTextSuffix>
-          @if (!form.controls['alternatives'].length || (insertAlternativeStatementControl.valid &&
-          insertAlternativeStatementControl.value !== undefined && insertAlternativeStatementControl.value !== '')) {
-          <button mat-icon-button
-                  (click)="pushNewAlternative()"
-                  matTooltip="Adicionar alternativa"
-                  color="primary">
-            <fa-icon [icon]="!form.controls['alternatives'].length ? faCirclePlus : faCircleCheck" />
-          </button>
+        <mat-form-field appearance="outline">
+          <mat-label>Nova alternativa
+          </mat-label>
+          <textarea matInput
+                    type="text"
+                    placeholder="Afirmação da nova alternativa"
+                    maxlength="1000"
+                    [formControl]="insertAlternativeStatementControl">
+          </textarea>
+          @if (insertAlternativeStatementControl.touched && insertAlternativeStatementControl.invalid) {
+          <div>
+            @if (insertAlternativeStatementControl.hasError('minlength')) {
+            <mat-error>A afirmativa deve ter pelo menos 1 carácter</mat-error>
+            }
+            @if (insertAlternativeStatementControl.hasError('maxlength')) {
+            <mat-error>A afirmativa deve ter até 1000 caracteres</mat-error>
+            }
+          </div>
           }
-        </span>
-      </mat-form-field>
-    </div>
-    <div class="form-field-full-wrap">
-      <mat-form-field appearance="outline">
-        <mat-label>Gabarito</mat-label>
-        <span matTextPrefix><fa-icon [icon]="faCheckDouble" /> &nbsp;</span>
-        <textarea matInput
-                  type="text"
-                  placeholder="ex.: Vamos analisar o seguinte esquema, note que se pegarmos a tangente de 60°, teremos..."
-                  maxlength="5000"
-                  formControlName="answerExplanation"
-                  required>
-        </textarea>
-        @if (form.controls['answerExplanation'].touched && form.controls['answerExplanation'].invalid) {
-        <div>
-          @if (form.controls['answerExplanation'].hasError('required')) {
-          <mat-error>O gabarito é obrigatório</mat-error>
+          <span matTextSuffix>
+            @if (!form.controls['alternatives'].length || (insertAlternativeStatementControl.valid &&
+            insertAlternativeStatementControl.value !== undefined && insertAlternativeStatementControl.value !== '')) {
+            <button mat-icon-button
+                    (click)="pushNewAlternative()"
+                    matTooltip="Adicionar alternativa"
+                    color="primary">
+              <fa-icon [icon]="!form.controls['alternatives'].length ? faCirclePlus : faCircleCheck" />
+            </button>
+            }
+          </span>
+        </mat-form-field>
+      </div>
+      <div class="form-field-full-wrap">
+        <mat-form-field appearance="outline">
+          <mat-label>Gabarito</mat-label>
+          <span matTextPrefix><fa-icon [icon]="faCheckDouble" /> &nbsp;</span>
+          <textarea matInput
+                    type="text"
+                    placeholder="ex.: Vamos analisar o seguinte esquema, note que se pegarmos a tangente de 60°, teremos..."
+                    maxlength="5000"
+                    formControlName="answerExplanation"
+                    required>
+          </textarea>
+          @if (form.controls['answerExplanation'].touched && form.controls['answerExplanation'].invalid) {
+          <div>
+            @if (form.controls['answerExplanation'].hasError('required')) {
+            <mat-error>O gabarito é obrigatório</mat-error>
+            }
+            @if (form.controls['answerExplanation'].hasError('minlength')) {
+            <mat-error>O gabarito deve ter pelo menos 5 caracteres</mat-error>
+            }
+            @if (form.controls['answerExplanation'].hasError('maxlength')) {
+            <mat-error>O gabarito deve ter até 5000 caracteres</mat-error>
+            }
+          </div>
           }
-          @if (form.controls['answerExplanation'].hasError('minlength')) {
-          <mat-error>O gabarito deve ter pelo menos 5 caracteres</mat-error>
-          }
-          @if (form.controls['answerExplanation'].hasError('maxlength')) {
-          <mat-error>O gabarito deve ter até 5000 caracteres</mat-error>
-          }
-        </div>
+        </mat-form-field>
+      </div>
+      <div class="form-field-pair-wrap">
+        <app-year-selector [year]="form.controls['year'].value"
+                           (selectedEmitter)="onYearSelected($event)" />
+        <mat-form-field appearance="outline">
+          <mat-label>Nível de Escolaridade
+          </mat-label>
+          <span matTextPrefix><fa-icon [icon]="faGraduationCap" />&nbsp;</span>
+          <mat-select formControlName="educationStage">
+            <mat-option [value]="undefined">
+              Não especificado
+            </mat-option>
+            @for (option of educationStageOptions; track option) {
+            <mat-option [value]="option.value">{{option.label}}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="form-field-four-wrap">
+        <app-subject-selector (selectedEmitter)="onSubjectSelected($event)"
+                              [loadValue]="form.controls['subjectId'].value"
+                              [required]="true" />
+        <mat-form-field appearance="outline">
+          <mat-label>Prova</mat-label>
+          <span matTextPrefix><fa-icon [icon]="faListOl" />&nbsp;&nbsp;</span>
+          <input type="text"
+                 matInput
+                 formControlName="examId"
+                 [matAutocomplete]="testAutocomplete">
+          <mat-autocomplete #testAutocomplete="matAutocomplete"
+                            [displayWith]="displayFn">
+            <!-- @for (record of searchedSubjects$ | async; track record) {
+            <mat-option [value]="record">
+              <mat-card class="autocomplete-card">
+                <mat-card-header>
+                  <img height="40"
+                       width="40"
+                       mat-card-avatar
+                       [ngSrc]="record.thumb ? (record.thumb | serverImgPipe ): 'assets/img/none.jpg'">
+                  <mat-card-title>{{record.name}}</mat-card-title>
+                </mat-card-header>
+              </mat-card>
+            </mat-option>
+            } -->
+          </mat-autocomplete>
+        </mat-form-field>
+        <app-institution-selector (selectedEmitter)="onInstitutionSelected($event)"
+                                  [loadValue]="form.controls['institutionId'].value" />
+        <app-board-selector (selectedEmitter)="onBoardSelected($event)"
+                            [loadValue]="form.controls['boardId'].value" />
+      </div>
+    </form>
+    <div class="add-edit-actions">
+      <div class="start-actions">
+        @if (isEdit()) {
+        <button mat-raised-button
+                (click)="remove()"
+                color="warn"
+                [disabled]="loading()">
+          <fa-icon [icon]="faTrash" />
+          <span> Apagar </span>
+        </button>
         }
-      </mat-form-field>
-    </div>
-    <div class="form-field-pair-wrap">
-      <app-year-selector [year]="form.controls['year'].value"
-                         (selectedEmitter)="onYearSelected($event)" />
-      <mat-form-field appearance="outline">
-        <mat-label>Nível de Escolaridade
-        </mat-label>
-        <span matTextPrefix><fa-icon [icon]="faGraduationCap" />&nbsp;</span>
-        <mat-select formControlName="educationStage">
-          <mat-option [value]="undefined">
-            Não especificado
-          </mat-option>
-          @for (option of educationStageOptions; track option) {
-          <mat-option [value]="option.value">{{option.label}}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-    </div>
-    <div class="form-field-four-wrap">
-      <app-subject-selector (selectedEmitter)="onSubjectSelected($event)"
-                            [loadValue]="loadSubjectValue"
-                            [required]="true" />
-      <mat-form-field appearance="outline">
-        <mat-label>Prova</mat-label>
-        <span matTextPrefix><fa-icon [icon]="faListOl" />&nbsp;&nbsp;</span>
-        <input type="text"
-               matInput
-               formControlName="examId"
-               [matAutocomplete]="testAutocomplete">
-        <mat-autocomplete #testAutocomplete="matAutocomplete"
-                          [displayWith]="displayFn">
-          <!-- @for (record of searchedSubjects$ | async; track record) {
-          <mat-option [value]="record">
-            <mat-card class="autocomplete-card">
-              <mat-card-header>
-                <img height="40"
-                     width="40"
-                     mat-card-avatar
-                     [ngSrc]="record.thumb ? (record.thumb | serverImgPipe ): 'assets/img/none.jpg'">
-                <mat-card-title>{{record.name}}</mat-card-title>
-              </mat-card-header>
-            </mat-card>
-          </mat-option>
-          } -->
-        </mat-autocomplete>
-      </mat-form-field>
-      <app-institution-selector (selectedEmitter)="onInstitutionSelected($event)"
-                                [loadValue]="loadInstitutionValue" />
-      <app-board-selector (selectedEmitter)="onBoardSelected($event)"
-                          [loadValue]="loadBoardValue" />
-    </div>
-  </form>
-  <div class="add-edit-actions">
-    <div class="start-actions">
-      @if (isEdit()) {
-      <button mat-raised-button
-              (click)="remove()"
-              color="warn"
-              [disabled]="loading()">
-        <fa-icon [icon]="faTrash" />
-        <span> Apagar </span>
-      </button>
-      }
-    </div>
-    <div class="end-actions">
-      <button mat-raised-button
-              (click)="save()"
-              color="primary"
-              [disabled]="loading()">
-        <fa-icon [icon]="faSave" />
-        <span> {{isEdit() ? 'Salvar alterações' : 'Salvar'}} </span>
-      </button>
+      </div>
+      <div class="end-actions">
+        <button mat-raised-button
+                (click)="save()"
+                color="primary"
+                [disabled]="loading()">
+          <fa-icon [icon]="faSave" />
+          <span> {{isEdit() ? 'Salvar alterações' : 'Salvar'}} </span>
+        </button>
+      </div>
     </div>
   </div>
 </div>

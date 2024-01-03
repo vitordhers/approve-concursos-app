@@ -5,8 +5,8 @@ export interface EditQuestionDto {
   prompt: string;
   correctIndex: number;
   subjectId: string;
-  answerExplanation: string;
   alternatives: Alternative[];
+  answerExplanation?: string;
   illustration?: string;
   year?: number;
   institutionId?: string;

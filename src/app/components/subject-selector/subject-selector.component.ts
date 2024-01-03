@@ -4,10 +4,12 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnChanges,
   OnDestroy,
   OnInit,
   Output,
   Signal,
+  SimpleChanges,
   effect,
 } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
@@ -54,9 +56,10 @@ import { SubjectAdminService } from '../../services/admin/subjects/subject.servi
   styleUrl: './subject-selector.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SubjectSelectorComponent implements OnInit, OnDestroy {
+export class SubjectSelectorComponent implements OnInit, OnChanges, OnDestroy {
   @Input() required = false;
-  @Input() loadValue?: Signal<Subject | string | undefined>;
+  @Input() disabled = false;
+  @Input() loadValue?: Subject | string;
   @Input() markAsTouched?: Signal<boolean>;
   @Output() selectedEmitter = new EventEmitter<Subject>();
 
@@ -69,21 +72,6 @@ export class SubjectSelectorComponent implements OnInit, OnDestroy {
       this.formControl.markAsUntouched();
     }
     this.cd.detectChanges();
-  });
-
-  private loadValueEffect = effect(async () => {
-    if (!this.loadValue) return;
-    let loadedValue = this.loadValue();
-    if (!loadedValue) return;
-    if (typeof loadedValue === 'string') {
-      const loadedResult = await firstValueFrom(
-        this.subjectService.getOne(loadedValue)
-      );
-      if (!loadedResult) return;
-      loadedValue = loadedResult;
-    }
-
-    this.formControl.patchValue(loadedValue, { emitEvent: false });
   });
 
   formControl = new FormControl<Subject | string | undefined>(undefined, {
@@ -108,8 +96,25 @@ export class SubjectSelectorComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    if (this.disabled) {
+      this.formControl.disable();
+    }
     if (!this.required) return;
     this.formControl.setValidators([Validators.required]);
+  }
+
+  async ngOnChanges(changes: SimpleChanges) {
+    if (!changes['loadValue']) return;
+    let loadedValue = changes['loadValue'].currentValue;
+    if (!loadedValue) return;
+    if (typeof loadedValue !== 'string') return;
+    const loadedResult = await firstValueFrom(
+      this.subjectService.getOne(loadedValue)
+    );
+    if (!loadedResult) return;
+    loadedValue = loadedResult;
+
+    this.formControl.patchValue(loadedValue, { emitEvent: false });
   }
 
   displayFn = displayNameFn;
@@ -118,7 +123,6 @@ export class SubjectSelectorComponent implements OnInit, OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
     this.touchedEffect.destroy();
-    this.loadValueEffect.destroy();
   }
 
   onOptionSelected(e: MatAutocompleteSelectedEvent) {

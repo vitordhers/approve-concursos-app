@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
+import { signedInGuard } from './shared/guards/signedIn.guard';
 
 export const routes: Routes = [
   {
@@ -164,6 +165,13 @@ export const routes: Routes = [
                         './pages/admin/pages/questions/pages/add-edit/add-edit.component'
                       ).then((c) => c.AddEditComponent),
                   },
+                  {
+                    path: 'adicionar-por-excel',
+                    loadComponent: () =>
+                      import(
+                        './pages/admin/pages/questions/pages/add-bulk/add-bulk.component'
+                      ).then((c) => c.AddBulkComponent),
+                  },
                 ],
               },
               {
@@ -264,6 +272,7 @@ export const routes: Routes = [
           { path: '', redirectTo: 'estudos#desempenho', pathMatch: 'full' },
         ],
         providers: [HttpClientModule],
+        canActivate: [signedInGuard],
       },
       {
         path: 'home',

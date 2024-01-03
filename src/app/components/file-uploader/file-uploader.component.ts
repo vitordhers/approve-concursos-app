@@ -88,10 +88,11 @@ export class FileUploaderComponent implements OnChanges, OnDestroy {
     this.fileInput?.nativeElement.click();
   }
 
-  previewImg(target?: any) {
-    if (!target) return;
-
+  previewImg(eventTarget: EventTarget | null) {
+    if (!eventTarget) return;
+    const target = eventTarget as HTMLInputElement;
     const fileList = target.files;
+    if (!fileList) return;
     const file = fileList[0];
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -142,23 +143,22 @@ export class FileUploaderComponent implements OnChanges, OnDestroy {
     return { image: this.imgSrc, thumbnail: this.thumbSrc };
   }
 
-  async upload(subfolder: string) {
-    if (!this.imgSrc || this.imgSrc.includes('uploads/'))
-      return { img: undefined, thumb: undefined };
+  async upload() {
+    if (!this.imgSrc || this.imgSrc.includes('uploads/')) return;
     const imgPreviewData: ImgUploadPreview = {
       imgSrc: this.imgSrc,
       thumbSrc: this.thumbSrc,
     };
-    const result = await this.uploadImage(imgPreviewData, subfolder);
+    const result = await this.uploadImage(imgPreviewData);
 
     return result;
   }
 
-  async uploadImage(imgPreviewData: ImgUploadPreview, subfolder: string) {
+  async uploadImage(imgPreviewData: ImgUploadPreview) {
     this.loading.set(true);
     return new Promise<UploadedImg>((resolve, reject) => {
       this.uploadService
-        .uploadImageAndThumbnail(imgPreviewData, subfolder)
+        .uploadImageAndThumbnail(imgPreviewData)
         .pipe(takeUntil(this.destroy$))
         .subscribe((event: HttpEvent<FormattedResponse<UploadedImg>>) => {
           this.loading.set(true);
@@ -191,7 +191,7 @@ export class FileUploaderComponent implements OnChanges, OnDestroy {
 
               fireToast(
                 'Imagem enviada com sucesso',
-                'Não esqueça de salvar para atualizar a imagem do produto',
+                'Não esqueça de salvar para atualizar a imagem',
                 'success'
               );
 

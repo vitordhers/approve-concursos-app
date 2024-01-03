@@ -156,10 +156,16 @@ export class AddEditComponent implements OnInit, OnDestroy {
     }
     const { name } = this.form.getRawValue();
 
-    return from(this.fileUploaderComponent.upload(Entity.SUBJECTS))
+    return from(this.fileUploaderComponent.upload())
       .pipe(
         switchMap((uploadedImg) => {
-          const { img, thumb } = uploadedImg;
+          let img: string | undefined;
+          let thumb: string | undefined;
+          if (uploadedImg) {
+            const { img: image, thumb: thumbnail } = uploadedImg;
+            img = image;
+            thumb = thumbnail;
+          }
 
           const updatedSubject = this.updatedSubject();
           if (!updatedSubject) {

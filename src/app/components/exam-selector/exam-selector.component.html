@@ -18,10 +18,9 @@
       <mat-option [value]="record">
         <mat-card class="autocomplete-card">
           <mat-card-header>
-            <img height="40"
-                 width="40"
-                 mat-card-avatar
-                 [ngSrc]="record.thumb ? (record.thumb | serverImg ): 'assets/img/none.jpg'">
+            @if (record.code) {
+            <mat-card-title><fa-icon [icon]="faBarcode" />&nbsp;{{record.code}}</mat-card-title>
+            }
             <mat-card-title>{{record.name}}</mat-card-title>
           </mat-card-header>
         </mat-card>

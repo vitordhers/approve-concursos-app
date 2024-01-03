@@ -137,8 +137,12 @@ app-nav-item {
 }
 
 .table-wrap {
-  max-height: calc(100% - 99.44px - 56px);
-  overflow-y: auto;
+  position: relative;
+  // max-height: calc(100% - 99.44px - 56px);
+  &.scrollable {
+    overflow-y: auto !important;
+    height: 100%;
+  }
 }
 
 .paginator-wrap {
@@ -186,4 +190,27 @@ img {
 .content-wrap {
   padding: 20px;
   color: #3b82f6;
+}
+
+.mat-drawer-content {
+  overflow: hidden !important;
+}
+
+.page {
+  height: calc(100vh - 67px);
+  overflow: auto;
+}
+
+.code {
+  display: block;
+  white-space: nowrap;
+  background-color: #c8c8c8;
+  padding: 5px 7.5px;
+  border-radius: 12px;
+}
+
+.selector {
+  .mdc-text-field--outlined.mdc-text-field--disabled .mdc-text-field__input {
+    color: rgba(0, 0, 0, 0.87);
+  }
 }

@@ -185,9 +185,10 @@ export class AddEditComponent implements OnInit, OnDestroy {
       validators: [Validators.required],
     }),
     alternatives: new FormArray<FormGroup<{ statement: FormControl<string> }>>(
-      []
+      [],
+      [CustomFormValidators.createAtLeastTwoValidator()]
     ),
-    answerExplanation: new FormControl<string>('', {
+    answerExplanation: new FormControl<string | undefined>('', {
       nonNullable: true,
       validators: [
         Validators.required,
@@ -225,15 +226,6 @@ export class AddEditComponent implements OnInit, OnDestroy {
   });
 
   updatedRecord: WritableSignal<Question | undefined> = signal(undefined);
-
-  loadSubjectValue: WritableSignal<Subject | string | undefined> =
-    signal(undefined);
-
-  loadBoardValue: WritableSignal<Board | string | undefined> =
-    signal(undefined);
-
-  loadInstitutionValue: WritableSignal<Institution | string | undefined> =
-    signal(undefined);
 
   isEdit = computed(() => !!this.updatedRecord());
 
@@ -280,7 +272,6 @@ export class AddEditComponent implements OnInit, OnDestroy {
             );
           }
           this.form.controls['subjectId'].patchValue(question.subjectId);
-          this.loadSubjectValue.set(question.subjectId);
           this.createAlternativesControls(
             this.form.controls['alternatives'],
             question.alternatives
@@ -288,16 +279,18 @@ export class AddEditComponent implements OnInit, OnDestroy {
 
           this.form.controls['correctIndex'].patchValue(question.correctIndex);
 
+          this.form.controls['answerExplanation'].patchValue(
+            question.answerExplanation
+          );
+
           this.form.controls['year'].patchValue(question.year);
           if (question.institutionId) {
             this.form.controls['institutionId'].patchValue(
               question.institutionId
             );
-            this.loadInstitutionValue.set(question.institutionId);
           }
           if (question.boardId) {
             this.form.controls['boardId'].patchValue(question.boardId);
-            this.loadBoardValue.set(question.boardId);
           }
           if (question.examId) {
             this.form.controls['examId'].patchValue(question.examId);
@@ -393,10 +386,14 @@ export class AddEditComponent implements OnInit, OnDestroy {
       educationStage,
     } = this.form.getRawValue();
 
-    return from(this.fileUploaderComponent.upload(Entity.QUESTIONS))
+    return from(this.fileUploaderComponent.upload())
       .pipe(
         switchMap((uploadedImg) => {
-          const { img } = uploadedImg;
+          let img: string | undefined;
+          if (uploadedImg) {
+            const { img: image } = uploadedImg;
+            img = image;
+          }
 
           const updatedRecord = this.updatedRecord();
           if (!updatedRecord) {
@@ -410,19 +407,22 @@ export class AddEditComponent implements OnInit, OnDestroy {
               answerExplanation,
               correctIndex,
               year: year || undefined,
-              institutionId:
-                institution && typeof institution !== 'string'
-                  ? institution.id || undefined
-                  : undefined,
-              boardId:
-                board && typeof board !== 'string'
-                  ? board.id || undefined
-                  : undefined,
-              examId:
-                exam && typeof exam !== 'string'
-                  ? exam.id || undefined
-                  : undefined,
               educationStage: educationStage || undefined,
+              institutionId: institution
+                ? typeof institution === 'string'
+                  ? institution
+                  : institution.id
+                : undefined,
+              boardId: board
+                ? typeof board === 'string'
+                  ? board
+                  : board.id
+                : undefined,
+              examId: exam
+                ? typeof exam === 'string'
+                  ? exam
+                  : exam.id
+                : undefined,
             };
             return this.questionService.add(addRecordDto);
           }
@@ -435,19 +435,22 @@ export class AddEditComponent implements OnInit, OnDestroy {
             answerExplanation,
             correctIndex,
             year: year || undefined,
-            institutionId:
-              institution && typeof institution !== 'string'
-                ? institution.id || undefined
-                : undefined,
-            boardId:
-              board && typeof board !== 'string'
-                ? board.id || undefined
-                : undefined,
-            examId:
-              exam && typeof exam !== 'string'
-                ? exam.id || undefined
-                : undefined,
             educationStage: educationStage || undefined,
+            institutionId: institution
+              ? typeof institution === 'string'
+                ? institution
+                : institution.id
+              : undefined,
+            boardId: board
+              ? typeof board === 'string'
+                ? board
+                : board.id
+              : undefined,
+            examId: exam
+              ? typeof exam === 'string'
+                ? exam
+                : exam.id
+              : undefined,
           };
 
           return this.questionService.edit(updatedRecord.id, editRecordDto);

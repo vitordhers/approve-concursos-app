@@ -6,7 +6,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { distinctUntilChanged, map, of, switchMap, tap } from 'rxjs';
 import { cloneDeep } from 'lodash';
@@ -18,13 +18,10 @@ import { BaseQuestion, Question } from '../../../models/question.model';
 import { AddQuestionDto } from './interfaces/add-question-dto.interface';
 import { EditQuestionDto } from './interfaces/edit-question-dto.interface';
 import { Relation } from '../../../shared/interfaces/relation.interface';
-import { BaseBoard, Board } from '../../../models/board.model';
-import {
-  BaseInstitution,
-  Institution,
-} from '../../../models/institution.model';
-import { BaseExam, Exam } from '../../../models/exam.model';
-import { BaseSubject, Subject } from '../../../models/subject.model';
+import { BaseBoard } from '../../../models/board.model';
+import { BaseInstitution } from '../../../models/institution.model';
+import { BaseExam } from '../../../models/exam.model';
+import { BaseSubject } from '../../../models/subject.model';
 import { Entity } from '../../../shared/enums/entity.enum';
 import { generateHash } from '../../../shared/functions/generate-hash.function';
 
@@ -128,10 +125,10 @@ export class QuestionsAdminService {
       record.prompt,
       record.correctIndex,
       record.subjectId,
-      record.answerExplanation,
       record.alternatives,
       record.createdAt,
       record.updatedAt,
+      record.answerExplanation,
       record.illustration,
       record.year,
       record.institutionId,
@@ -213,10 +210,18 @@ export class QuestionsAdminService {
     );
   }
 
-  validateCode(code: string) {
+  validateCode(code: string, timestamp: number) {
+    const headers = new HttpHeaders({
+      'Cache-Control':
+        'no-cache, no-store, must-revalidate, post-check=0, pre-check=0',
+      Pragma: 'no-cache',
+      Expires: '0',
+    });
+
     return this.http
       .get<FormattedResponse<{ valid: boolean }>>(
-        `${this.endpoint}/validate-code/${code}`
+        `${this.endpoint}/validate-code/${code}?t=${timestamp}`,
+        { headers }
       )
       .pipe(
         map((res) => (res.success && res.data ? res.data : { valid: false }))
@@ -275,6 +280,32 @@ export class QuestionsAdminService {
         res.success && res.data ? this.cacheRecords([res.data]) : undefined
       )
     );
+  }
+
+  addBulk(dtos: AddQuestionDto[]) {
+    return this.http
+      .post<FormattedResponse<Question[]>>(`${this.endpoint}/bulk`, dtos)
+      .pipe(
+        tap((res) =>
+          this.totalRecords.update((v) => {
+            if (!res.success || !res.data || !res.data.length) return v;
+            return v + res.data.length;
+          })
+        ),
+        map((res) =>
+          res.success && res.data && res.data.length
+            ? {
+                ...res,
+                data: res.data.map((data) => this.serializeRecord(data)),
+              }
+            : res
+        ),
+        tap((res) =>
+          res.success && res.data && res.data.length
+            ? this.cacheRecords(res.data)
+            : undefined
+        )
+      );
   }
 
   edit(id: string, dto: EditQuestionDto) {

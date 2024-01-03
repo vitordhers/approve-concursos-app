@@ -36,6 +36,7 @@ import {
   faArrowRight,
   faArrowLeft,
   faHashtag,
+  faCircleCheck,
 } from '@fortawesome/free-solid-svg-icons';
 import { EDUCATION_STAGE_OPTIONS } from '../../../../../../shared/constants/education-stage-options';
 import { MatSelectModule } from '@angular/material/select';
@@ -83,6 +84,7 @@ export class FilterComponent implements OnInit, OnDestroy {
   faArrowRight = faArrowRight;
   faArrowLeft = faArrowLeft;
   faHashtag = faHashtag;
+  faCircleCheck = faCircleCheck;
 
   educationStageOptions = EDUCATION_STAGE_OPTIONS;
 

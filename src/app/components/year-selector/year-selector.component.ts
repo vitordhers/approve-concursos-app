@@ -57,10 +57,11 @@ import {
 export class YearSelectorComponent implements OnInit, OnDestroy {
   maxYear = new Date();
 
+  @Input() disabled = false;
   @Input() year?: number;
   @Output() selectedEmitter = new EventEmitter<number>();
 
-  control = new FormControl<Moment | undefined>(undefined, {
+  formControl = new FormControl<Moment | undefined>(undefined, {
     nonNullable: true,
   });
 
@@ -70,13 +71,16 @@ export class YearSelectorComponent implements OnInit, OnDestroy {
   constructor() {}
 
   ngOnInit(): void {
+    if (this.disabled) {
+      this.formControl.disable();
+    }
     if (this.year) {
       const date = new Date(this.year, 0, 1);
       const momentDate = moment(date);
-      this.control.patchValue(momentDate);
+      this.formControl.patchValue(momentDate);
     }
 
-    this.control.valueChanges
+    this.formControl.valueChanges
       .pipe(takeUntil(this.destroy$), distinctUntilChanged())
       .subscribe((date) => {
         if (date && String(date?.year()).length === 4) {
@@ -89,7 +93,7 @@ export class YearSelectorComponent implements OnInit, OnDestroy {
     if (!this.datePicker) return;
     const date = new Date(event);
     const momentDate = moment(date);
-    this.control.patchValue(momentDate);
+    this.formControl.patchValue(momentDate);
     this.datePicker.close();
     this.selectedEmitter.emit(momentDate.year());
   }

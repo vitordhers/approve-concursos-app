@@ -172,7 +172,7 @@
                 <button type="button"
                         mat-raised-button
                         [disabled]="signUpLoading()"
-                        color="accent"
+                        color="primary"
                         (click)="signUp()">
                   <span class="button-content-wrap">
                     @if(signUpLoading()) {
@@ -261,7 +261,7 @@
                       mat-raised-button
                       [disabled]="signInLoading()"
                       (click)="signIn()"
-                      color="accent">
+                      color="primary">
                 <span class="button-content-wrap">
                   @if(signInLoading()) {
 
@@ -321,7 +321,7 @@
                 <button type="button"
                         mat-raised-button
                         [disabled]="recoverPasswordLoading()"
-                        color="accent">
+                        color="primary">
                   <span class="button-content-wrap">
                     @if(recoverPasswordLoading()) {
                     <mat-spinner [diameter]="14"></mat-spinner> Enviando email...

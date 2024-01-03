@@ -15,6 +15,8 @@ import { ModalService } from '../../services/modal.service';
 import { AuthComponent } from '../modals/auth/auth.component';
 import { DialogData } from '../modals/auth/interface/dialog-data.interface';
 import { fireToast } from '../../notification/functions/fire-toast.function';
+import { LogoComponent } from '../logo/logo.component';
+import { RouterModule } from '@angular/router';
 
 @Component({
   imports: [
@@ -23,6 +25,8 @@ import { fireToast } from '../../notification/functions/fire-toast.function';
     MatButtonModule,
     MatIconModule,
     FontAwesomeModule,
+    RouterModule,
+    LogoComponent
   ],
   selector: 'app-header',
   standalone: true,

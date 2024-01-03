@@ -14,10 +14,10 @@ export class Question extends BaseEntity implements BaseQuestion {
     public prompt: string,
     public correctIndex: number,
     public subjectId: string,
-    public answerExplanation: string,
     public alternatives: Alternative[],
     createdAt: number,
     updatedAt: number,
+    public answerExplanation?: string,
     public illustration?: string,
     public year?: number,
     public institutionId?: string,
@@ -40,9 +40,9 @@ export interface BaseQuestion extends BaseEntityInterface {
   code: string;
   prompt: string;
   subjectId: string;
-  answerExplanation: string;
   alternatives: Alternative[];
   correctIndex: number;
+  answerExplanation?: string;
   illustration?: string;
   year?: number;
   institutionId?: string;

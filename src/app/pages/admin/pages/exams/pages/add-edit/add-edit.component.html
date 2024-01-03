@@ -85,16 +85,15 @@
 
     </div>
     @if (type() === 1) {
-
     <div class="form-field-pair-wrap">
       <app-institution-selector (selectedEmitter)="onSelectInstitution($event)"
                                 [markAsTouched]="markInstitutionSelectorAsTouched"
                                 [required]="true"
-                                [loadValue]="loadInstitutionValue" />
+                                [loadValue]="form.controls['institutionId'].value" />
       <app-board-selector (selectedEmitter)="onSelectedBoard($event)"
                           [markAsTouched]="markBoardSelectorAsTouched"
                           [required]="true"
-                          [loadValue]="loadBoardValue" />
+                          [loadValue]="form.controls['boardId'].value" />
     </div>
     }
     <div class="form-field-full-wrap">

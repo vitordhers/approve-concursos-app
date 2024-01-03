@@ -7,7 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { environment } from '../../../../environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { distinctUntilChanged, map, of, switchMap, tap } from 'rxjs';
 import { FormattedResponse } from '../../../shared/interfaces/formatted-response.interface';
 import { PaginatedResponse } from '../../../shared/interfaces/paginated-response.interface';
@@ -151,10 +151,18 @@ export class ExamsAdminService {
     );
   }
 
-  validateCode(code: string) {
+  validateCode(code: string, timestamp: number) {
+    const headers = new HttpHeaders({
+      'Cache-Control':
+        'no-cache, no-store, must-revalidate, post-check=0, pre-check=0',
+      Pragma: 'no-cache',
+      Expires: '0',
+    });
+
     return this.http
       .get<FormattedResponse<{ valid: boolean }>>(
-        `${this.endpoint}/validate-code/${code}`
+        `${this.endpoint}/validate-code/${code}?t=${timestamp}`,
+        { headers }
       )
       .pipe(
         map((res) => (res.success && res.data ? res.data : { valid: false }))

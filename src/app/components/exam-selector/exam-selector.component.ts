@@ -4,7 +4,6 @@ import {
   Component,
   EventEmitter,
   Input,
-  OnChanges,
   OnDestroy,
   OnInit,
   Output,
@@ -24,7 +23,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatCardModule } from '@angular/material/card';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ServerImgPipe } from '../../shared/pipes/server-img.pipe';
-import { Institution } from '../../models/institution.model';
 import {
   EMPTY,
   Subject,
@@ -32,15 +30,15 @@ import {
   firstValueFrom,
   switchMap,
   takeUntil,
-  tap,
 } from 'rxjs';
-import { InstitutionAdminService } from '../../services/admin/institution/institution.service';
-import { displayNameFn } from '../../shared/functions/display-fn-selectors.function';
-import { institutionRecordLabels } from '../../shared/constants/institution-labels.const';
-import { cloneDeep } from 'lodash';
+import { displayCodeFn } from '../../shared/functions/display-fn-selectors.function';
+import { Exam } from '../../models/exam.model';
+import { assessmentExamRecordLabels } from '../../shared/constants/assessment-exam-labels.const';
+import { ExamsAdminService } from '../../services/admin/exams/exams.service';
+import { faBarcode } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
-  selector: 'app-institution-selector',
+  selector: 'app-exam-selector',
   standalone: true,
   imports: [
     CommonModule,
@@ -54,21 +52,20 @@ import { cloneDeep } from 'lodash';
     FontAwesomeModule,
     ServerImgPipe,
   ],
-  templateUrl: './institution-selector.component.html',
-  styleUrl: './institution-selector.component.scss',
+  templateUrl: './exam-selector.component.html',
+  styleUrl: './exam-selector.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class InstitutionSelectorComponent
-  implements OnInit, OnChanges, OnDestroy
-{
+export class ExamSelectorComponent implements OnInit, OnDestroy {
   @Input() required = false;
   @Input() disabled = false;
-  @Input() loadValue?: Institution | string;
-
+  @Input() loadValue?: Exam | string;
   @Input() markAsTouched?: Signal<boolean>;
-  @Output() selectedEmitter = new EventEmitter<Institution>();
+  @Output() selectedEmitter = new EventEmitter<Exam>();
+  @Input() clear?: Signal<boolean>;
 
   private destroy$ = new Subject<void>();
+
   private touchedEffect = effect(() => {
     if (this.markAsTouched && this.markAsTouched()) {
       this.formControl.markAsTouched();
@@ -78,24 +75,32 @@ export class InstitutionSelectorComponent
     this.cd.detectChanges();
   });
 
-  formControl = new FormControl<Institution | string | undefined>(undefined, {
+  private clearEffect = effect(() => {
+    if (!this.clear || !this.clear()) return;
+    this.formControl.reset();
+    this.cd.detectChanges();
+  });
+
+  formControl = new FormControl<Exam | string | undefined>(undefined, {
     nonNullable: true,
   });
 
-  labels = institutionRecordLabels;
+  labels = assessmentExamRecordLabels;
+
+  faBarcode = faBarcode;
 
   searchedRecords$ = this.formControl.valueChanges.pipe(
     takeUntil(this.destroy$),
     debounceTime(500),
     switchMap((value) =>
       value && typeof value === 'string' && value !== ''
-        ? this.institutionService.search(value)
+        ? this.examService.search(value)
         : EMPTY
     )
   );
 
   constructor(
-    private institutionService: InstitutionAdminService,
+    private examService: ExamsAdminService,
     private cd: ChangeDetectorRef
   ) {}
 
@@ -111,9 +116,10 @@ export class InstitutionSelectorComponent
     if (!changes['loadValue']) return;
     let loadedValue = changes['loadValue'].currentValue;
     if (!loadedValue) return;
+    console.log('@@@@@@@@@@@@@@@@@', loadedValue);
     if (typeof loadedValue !== 'string') return;
     const loadedResult = await firstValueFrom(
-      this.institutionService.getOne(loadedValue)
+      this.examService.getOne(loadedValue)
     );
     if (!loadedResult) return;
     loadedValue = loadedResult;
@@ -121,15 +127,16 @@ export class InstitutionSelectorComponent
     this.formControl.patchValue(loadedValue, { emitEvent: false });
   }
 
-  displayFn = displayNameFn;
+  displayFn = displayCodeFn;
+
+  onOptionSelected(e: MatAutocompleteSelectedEvent) {
+    this.selectedEmitter.next(e.option.value as Exam);
+  }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
     this.touchedEffect.destroy();
-  }
-
-  onOptionSelected(e: MatAutocompleteSelectedEvent) {
-    this.selectedEmitter.next(e.option.value as Institution);
+    this.clearEffect.destroy();
   }
 }

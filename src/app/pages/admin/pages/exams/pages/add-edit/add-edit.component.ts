@@ -187,12 +187,6 @@ export class AddEditComponent implements OnInit, OnDestroy {
   markInstitutionSelectorAsTouched = signal(false);
   markBoardSelectorAsTouched = signal(false);
 
-  loadBoardValue: WritableSignal<Board | string | undefined> =
-    signal(undefined);
-
-  loadInstitutionValue: WritableSignal<Institution | string | undefined> =
-    signal(undefined);
-
   addMockQuestionsFromGroup = new FormGroup({
     subjectId: new FormControl<string>('', {
       nonNullable: true,
@@ -264,7 +258,6 @@ export class AddEditComponent implements OnInit, OnDestroy {
 
           if (record.boardId) {
             this.form.controls['boardId'].patchValue(record.boardId);
-            this.loadBoardValue.set(record.boardId);
           }
         },
         error: (err) => {

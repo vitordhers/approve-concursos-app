@@ -1,6 +1,8 @@
-<mat-toolbar class="toolbar"
-             color="accent">
+<mat-toolbar class="toolbar">
   <div>
+    <a [routerLink]="['/home']">
+      <app-logo />
+    </a>
     <button mat-icon-button
             (click)="onSideNavButtonClick()">
       <mat-icon>menu</mat-icon>
@@ -16,3 +18,4 @@
   </button>
   }
 </mat-toolbar>
+<hr class="header-footer">
