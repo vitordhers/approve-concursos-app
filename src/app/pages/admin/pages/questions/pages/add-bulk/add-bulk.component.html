@@ -1,0 +1,463 @@
+<div class="wrap page">
+  <div class="list-wrap">
+
+    <div>
+      <h3 class="list-label"><fa-icon [icon]="faFileExcel" />&nbsp;Adicionar Questões através do Excel</h3>
+
+      <div class="action-buttons">
+        <button mat-fab
+                (click)="handleFileUpload()"
+                color="primary"
+                matTooltip="Clique para fazer upload da sua planilha">
+          <fa-icon [icon]="faFileUpload" />
+        </button>
+        @if (form.value.length && form.valid) {
+        <button mat-fab
+                (click)="saveQuestions()"
+                color="accent"
+                matTooltip="Clique para enviar questões">
+          <fa-icon [icon]="faSave" />
+        </button>
+        }
+      </div>
+      <div class="img-upload-section">
+        <input type="file"
+               class="image-input"
+               accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+               (change)="onFileChange($event.target)"
+               #fileInput />
+      </div>
+    </div>
+  </div>
+
+
+  @if (form.value.length) {
+  <div class="table-wrap">
+    <table mat-table
+           [dataSource]="form.value"
+           class="mat-elevation-z0">
+      <ng-container matColumnDef="no">
+        <th mat-header-cell
+            *matHeaderCellDef>
+          <div class="title">
+            <fa-icon [icon]="faHashtag" /> No.
+          </div>
+        </th>
+        <td mat-cell
+            *matCellDef="let i = index"> {{i + 1}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="code">
+        <th mat-header-cell
+            *matHeaderCellDef>
+          <div class="title">
+            <fa-icon [icon]="faBarcode" />
+            Código
+          </div>
+        </th>
+        <td mat-cell
+            *matCellDef="let item;let i = index">
+          <span class="code">
+            {{item.code}}
+          </span>
+          @if (form.controls[i].controls['code'].invalid) {
+          <div>
+            @if (form.controls[i].controls['code'].hasError('codeTaken')) {
+            <mat-error>
+              Este código já foi registrado
+            </mat-error>
+            }
+            @if (form.controls[i].controls['code'].hasError('required')) {
+            <mat-error>O código é obrigatório</mat-error>
+            }
+            @if (form.controls[i].controls['code'].hasError('minlength')) {
+            <mat-error>O código deve ter pelo menos 5 caracteres</mat-error>
+            }
+            @if (form.controls[i].controls['code'].hasError('maxlength')) {
+            <mat-error>O código deve ter até 50 caracteres</mat-error>
+            }
+          </div>
+          }
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="prompt">
+        <th mat-header-cell
+            *matHeaderCellDef>
+          <div class="title">
+            <fa-icon [icon]="faAlignJustify" />
+            Enunciado
+          </div>
+        </th>
+        <td mat-cell
+            *matCellDef="let item;let i = index"
+            [matTooltip]="item.prompt.length >= 100 ? item.prompt: ''"> {{item.prompt | truncate:100}}
+          @if (form.controls[i].controls['prompt'].invalid) {
+          <div>
+            @if (form.controls[i].controls['prompt'].hasError('required')) {
+            <mat-error>O enunciado é obrigatório</mat-error>
+            }
+            @if (form.controls[i].controls['prompt'].hasError('minlength')) {
+            <mat-error>O enunciado deve ter pelo menos 5 caracteres</mat-error>
+            }
+            @if (form.controls[i].controls['prompt'].hasError('maxlength')) {
+            <mat-error>O enunciado deve ter até 5000 caracteres</mat-error>
+            }
+          </div>
+          }
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="illustration">
+        <th mat-header-cell
+            *matHeaderCellDef>
+          <div class="title">
+            <fa-icon [icon]="faFileImage" />
+            Ilustração
+          </div>
+        </th>
+        <td mat-cell
+            *matCellDef="let i = index">
+          <app-file-uploader #uploaderRef
+                             [imgSrc]="form.controls[i].controls['illustration'].value"
+                             (emitPreview)="uploadImageAndPatchControl(uploaderRef, i, $event)" />
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="alternativeA">
+        <th mat-header-cell
+            *matHeaderCellDef>
+          <div class="title">
+            Alternativa
+            <fa-icon [icon]="faA" />
+          </div>
+        </th>
+        <td mat-cell
+            *matCellDef="let item;let i = index"
+            [matTooltip]="item.alternatives[0].statement.length >= 100 ? item.alternatives[0].statement: ''">
+          {{item.alternatives[0].statement | truncate:100}}
+          @if (form.controls[i].controls['alternatives'].controls[0] &&
+          form.controls[i].controls['alternatives'].controls[0].invalid) {
+          <div>
+            @if (form.controls[i].controls['alternatives'].controls[0].hasError('required')) {
+            <mat-error>A alternativa deve ter uma afirmativa</mat-error>
+            }
+            @if (form.controls[i].controls['alternatives'].controls[0].hasError('minlength')) {
+            <mat-error>A alternativa deve ter pelo menos 1 carácter</mat-error>
+            }
+            @if (form.controls[i].controls['alternatives'].controls[0].hasError('maxlength')) {
+            <mat-error>A alternativa deve ter até 1000 caracteres</mat-error>
+            }
+          </div>
+          }
+          @if (form.controls[i].controls['alternatives'].invalid) {
+          <div>
+            @if (form.controls[i].controls['alternatives'].hasError('atLeastTwo')) {
+            <mat-error>A questão deve ter pelo menos 2 alternativas</mat-error>
+            }
+          </div>
+          }
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="alternativeB">
+        <th mat-header-cell
+            *matHeaderCellDef>
+          <div class="title">
+            Alternativa
+            <fa-icon [icon]="faB" />
+          </div>
+        </th>
+        <td mat-cell
+            *matCellDef="let item; let i = index"
+            [matTooltip]="item.alternatives[1].statement.length >= 100 ? item.alternatives[1].statement: ''">
+          {{item.alternatives[1].statement | truncate:100}}
+          @if (form.controls[i].controls['alternatives'].controls[1] &&
+          form.controls[i].controls['alternatives'].controls[1].invalid) {
+          <div>
+            @if (form.controls[i].controls['alternatives'].controls[1].hasError('required')) {
+            <mat-error>A alternativa deve ter uma afirmativa</mat-error>
+            }
+            @if (form.controls[i].controls['alternatives'].controls[1].hasError('minlength')) {
+            <mat-error>A alternativa deve ter pelo menos 1 carácter</mat-error>
+            }
+            @if (form.controls[i].controls['alternatives'].controls[1].hasError('maxlength')) {
+            <mat-error>A alternativa deve ter até 1000 caracteres</mat-error>
+            }
+          </div>
+          }
+          @if (form.controls[i].controls['alternatives'].invalid) {
+          <div>
+            @if (form.controls[i].controls['alternatives'].hasError('atLeastTwo')) {
+            <mat-error>A questão deve ter pelo menos 2 alternativas</mat-error>
+            }
+          </div>
+          }
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="alternativeC">
+        <th mat-header-cell
+            *matHeaderCellDef>
+          <div class="title">
+            Alternativa
+            <fa-icon [icon]="faC" />
+          </div>
+        </th>
+        <td mat-cell
+            *matCellDef="let item; let i = index"
+            [matTooltip]="item.alternatives[2]?.statement.length >= 100 ? item.alternatives[2]?.statement: ''">
+          {{item.alternatives[2]?.statement | truncate:100}}
+          @if (form.controls[i].controls['alternatives'].controls[2] &&
+          form.controls[i].controls['alternatives'].controls[2].invalid) {
+          <div>
+            @if (form.controls[i].controls['alternatives'].controls[2].hasError('required')) {
+            <mat-error>A alternativa deve ter uma afirmativa</mat-error>
+            }
+            @if (form.controls[i].controls['alternatives'].controls[2].hasError('minlength')) {
+            <mat-error>A alternativa deve ter pelo menos 1 carácter</mat-error>
+            }
+            @if (form.controls[i].controls['alternatives'].controls[2].hasError('maxlength')) {
+            <mat-error>A alternativa deve ter até 1000 caracteres</mat-error>
+            }
+          </div>
+          }
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="alternativeD">
+        <th mat-header-cell
+            *matHeaderCellDef>
+          <div class="title">
+            Alternativa
+            <fa-icon [icon]="faD" />
+          </div>
+        </th>
+        <td mat-cell
+            *matCellDef="let item; let i = index"
+            [matTooltip]="item.alternatives[3]?.statement.length >= 100 ? item.alternatives[3]?.statement: ''">
+          {{item.alternatives[3]?.statement | truncate:100}}
+          @if (form.controls[i].controls['alternatives'].controls[3] &&
+          form.controls[i].controls['alternatives'].controls[3].invalid) {
+          <div>
+            @if (form.controls[i].controls['alternatives'].controls[3].hasError('required')) {
+            <mat-error>A alternativa deve ter uma afirmativa</mat-error>
+            }
+            @if (form.controls[i].controls['alternatives'].controls[3].hasError('minlength')) {
+            <mat-error>A alternativa deve ter pelo menos 1 carácter</mat-error>
+            }
+            @if (form.controls[i].controls['alternatives'].controls[3].hasError('maxlength')) {
+            <mat-error>A alternativa deve ter até 1000 caracteres</mat-error>
+            }
+          </div>
+          }
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="alternativeE">
+        <th mat-header-cell
+            *matHeaderCellDef>
+          <div class="title">
+            Alternativa
+            <fa-icon [icon]="faE" />
+          </div>
+        </th>
+        <td mat-cell
+            *matCellDef="let item; let i = index"
+            [matTooltip]="item.alternatives[4]?.statement.length >= 100 ? item.alternatives[4]?.statement: ''">
+          {{item.alternatives[4]?.statement | truncate:100}}
+          @if (form.controls[i].controls['alternatives'].controls[4] &&
+          form.controls[i].controls['alternatives'].controls[4].invalid) {
+          <div>
+            @if (form.controls[i].controls['alternatives'].controls[4].hasError('required')) {
+            <mat-error>A alternativa deve ter uma afirmativa</mat-error>
+            }
+            @if (form.controls[i].controls['alternatives'].controls[4].hasError('minlength')) {
+            <mat-error>A alternativa deve ter pelo menos 1 carácter</mat-error>
+            }
+            @if (form.controls[i].controls['alternatives'].controls[4].hasError('maxlength')) {
+            <mat-error>A alternativa deve ter até 1000 caracteres</mat-error>
+            }
+          </div>
+          }
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="correctIndex">
+        <th mat-header-cell
+            *matHeaderCellDef>
+          <div class="title">
+            <fa-icon [icon]="faCircleCheck" />
+            Alternativa Correta
+          </div>
+        </th>
+        <td mat-cell
+            *matCellDef="let item; let i = index"> {{item.correctIndex | letterIndexToAplhabetChar}}
+          @if (form.controls[i].controls['correctIndex'].invalid) {
+          <div>
+            @if (form.controls[i].controls['correctIndex'].hasError('required')) {
+            <mat-error>A questão deve ter uma alternativa correta</mat-error>
+            }
+          </div>
+          }
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="answerExplanation">
+        <th mat-header-cell
+            *matHeaderCellDef>
+          <div class="title">
+            <fa-icon [icon]="faCheckDouble" />
+            Gabarito
+          </div>
+        </th>
+        <td mat-cell
+            *matCellDef="let item"
+            [matTooltip]="item.answerExplanation.length >= 100 ? item.answerExplanation: ''"> {{item.answerExplanation |
+          truncate:100}}
+        </td>
+      </ng-container>
+
+
+
+      <ng-container matColumnDef="educationStage">
+        <th mat-header-cell
+            *matHeaderCellDef>
+          <div class="title">
+            <fa-icon [icon]="faCalendar" />
+            Nível de Escolaridade
+          </div>
+        </th>
+        <td mat-cell
+            *matCellDef="let item">
+
+          @if (item.educationStage) {
+          <div class="selector">
+            <mat-select [value]="item.educationStage"
+                        disabled>
+              <mat-option [value]="undefined">
+                Não especificado
+              </mat-option>
+              @for (option of educationStageOptions; track option) {
+              <mat-option [value]="option.value">{{option.label}}</mat-option>
+              }
+            </mat-select>
+          </div>
+          } @else {
+          <span matTooltip="Campo vazio">--</span>
+          }
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="year">
+        <th mat-header-cell
+            *matHeaderCellDef>
+          <div class="title">
+            <fa-icon [icon]="faCalendar" />
+            Ano
+          </div>
+        </th>
+        <td mat-cell
+            *matCellDef="let item">
+          @if (item.year) {
+          <app-year-selector [disabled]="true"
+                             [year]="item.year" />
+          } @else {
+          <span matTooltip="Campo vazio">--</span>
+          }
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="subject">
+        <th mat-header-cell
+            *matHeaderCellDef>
+          <div class="title">
+            <fa-icon [icon]="faSheetPlastic" />
+            Disciplina
+          </div>
+        </th>
+        <td mat-cell
+            *matCellDef="let item; let i = index">
+          @if (form.controls[i].controls['subjectId'].value) {
+          <app-subject-selector [required]="true"
+                                [disabled]="true"
+                                [loadValue]="form.controls[i].controls['subjectId'].value" />
+
+          } @else {
+          <span matTooltip="Campo vazio">--</span>
+          }
+          @if (form.controls[i].controls['subjectId'].invalid) {
+          <div>
+            @if (form.controls[i].controls['subjectId'].hasError('required')) {
+            <mat-error>A questão deve ter uma alternativa correta</mat-error>
+            }
+          </div>
+          }
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="institution">
+        <th mat-header-cell
+            *matHeaderCellDef>
+          <div class="title">
+            <fa-icon [icon]="faBuilding" />
+            Órgão
+          </div>
+        </th>
+        <td mat-cell
+            *matCellDef="let item; let i = index">
+          @if (form.controls[i].controls['institutionId'].value) {
+          <app-institution-selector [disabled]="true"
+                                    [loadValue]="form.controls[i].controls['institutionId'].value" />
+          } @else {
+          <span matTooltip="Campo vazio">--</span>
+          }
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="board">
+        <th mat-header-cell
+            *matHeaderCellDef>
+          <div class="title">
+            <fa-icon [icon]="faUsersLine" />
+            Banca
+          </div>
+        </th>
+        <td mat-cell
+            *matCellDef="let item; let i = index">
+          @if (form.controls[i].controls['boardId'].value) {
+          <app-board-selector [disabled]="true"
+                              [loadValue]="form.controls[i].controls['boardId'].value" />
+          } @else {
+          <span matTooltip="Campo vazio">--</span>
+          }
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="exam">
+        <th mat-header-cell
+            *matHeaderCellDef>
+          <div class="title">
+            <fa-icon [icon]="faListCheck" />
+            Prova
+          </div>
+        </th>
+        <td mat-cell
+            *matCellDef="let item; let i = index">
+          @if (form.controls[i].controls['examId'].value) {
+          <app-exam-selector [disabled]="true"
+                             [loadValue]="form.controls[i].controls['examId'].value" />
+          } @else {
+          <span matTooltip="Campo vazio">--</span>
+          }
+        </td>
+      </ng-container>
+
+      <tr mat-header-row
+          *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row
+          *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+  }
+</div>

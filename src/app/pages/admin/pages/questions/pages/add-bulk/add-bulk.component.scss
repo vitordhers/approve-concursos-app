@@ -1,0 +1,25 @@
+h3 {
+  margin: 0px !important;
+  padding: 20px 0px;
+}
+.img-upload-section {
+  display: none;
+}
+
+.padded {
+  padding: 20px;
+}
+
+// .table-wrap {
+//   overflow: auto;
+// }
+th .title {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 20px;
+}
