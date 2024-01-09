@@ -1,4 +1,11 @@
-import { Injectable, Injector, computed, inject, signal } from '@angular/core';
+import {
+  Injectable,
+  Injector,
+  WritableSignal,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { distinctUntilChanged, map, of, switchMap, tap } from 'rxjs';
@@ -14,23 +21,24 @@ import { generateHash } from '../shared/functions/generate-hash.function';
 })
 export class SubjectsService {
   private endpoint = `${environment.apiUrl}/subjects`;
-  private allLoaded = false;
-  private loadedRecords = signal(new Map<string, Subject>());
+  allLoaded = false;
+  loadedRecords = signal(new Map<string, Subject>());
   private injector = inject(Injector);
 
-  private paginateLoaded = computed(() =>
+  paginateLoaded = computed(() =>
     Array.from(this.loadedRecords().values()).sort(
       (a, b) => b.updatedAt - a.updatedAt
     )
   );
 
-  private paginateLoaded$ = toObservable(this.paginateLoaded, {
+  paginateLoaded$ = toObservable(this.paginateLoaded, {
     injector: this.injector,
   }).pipe(
     distinctUntilChanged(
       (prev, curr) => generateHash(prev) === generateHash(curr)
     )
   );
+
   private loadedRecords$ = toObservable(this.loadedRecords, {
     injector: this.injector,
   }).pipe(
@@ -39,16 +47,16 @@ export class SubjectsService {
     )
   );
 
-  totalRecords = signal(0);
+  totalRecords: WritableSignal<number | undefined> = signal(undefined);
 
   constructor(private http: HttpClient) {}
 
   private setAllLoaded(map: Map<string, Subject>) {
     const recordsLength = Array.from(map.keys()).length;
-    this.allLoaded = recordsLength == this.totalRecords();
+    this.allLoaded = recordsLength === this.totalRecords();
   }
 
-  private serializeRecord(record: BaseSubject) {
+  serializeRecord(record: BaseSubject) {
     return new Subject(
       record.id,
       record.entityId,
@@ -119,44 +127,6 @@ export class SubjectsService {
                 : ([] as Subject[])
             ),
             tap((records) => this.cacheRecords(records))
-          );
-      })
-    );
-  }
-
-  paginate(start: number = 0, end: number, pageSize: number) {
-    return this.paginateLoaded$.pipe(
-      switchMap((paginateLoaded) => {
-        const alreadyLoadedRecords = paginateLoaded.slice(start, end);
-
-        if (this.allLoaded || alreadyLoadedRecords.length === end - start)
-          return of(paginateLoaded.slice(start, end));
-
-        let missingRecordsNo = 0;
-        let updatedStart = start;
-        let updatedEnd = end;
-        if (alreadyLoadedRecords.length) {
-          missingRecordsNo = pageSize - alreadyLoadedRecords.length;
-          updatedStart = alreadyLoadedRecords.length;
-          updatedEnd = start + missingRecordsNo;
-        }
-
-        return this.http
-          .get<PaginatedResponse<Subject[]>>(
-            `${this.endpoint}?start=${updatedStart}&limit=${updatedEnd}`
-          )
-          .pipe(
-            tap((res) =>
-              res.success ? this.totalRecords.set(res.total) : undefined
-            ),
-            map((res) =>
-              res.success && res.data && res.data.length
-                ? res.data.map((record) => this.serializeRecord(record))
-                : ([] as Subject[])
-            ),
-            tap((records) => {
-              this.cacheRecords(records);
-            })
           );
       })
     );

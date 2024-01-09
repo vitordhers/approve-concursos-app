@@ -34,8 +34,9 @@ import {
 import { displayCodeFn } from '../../shared/functions/display-fn-selectors.function';
 import { Exam } from '../../models/exam.model';
 import { assessmentExamRecordLabels } from '../../shared/constants/assessment-exam-labels.const';
-import { ExamsAdminService } from '../../services/admin/exams/exams.service';
+import { ExamAdminService } from '../../services/admin/exams/exam-admin.service';
 import { faBarcode } from '@fortawesome/free-solid-svg-icons';
+import { ExamsService } from '../../services/exams.service';
 
 @Component({
   selector: 'app-exam-selector',
@@ -94,13 +95,13 @@ export class ExamSelectorComponent implements OnInit, OnDestroy {
     debounceTime(500),
     switchMap((value) =>
       value && typeof value === 'string' && value !== ''
-        ? this.examService.search(value)
+        ? this.examsService.search(value)
         : EMPTY
     )
   );
 
   constructor(
-    private examService: ExamsAdminService,
+    private examsService: ExamsService,
     private cd: ChangeDetectorRef
   ) {}
 
@@ -116,10 +117,9 @@ export class ExamSelectorComponent implements OnInit, OnDestroy {
     if (!changes['loadValue']) return;
     let loadedValue = changes['loadValue'].currentValue;
     if (!loadedValue) return;
-    console.log('@@@@@@@@@@@@@@@@@', loadedValue);
     if (typeof loadedValue !== 'string') return;
     const loadedResult = await firstValueFrom(
-      this.examService.getOne(loadedValue)
+      this.examsService.getOne(loadedValue)
     );
     if (!loadedResult) return;
     loadedValue = loadedResult;

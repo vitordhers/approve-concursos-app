@@ -10,6 +10,7 @@ import { CommonModule, registerLocaleData } from '@angular/common';
 import {
   BehaviorSubject,
   Subject as RxJsSubject,
+  distinctUntilChanged,
   filter,
   switchMap,
   takeUntil,
@@ -37,6 +38,7 @@ import {
   faTrash,
   faFilter,
   faMagnifyingGlass,
+  faBarcode,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import Swal from 'sweetalert2';
@@ -47,7 +49,7 @@ import { Institution } from '../../../../../../models/institution.model';
 import { fireGenericError } from '../../../../../../notification/functions/fire-generic-error.function';
 import { fireGenericSuccess } from '../../../../../../notification/functions/fire-generic-success.function';
 import { ServerImgPipe } from '../../../../../../shared/pipes/server-img.pipe';
-import { QuestionsAdminService } from '../../../../../../services/admin/questions/questions-admin.service';
+import { QuestionAdminService } from '../../../../../../services/admin/questions/question-admin.service';
 import { Question } from '../../../../../../models/question.model';
 import { Subject } from '../../../../../../models/subject.model';
 import { Board } from '../../../../../../models/board.model';
@@ -91,7 +93,7 @@ export class ListComponent implements OnInit, OnDestroy {
   faAdd = faAdd;
   faFingerprint = faFingerprint;
   faClock = faClock;
-  faFont = faFont;
+  faBarcode = faBarcode;
   faBars = faBars;
   faTrash = faTrash;
   faPenToSquare = faPenToSquare;
@@ -125,15 +127,21 @@ export class ListComponent implements OnInit, OnDestroy {
   });
 
   private loadedQuestions$ = this.currentPage$.pipe(
+    distinctUntilChanged(
+      (prev, curr) =>
+        prev?.start === curr?.start &&
+        prev?.end === curr?.end &&
+        prev?.pageSize === curr?.pageSize
+    ),
     takeUntil(this.destroy$),
     switchMap(({ start, end, pageSize }) =>
-      this.questionService.paginate(start, end, pageSize)
+      this.questionAdminService.paginate(start, end, pageSize)
     )
   );
   loadedQuestions = toSignal(this.loadedQuestions$);
 
   constructor(
-    public questionService: QuestionsAdminService,
+    public questionAdminService: QuestionAdminService,
     private activatedRoute: ActivatedRoute,
     private modalService: ModalService,
     private router: Router
@@ -193,7 +201,7 @@ export class ListComponent implements OnInit, OnDestroy {
     this.loadingActions.set(true);
     const { id, code } = question;
     if (!id) return;
-    this.questionService.remove(id).subscribe({
+    this.questionAdminService.remove(id).subscribe({
       next: (result) => {
         this.loadingActions.set(false);
         if (!result.success) {

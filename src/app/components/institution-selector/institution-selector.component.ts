@@ -32,12 +32,10 @@ import {
   firstValueFrom,
   switchMap,
   takeUntil,
-  tap,
 } from 'rxjs';
-import { InstitutionAdminService } from '../../services/admin/institution/institution.service';
 import { displayNameFn } from '../../shared/functions/display-fn-selectors.function';
 import { institutionRecordLabels } from '../../shared/constants/institution-labels.const';
-import { cloneDeep } from 'lodash';
+import { InstitutionsService } from '../../services/institutions.service';
 
 @Component({
   selector: 'app-institution-selector',
@@ -95,7 +93,7 @@ export class InstitutionSelectorComponent
   );
 
   constructor(
-    private institutionService: InstitutionAdminService,
+    private institutionService: InstitutionsService,
     private cd: ChangeDetectorRef
   ) {}
 

@@ -5,13 +5,13 @@ import {
   ValidationErrors,
   ValidatorFn,
 } from '@angular/forms';
-import { QuestionsAdminService } from '../../services/admin/questions/questions-admin.service';
+import { QuestionAdminService } from '../../services/admin/questions/question-admin.service';
 import { Observable, first, map, switchMap, timer } from 'rxjs';
-import { ExamsAdminService } from '../../services/admin/exams/exams.service';
+import { ExamAdminService } from '../../services/admin/exams/exam-admin.service';
 
 export class CustomFormValidators {
   static createQuestionCodeValidator(
-    validatorService: QuestionsAdminService | ExamsAdminService
+    validatorService: QuestionAdminService | ExamAdminService
   ): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
       return timer(1000).pipe(

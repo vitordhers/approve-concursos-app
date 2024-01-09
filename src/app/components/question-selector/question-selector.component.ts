@@ -24,11 +24,12 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { EMPTY, Subject, debounceTime, switchMap, takeUntil } from 'rxjs';
 import { displayCodeFn } from '../../shared/functions/display-fn-selectors.function';
 import { BaseQuestion, Question } from '../../models/question.model';
-import { QuestionsAdminService } from '../../services/admin/questions/questions-admin.service';
+import { QuestionAdminService } from '../../services/admin/questions/question-admin.service';
 import { questionRecordLabels } from '../../shared/constants/question-record-labels.const';
 import { faBarcode, faHashtag } from '@fortawesome/free-solid-svg-icons';
 import { IconNumberSequenceComponent } from '../icon-number-sequence/icon-number-sequence.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { QuestionsService } from '../../services/questions.service';
 
 @Component({
   selector: 'app-question-selector',
@@ -73,7 +74,6 @@ export class QuestionSelectorComponent implements OnInit, OnDestroy {
 
   private clearEffect = effect(() => {
     if (!this.clear || !this.clear()) return;
-    console.log('@@@ clear');
     this.formControl.reset();
     this.cd.detectChanges();
   });
@@ -92,13 +92,13 @@ export class QuestionSelectorComponent implements OnInit, OnDestroy {
     debounceTime(500),
     switchMap((value) =>
       value && typeof value === 'string' && value !== ''
-        ? this.questionService.searchByCode(value)
+        ? this.questionsService.searchByCode(value)
         : EMPTY
     )
   );
 
   constructor(
-    private questionService: QuestionsAdminService,
+    private questionsService: QuestionsService,
     private cd: ChangeDetectorRef
   ) {}
 

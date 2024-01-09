@@ -1,4 +1,11 @@
-import { Injectable, Injector, computed, inject, signal } from '@angular/core';
+import {
+  Injectable,
+  Injector,
+  WritableSignal,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { toObservable } from '@angular/core/rxjs-interop';
 import {
@@ -19,9 +26,11 @@ import { ExamType } from '../shared/enums/exam-type.enum';
 import { FormattedResponse } from '../shared/interfaces/formatted-response.interface';
 import { PaginatedResponse } from '../shared/interfaces/paginated-response.interface';
 import { Relation } from '../shared/interfaces/relation.interface';
-import { Entity } from '../shared/enums/entity.enum';
+import { CacheAcessor, Entity } from '../shared/enums/entity.enum';
 import { QuestionsService } from './questions.service';
 import { generateHash } from '../shared/functions/generate-hash.function';
+import { BaseSubject } from '../models/subject.model';
+import { AnswerableQuestionsService } from './answerable-questions.service';
 
 @Injectable({
   providedIn: 'root',
@@ -31,7 +40,7 @@ export class ExamsService {
   private allAssessmentLoaded = false;
   private allMockLoaded = false;
 
-  private loadedRecords = signal(new Map<string, Exam>());
+  loadedRecords = signal(new Map<string, Exam>());
   private injector = inject(Injector);
 
   private paginateLoaded = computed(() =>
@@ -56,20 +65,25 @@ export class ExamsService {
     )
   );
 
-  totalAssessmentRecords = signal(0);
-  totalMockRecords = signal(0);
+  totalAssessmentRecords: WritableSignal<number | undefined> =
+    signal(undefined);
+  totalMockRecords: WritableSignal<number | undefined> = signal(undefined);
 
   examQuestionsLoadedMap = signal(
     new Map<string, { total: number; allLoaded: boolean }>()
   );
 
   loadedRelations = signal(
-    [] as Relation<BaseQuestion | BaseInstitution | BaseBoard>[]
+    new Map<
+      CacheAcessor,
+      (BaseInstitution | BaseBoard | BaseQuestion | BaseSubject)[]
+    >()
   );
 
   constructor(
     private http: HttpClient,
-    private questionsService: QuestionsService
+    private questionsService: QuestionsService,
+    private answerableQuestionsService: AnswerableQuestionsService
   ) {}
 
   private setAllLoaded(map: Map<string, Exam>) {
@@ -78,30 +92,11 @@ export class ExamsService {
     this.allAssessmentLoaded = recordsLength == this.totalAssessmentRecords();
   }
 
-  private serializeRecord(record: BaseExam, cacheRelations = false) {
+  serializeRecord(record: BaseExam, cacheRelations = false) {
     if (cacheRelations) {
-      const relations: Relation<BaseQuestion | BaseInstitution | BaseBoard>[] =
-        [];
-
-      if (record && record.institution) {
-        relations.push({
-          records: [record.institution],
-          entity: Entity.INSTITUTIONS,
-        });
-      }
-
-      if (record && record.board) {
-        relations.push({ records: [record.board], entity: Entity.BOARDS });
-      }
-
-      if (record && record.questions && record.questions.length) {
-        record.questions.map((q) =>
-          relations.push({ records: [q], entity: Entity.QUESTIONS })
-        );
-      }
-
-      this.loadedRelations.set(relations);
+      this.cacheRelations(record);
     }
+
     return new Exam(
       record.id,
       record.entityId,
@@ -115,6 +110,88 @@ export class ExamsService {
       record.boardId,
       record.institutionId
     );
+  }
+
+  cacheRelations(record: {
+    board?: BaseBoard;
+    institution?: BaseInstitution;
+    questions?: BaseQuestion[];
+    answerableQuestions?: BaseQuestion[];
+  }) {
+    const relationsMap = new Map<
+      CacheAcessor,
+      (BaseInstitution | BaseBoard | BaseQuestion)[]
+    >();
+
+    const institutionRelations: BaseInstitution[] = [];
+    const boardRelations: BaseInstitution[] = [];
+    const questionsRelations: BaseQuestion[] = [];
+    const answerableQuestionsRelations: BaseQuestion[] = [];
+    const subjectRelations: BaseSubject[] = [];
+
+    if (record && record.institution) {
+      institutionRelations.push(record.institution);
+    }
+
+    if (record && record.board) {
+      boardRelations.push(record.board);
+    }
+
+    if (record && record.questions && record.questions.length) {
+      record.questions.forEach((q) => {
+        if (q.subject) {
+          subjectRelations.push(q.subject);
+        }
+        if (q.institution) {
+          institutionRelations.push(q.institution);
+        }
+        if (q.board) {
+          boardRelations.push(q.board);
+        }
+        questionsRelations.push(q);
+      });
+    }
+
+    if (
+      record &&
+      record.answerableQuestions &&
+      record.answerableQuestions.length
+    ) {
+      record.answerableQuestions.forEach((q) => {
+        if (q.subject) {
+          subjectRelations.push(q.subject);
+        }
+        if (q.institution) {
+          institutionRelations.push(q.institution);
+        }
+        if (q.board) {
+          boardRelations.push(q.board);
+        }
+        answerableQuestionsRelations.push(q);
+      });
+    }
+
+    if (institutionRelations.length) {
+      relationsMap.set(Entity.INSTITUTIONS, institutionRelations);
+    }
+
+    if (boardRelations.length) {
+      relationsMap.set(Entity.BOARDS, boardRelations);
+    }
+
+    if (questionsRelations.length) {
+      relationsMap.set(Entity.QUESTIONS, questionsRelations);
+    }
+
+    if (answerableQuestionsRelations.length) {
+      relationsMap.set('answerable_questions', answerableQuestionsRelations);
+    }
+
+    if (subjectRelations.length) {
+      relationsMap.set(Entity.SUBJECTS, subjectRelations);
+    }
+
+    this.loadedRelations.set(relationsMap);
   }
 
   cacheRecords(records: (Exam | BaseExam)[]) {
@@ -238,28 +315,28 @@ export class ExamsService {
     );
   }
 
-  paginateExamQuestions(
+  paginateExamAnswerableQuestions(
     examId: string,
     start: number,
     end: number,
     pageSize: number
   ) {
-    const alreadLoadedExamRecord = this.examQuestionsLoadedMap().has(examId);
+    const alreadyLoadedExamRecord = this.examQuestionsLoadedMap().has(examId);
 
     let updatedStart = start;
     let updatedEnd = end;
 
     let obs$: Observable<PaginatedResponse<BaseExam>> | undefined = undefined;
 
-    if (alreadLoadedExamRecord) {
+    if (alreadyLoadedExamRecord) {
       const alreadyLoadedAllRecords =
-        this.examQuestionsLoadedMap().get(examId)?.allLoaded;
+        this.examQuestionsLoadedMap().get(examId)?.allLoaded || false;
 
       if (alreadyLoadedAllRecords) {
         return this.getOne(examId).pipe(
           switchMap((exam) => {
             if (!exam) return of([]);
-            return this.questionsService.getCached(exam.questionsIds);
+            return this.answerableQuestionsService.getCached(exam.questionsIds);
           }),
           map((questions) => questions.slice(start, end))
         );
@@ -268,7 +345,7 @@ export class ExamsService {
       obs$ = this.getOne(examId).pipe(
         switchMap((exam) => {
           if (!exam) return of([]);
-          return this.questionsService.getCached(exam.questionsIds);
+          return this.answerableQuestionsService.getCached(exam.questionsIds);
         }),
         switchMap((alreadyLoadedRecords) => {
           let missingRecordsNo = 0;
@@ -298,21 +375,23 @@ export class ExamsService {
           return { total: 0, record: undefined };
         const serializedRecord = this.serializeRecord(response.data, true);
 
-        this.examQuestionsLoadedMap.update((m) => {
-          m = cloneDeep(m);
-          m.set(examId, {
-            total: response.total,
-            allLoaded: false,
-          });
-          return m;
-        });
+        // this.examQuestionsLoadedMap.update((m) => {
+        //   m = cloneDeep(m);
+        //   m.set(examId, {
+        //     total: response.total,
+        //     allLoaded: false,
+        //   });
+        //   return m;
+        // });
 
         return { total: response.total, record: serializedRecord };
       }),
       switchMap((result) => {
         if (!result.record) return of([]);
 
-        return this.questionsService.getCached(result.record.questionsIds);
+        return this.answerableQuestionsService.getCached(
+          result.record.questionsIds
+        );
       }),
       tap((questions) => {
         const totals = this.examQuestionsLoadedMap().get(examId);

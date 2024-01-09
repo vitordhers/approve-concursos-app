@@ -142,6 +142,7 @@ app-nav-item {
   &.scrollable {
     overflow-y: auto !important;
     height: 100%;
+    padding-bottom: 180px;
   }
 }
 

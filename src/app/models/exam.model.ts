@@ -35,7 +35,8 @@ export interface BaseExam extends BaseEntityInterface {
   year?: number;
   boardId?: string;
   institutionId?: string;
-  institution?: BaseInstitution
-  board?: BaseBoard
-  questions?: BaseQuestion[]
+  institution?: BaseInstitution;
+  board?: BaseBoard;
+  questions?: BaseQuestion[];
+  answerableQuestions?: BaseQuestion[];
 }

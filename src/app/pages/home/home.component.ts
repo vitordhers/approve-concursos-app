@@ -159,7 +159,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       const sectionIndex = untracked(this.links).findIndex(
         (l) => l.anchor === section
       );
-      // console.log('@@@', { section, sectionIndex });
 
       if (sectionIndex === -1) return;
       this.navigate(sectionIndex);

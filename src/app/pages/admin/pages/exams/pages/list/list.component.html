@@ -36,6 +36,13 @@
           *matCellDef="let element"> {{element.id}} </td>
     </ng-container>
 
+    <ng-container matColumnDef="code">
+      <th mat-header-cell
+          *matHeaderCellDef> <fa-icon [icon]="faBarcode" /> Código </th>
+      <td mat-cell
+          *matCellDef="let element"> {{element.code}} </td>
+    </ng-container>
+
     <ng-container matColumnDef="name">
       <th mat-header-cell
           *matHeaderCellDef> <fa-icon [icon]="faFont" /> Nome </th>
@@ -94,13 +101,17 @@
   </table>
 </div>
 <div class="paginator-wrap">
+  @if ((type() === 0 && examsAdminService.totalMockRecords() !== undefined) || (type() === 1 &&
+  examsAdminService.totalAssessmentRecords() !== undefined)) {
+
   <mat-paginator [pageSizeOptions]="pageSizeOptions"
                  [pageSize]="currentPageSize"
-                 [length]="type() === 0 ? examsService.totalMockRecords() : examsService.totalAssessmentRecords()"
+                 [length]="type() === 0 ? examsAdminService.totalMockRecords() : examsAdminService.totalAssessmentRecords()"
                  showFirstLastButtons
                  (page)="onPageEvent($event)"
-                 [hidePageSize]="(type() === 0 ? examsService.totalMockRecords() : examsService.totalAssessmentRecords()) < pageSizeOptions[0]">
+                 [hidePageSize]="(type() === 0 ? (examsAdminService.totalMockRecords() || 0) : (examsAdminService.totalAssessmentRecords() || 0)) < pageSizeOptions[0]">
   </mat-paginator>
+  }
 </div>
 } @else {
 <div>

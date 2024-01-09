@@ -40,7 +40,7 @@ import { ImgUploadPreview } from '../../../../../../components/file-uploader/int
 import { Entity } from '../../../../../../shared/enums/entity.enum';
 import { fireGenericError } from '../../../../../../notification/functions/fire-generic-error.function';
 import { fireGenericSuccess } from '../../../../../../notification/functions/fire-generic-success.function';
-import { InstitutionAdminService } from '../../../../../../services/admin/institution/institution.service';
+import { InstitutionAdminService } from '../../../../../../services/admin/institution/institution-admin.service';
 import { AddInstitutionDto } from '../../../../../../services/admin/institution/interfaces/add-institution-dto.interface';
 import { EditInstitutionDto } from '../../../../../../services/admin/institution/interfaces/edit-institution-dto.interface';
 import { institutionRecordLabels } from '../../../../../../shared/constants/institution-labels.const';

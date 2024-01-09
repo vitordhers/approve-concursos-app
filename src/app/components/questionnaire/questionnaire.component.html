@@ -1,4 +1,4 @@
-<div class="wrapper">
+<div class="wrapper page">
   @if (loadedFilteredQuestions().length) {
   @for (question of loadedFilteredQuestions(); track $index) {
   <app-answerable-question [_question]="question"

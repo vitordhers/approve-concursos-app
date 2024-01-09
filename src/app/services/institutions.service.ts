@@ -1,4 +1,11 @@
-import { Injectable, Injector, computed, inject, signal } from '@angular/core';
+import {
+  Injectable,
+  Injector,
+  WritableSignal,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { distinctUntilChanged, map, of, switchMap, tap } from 'rxjs';
 import { toObservable } from '@angular/core/rxjs-interop';
@@ -6,7 +13,6 @@ import { cloneDeep } from 'lodash';
 import { environment } from '../../environments/environment';
 import { Institution, BaseInstitution } from '../models/institution.model';
 import { FormattedResponse } from '../shared/interfaces/formatted-response.interface';
-import { PaginatedResponse } from '../shared/interfaces/paginated-response.interface';
 import { generateHash } from '../shared/functions/generate-hash.function';
 
 @Injectable({
@@ -14,8 +20,8 @@ import { generateHash } from '../shared/functions/generate-hash.function';
 })
 export class InstitutionsService {
   private endpoint = `${environment.apiUrl}/institutions`;
-  private allLoaded = false;
-  private loadedRecords = signal(new Map<string, Institution>());
+  allLoaded = false;
+  loadedRecords = signal(new Map<string, Institution>());
   private injector = inject(Injector);
 
   private paginateLoaded = computed(() =>
@@ -24,14 +30,14 @@ export class InstitutionsService {
     )
   );
 
-  private paginateLoaded$ = toObservable(this.paginateLoaded, {
+  paginateLoaded$ = toObservable(this.paginateLoaded, {
     injector: this.injector,
   }).pipe(
     distinctUntilChanged(
       (prev, curr) => generateHash(prev) === generateHash(curr)
     )
   );
-  private loadedRecords$ = toObservable(this.loadedRecords, {
+  loadedRecords$ = toObservable(this.loadedRecords, {
     injector: this.injector,
   }).pipe(
     distinctUntilChanged(
@@ -39,16 +45,16 @@ export class InstitutionsService {
     )
   );
 
-  totalRecords = signal(0);
+  totalRecords: WritableSignal<number | undefined> = signal(undefined);
 
   constructor(private http: HttpClient) {}
 
   private setAllLoaded(map: Map<string, Institution>) {
     const recordsLength = Array.from(map.keys()).length;
-    this.allLoaded = recordsLength == this.totalRecords();
+    this.allLoaded = recordsLength === this.totalRecords();
   }
 
-  private serializeRecord(record: BaseInstitution) {
+  serializeRecord(record: BaseInstitution) {
     return new Institution(
       record.id,
       record.entityId,
@@ -113,42 +119,6 @@ export class InstitutionsService {
             `${this.endpoint}/search?query=${value}`
           )
           .pipe(
-            map((res) =>
-              res.success && res.data && res.data.length
-                ? res.data.map((record) => this.serializeRecord(record))
-                : ([] as Institution[])
-            ),
-            tap((records) => this.cacheRecords(records))
-          );
-      })
-    );
-  }
-
-  paginate(start: number = 0, end: number, pageSize: number) {
-    return this.paginateLoaded$.pipe(
-      switchMap((paginateLoaded) => {
-        const alreadyLoadedRecords = paginateLoaded.slice(start, end);
-
-        if (this.allLoaded || alreadyLoadedRecords.length === end - start)
-          return of(paginateLoaded.slice(start, end));
-
-        let missingRecordsNo = 0;
-        let updatedStart = start;
-        let updatedEnd = end;
-        if (alreadyLoadedRecords.length) {
-          missingRecordsNo = pageSize - alreadyLoadedRecords.length;
-          updatedStart = alreadyLoadedRecords.length;
-          updatedEnd = start + missingRecordsNo;
-        }
-
-        return this.http
-          .get<PaginatedResponse<Institution[]>>(
-            `${this.endpoint}?start=${updatedStart}&limit=${updatedEnd}`
-          )
-          .pipe(
-            tap((res) =>
-              res.success ? this.totalRecords.set(res.total) : undefined
-            ),
             map((res) =>
               res.success && res.data && res.data.length
                 ? res.data.map((record) => this.serializeRecord(record))

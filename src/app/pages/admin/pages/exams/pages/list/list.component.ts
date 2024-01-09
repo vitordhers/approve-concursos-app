@@ -7,7 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { CommonModule, registerLocaleData } from '@angular/common';
-import { BehaviorSubject, Subject, filter, switchMap, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, distinctUntilChanged, filter, switchMap, takeUntil } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
@@ -29,6 +29,7 @@ import {
   faBars,
   faPenToSquare,
   faTrash,
+  faBarcode,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import Swal from 'sweetalert2';
@@ -38,7 +39,7 @@ import { MatPaginatorIntlPtBr } from '../../../../../../shared/config/pagination
 import { fireGenericError } from '../../../../../../notification/functions/fire-generic-error.function';
 import { fireGenericSuccess } from '../../../../../../notification/functions/fire-generic-success.function';
 import { ServerImgPipe } from '../../../../../../shared/pipes/server-img.pipe';
-import { ExamsAdminService } from '../../../../../../services/admin/exams/exams.service';
+import { ExamAdminService } from '../../../../../../services/admin/exams/exam-admin.service';
 import { ExamType } from '../../../../../../shared/enums/exam-type.enum';
 import { assessmentExamRecordLabels } from '../../../../../../shared/constants/assessment-exam-labels.const';
 import { mockExamRecordLabels } from '../../../../../../shared/constants/mock-exam-labels.const';
@@ -76,6 +77,7 @@ export class ListComponent implements OnInit, OnDestroy {
   faBars = faBars;
   faTrash = faTrash;
   faPenToSquare = faPenToSquare;
+  faBarcode = faBarcode;
 
   type = signal(ExamType.ASSESSMENT);
 
@@ -93,18 +95,31 @@ export class ListComponent implements OnInit, OnDestroy {
   currentPageSize = DEFAULT_PAGINATION_SIZE;
 
   pageSizeOptions = PAGINATION_SIZES;
-  displayedColumns: string[] = ['thumb', 'id', 'name', 'updatedAt', 'actions'];
+  displayedColumns: string[] = [
+    'thumb',
+    'id',
+    'code',
+    'name',
+    'updatedAt',
+    'actions',
+  ];
 
   private loadedExams$ = this.currentPage$.pipe(
+    distinctUntilChanged(
+      (prev, curr) =>
+        prev?.start === curr?.start &&
+        prev?.end === curr?.end &&
+        prev?.pageSize === curr?.pageSize
+    ),
     takeUntil(this.destroy$),
     switchMap(({ start, end, pageSize }) =>
-      this.examsService.paginate(start, end, pageSize, this.type())
+      this.examsAdminService.paginate(start, end, pageSize, this.type())
     )
   );
   loadedExams = toSignal(this.loadedExams$);
 
   constructor(
-    public examsService: ExamsAdminService,
+    public examsAdminService: ExamAdminService,
     private activatedRoute: ActivatedRoute,
     private router: Router
   ) {}
@@ -171,7 +186,7 @@ export class ListComponent implements OnInit, OnDestroy {
     this.loadingActions.set(true);
     const { id, name, type } = exam;
     if (!id) return;
-    this.examsService.remove(id, type).subscribe({
+    this.examsAdminService.remove(id, type).subscribe({
       next: (result) => {
         this.loadingActions.set(false);
         if (!result.success) {

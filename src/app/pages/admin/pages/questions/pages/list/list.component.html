@@ -1,34 +1,34 @@
 <div class="list-wrap">
-
+  <div class="actions">
+    <button mat-raised-button
+            role="button"
+            color="primary"
+            (click)="navigateToAdd()">
+      <fa-icon [icon]="faAdd" />
+      Criar
+    </button>
+    <button mat-raised-button
+            role="button"
+            color="accent"
+            (click)="showFilters()">
+      <fa-icon [icon]="faFilter" />
+      Adicionar filtros
+    </button>
+    <mat-form-field appearance="outline">
+      <input matInput
+             placeholder="Código ou conteúdo"
+             [formControl]="searchControl">
+      <button matSuffix
+              mat-icon-button
+              (click)="search()">
+        <fa-icon [icon]="faMagnifyingGlass"
+                 size="sm" />
+      </button>
+    </mat-form-field>
+  </div>
   <h3 class="list-label">{{labels.pluralCapitalized}}</h3>
 </div>
-<div class="list-wrap">
-  <button mat-raised-button
-          role="button"
-          color="primary"
-          (click)="navigateToAdd()">
-    <fa-icon [icon]="faAdd" />
-    Criar
-  </button>
-  <button mat-raised-button
-          role="button"
-          color="accent"
-          (click)="showFilters()">
-    <fa-icon [icon]="faFilter" />
-    Adicionar filtros
-  </button>
-  <mat-form-field appearance="outline">
-    <input matInput
-           placeholder="Código ou conteúdo"
-           [formControl]="searchControl">
-    <button matSuffix
-            mat-icon-button
-            (click)="search()">
-      <fa-icon [icon]="faMagnifyingGlass"
-               size="sm" />
-    </button>
-  </mat-form-field>
-</div>
+
 @if (loadedQuestions()?.length) {
 <div class="table-wrap scrollable">
   <table mat-table
@@ -44,7 +44,7 @@
 
     <ng-container matColumnDef="code">
       <th mat-header-cell
-          *matHeaderCellDef> <fa-icon [icon]="faFont" /> Código </th>
+          *matHeaderCellDef> <fa-icon [icon]="faBarcode" /> Código </th>
       <td mat-cell
           *matCellDef="let element"> {{element.code}} </td>
     </ng-container>
@@ -92,7 +92,6 @@
       </td>
     </ng-container>
 
-
     <tr mat-header-row
         *matHeaderRowDef="displayedColumns; sticky: true"></tr>
     <tr mat-row
@@ -100,13 +99,16 @@
   </table>
 </div>
 <div class="paginator-wrap">
+  @if (questionAdminService.totalRecords() !== undefined) {
+
   <mat-paginator [pageSizeOptions]="pageSizeOptions"
                  [pageSize]="currentPageSize"
-                 [length]="questionService.totalRecords()"
+                 [length]="questionAdminService.totalRecords()"
                  showFirstLastButtons
                  (page)="onPageEvent($event)"
-                 [hidePageSize]="questionService.totalRecords() < pageSizeOptions[0]">
+                 [hidePageSize]="(questionAdminService.totalRecords() || 0) < pageSizeOptions[0]">
   </mat-paginator>
+  }
 </div>
 } @else {
 <div>

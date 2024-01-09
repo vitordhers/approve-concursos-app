@@ -11,6 +11,7 @@ import localePtBr from '@angular/common/locales/pt';
 import {
   BehaviorSubject,
   Subject as RxJsSubject,
+  distinctUntilChanged,
   filter,
   switchMap,
   takeUntil,
@@ -43,10 +44,10 @@ import { PAGINATION_SIZES } from '../../../../../../shared/constants/pagination-
 import { MatPaginatorIntlPtBr } from '../../../../../../shared/config/pagination-intl.model';
 import { fireGenericError } from '../../../../../../notification/functions/fire-generic-error.function';
 import { fireGenericSuccess } from '../../../../../../notification/functions/fire-generic-success.function';
-import { SubjectAdminService } from '../../../../../../services/admin/subjects/subject.service';
 import { Subject } from '../../../../../../models/subject.model';
 import { ServerImgPipe } from '../../../../../../shared/pipes/server-img.pipe';
 import { subjectRecordLabels } from '../../../../../../shared/constants/subject-record-labels.const';
+import { SubjectAdminService } from '../../../../../../services/admin/subjects/subject-admin.service';
 
 registerLocaleData(localePtBr);
 
@@ -97,15 +98,21 @@ export class ListComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['thumb', 'id', 'name', 'updatedAt', 'actions'];
 
   private loadedSubjects$ = this.currentPage$.pipe(
+    distinctUntilChanged(
+      (prev, curr) =>
+        prev?.start === curr?.start &&
+        prev?.end === curr?.end &&
+        prev?.pageSize === curr?.pageSize
+    ),
     takeUntil(this.destroy$),
     switchMap(({ start, end, pageSize }) =>
-      this.subjectService.paginate(start, end, pageSize)
+      this.subjectAdminService.paginate(start, end, pageSize)
     )
   );
   loadedSubjects = toSignal(this.loadedSubjects$);
 
   constructor(
-    public subjectService: SubjectAdminService,
+    public subjectAdminService: SubjectAdminService,
     private activatedRoute: ActivatedRoute,
     private router: Router
   ) {}
@@ -155,7 +162,7 @@ export class ListComponent implements OnInit, OnDestroy {
     this.loadingActions.set(true);
     const { id, name } = subject;
     if (!id) return;
-    this.subjectService.remove(id).subscribe({
+    this.subjectAdminService.remove(id).subscribe({
       next: (result) => {
         this.loadingActions.set(false);
         if (!result.success) {

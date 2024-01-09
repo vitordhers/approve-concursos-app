@@ -94,13 +94,15 @@
   </table>
 </div>
 <div class="paginator-wrap">
+  @if (boardAdminService.totalRecords() !== undefined) {
   <mat-paginator [pageSizeOptions]="pageSizeOptions"
                  [pageSize]="currentPageSize"
-                 [length]="boardService.totalRecords()"
+                 [length]="boardAdminService.totalRecords()"
                  showFirstLastButtons
                  (page)="onPageEvent($event)"
-                 [hidePageSize]="boardService.totalRecords() < pageSizeOptions[0]">
+                 [hidePageSize]="(boardAdminService.totalRecords() || 0) < pageSizeOptions[0]">
   </mat-paginator>
+  }
 </div>
 } @else {
 <div>

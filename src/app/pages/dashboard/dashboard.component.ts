@@ -44,7 +44,6 @@ import { NavSectionType } from './enums/nav-section-type.enum';
 import { NavItemComponent } from '../../components/nav-item/nav-item.component';
 import { UserService } from '../../services/user/user.service';
 import { Subject, filter, map, takeUntil } from 'rxjs';
-import { EntityRelationAdminService } from '../../services/admin/entity-relation.service';
 import { EntityRelationService } from '../../services/entity-relations.service';
 
 @Component({
@@ -143,7 +142,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
               icon: faFileExcel,
               isSubsection: true,
               action: () => {
-                this.router.navigate(['painel', 'admin', 'questoes', 'adicionar-por-excel']);
+                this.router.navigate([
+                  'painel',
+                  'admin',
+                  'questoes',
+                  'adicionar-por-excel',
+                ]);
               },
             },
             {
@@ -457,7 +461,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private router: Router,
     private location: Location,
     public userService: UserService,
-    private entityRelationsAdminService: EntityRelationAdminService,
     private entityRelationsService: EntityRelationService
   ) {}
 

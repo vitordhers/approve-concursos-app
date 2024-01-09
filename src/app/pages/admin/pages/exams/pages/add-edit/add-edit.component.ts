@@ -52,7 +52,7 @@ import { fireGenericError } from '../../../../../../notification/functions/fire-
 import { fireGenericSuccess } from '../../../../../../notification/functions/fire-generic-success.function';
 import { assessmentExamRecordLabels } from '../../../../../../shared/constants/assessment-exam-labels.const';
 import { Exam } from '../../../../../../models/exam.model';
-import { ExamsAdminService } from '../../../../../../services/admin/exams/exams.service';
+import { ExamAdminService } from '../../../../../../services/admin/exams/exam-admin.service';
 import { CustomFormValidators } from '../../../../../../shared/models/custom-form-validators.model';
 import { Board } from '../../../../../../models/board.model';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -80,7 +80,7 @@ import { EditAssessmentExamDto } from '../../../../../../services/admin/exams/in
 import { AddAssessmentExamDto } from '../../../../../../services/admin/exams/interfaces/add-assessment-exam-dto.interface';
 import { EditMockExamDto } from '../../../../../../services/admin/exams/interfaces/edit-mock-exam-dto.interface';
 import { AddMockExamDto } from '../../../../../../services/admin/exams/interfaces/add-mock-exam-dto.interface';
-import { QuestionsAdminService } from '../../../../../../services/admin/questions/questions-admin.service';
+import { QuestionAdminService } from '../../../../../../services/admin/questions/question-admin.service';
 import { cloneDeep } from 'lodash';
 import { LettersNumbersAndDashOnlyDirective } from '../../../../../../shared/directives/letters-numbers-and-dash-only.directive';
 
@@ -147,7 +147,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
         Validators.maxLength(50),
       ],
       asyncValidators: [
-        CustomFormValidators.createQuestionCodeValidator(this.examService),
+        CustomFormValidators.createQuestionCodeValidator(this.examAdminService),
       ],
     }),
     name: new FormControl('', {
@@ -213,8 +213,8 @@ export class AddEditComponent implements OnInit, OnDestroy {
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private examService: ExamsAdminService,
-    private questionService: QuestionsAdminService,
+    private examAdminService: ExamAdminService,
+    private questionAdminService: QuestionAdminService,
     private cd: ChangeDetectorRef
   ) {}
 
@@ -229,7 +229,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
             return EMPTY;
           }
           this.loading.set(true);
-          return this.examService.getOne(id);
+          return this.examAdminService.getOne(id);
         })
       )
       .subscribe({
@@ -305,7 +305,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
     this.addMockQuestionsFromGroup.controls['subjectId'].patchValue(subject.id);
     this.addMockQuestionsFromGroup.controls['subjectId'].markAsTouched();
 
-    this.questionService
+    this.questionAdminService
       .count('subjectId', subject.dbId)
       .subscribe((result) => {
         if (!result || !result.success || result.total === 0) {
@@ -367,7 +367,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
     formGroup.controls['subject'].patchValue(subject);
     formGroup.controls['subjectId'].patchValue(subject.id);
 
-    this.questionService
+    this.questionAdminService
       .count('subjectId', subject.dbId)
       .subscribe((result) => {
         if (!result || !result.success || result.total === 0) {
@@ -393,7 +393,6 @@ export class AddEditComponent implements OnInit, OnDestroy {
 
   onSelectedBoard(board: Board) {
     this.form.controls['boardId'].patchValue(board);
-    console.log('@@@', this.form.controls['boardId'].value);
     this.markBoardSelectorAsTouched.set(true);
   }
 
@@ -485,7 +484,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
           subjectId: mq.subjectId,
         })),
       };
-      return this.examService.edit(updatedRecord.id, dto, ExamType.MOCK);
+      return this.examAdminService.edit(updatedRecord.id, dto, ExamType.MOCK);
     }
     const dto: AddMockExamDto = {
       code,
@@ -495,7 +494,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
         subjectId: mq.subjectId,
       })),
     };
-    return this.examService.add(dto, ExamType.MOCK);
+    return this.examAdminService.add(dto, ExamType.MOCK);
   }
 
   saveAssessmentExam() {
@@ -519,7 +518,11 @@ export class AddEditComponent implements OnInit, OnDestroy {
             : undefined,
         boardId: board && typeof board !== 'string' ? board.id : undefined,
       };
-      return this.examService.edit(updatedRecord.id, dto, ExamType.ASSESSMENT);
+      return this.examAdminService.edit(
+        updatedRecord.id,
+        dto,
+        ExamType.ASSESSMENT
+      );
     }
     const dto: AddAssessmentExamDto = {
       code,
@@ -533,7 +536,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
       boardId: board && typeof board !== 'string' ? board.id : undefined,
     };
 
-    return this.examService.add(dto, ExamType.ASSESSMENT);
+    return this.examAdminService.add(dto, ExamType.ASSESSMENT);
   }
 
   save() {
@@ -609,7 +612,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
     this.loading.set(true);
     const { id, code } = toBeRemovedRecord;
     if (!id) return;
-    this.examService.remove(id, toBeRemovedRecord.type).subscribe({
+    this.examAdminService.remove(id, toBeRemovedRecord.type).subscribe({
       next: (result) => {
         this.loading.set(false);
         if (!result.success) {

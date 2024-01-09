@@ -7,7 +7,14 @@ import {
   signal,
 } from '@angular/core';
 import { CommonModule, registerLocaleData } from '@angular/common';
-import { BehaviorSubject, Subject, filter, switchMap, takeUntil } from 'rxjs';
+import {
+  BehaviorSubject,
+  Subject,
+  distinctUntilChanged,
+  filter,
+  switchMap,
+  takeUntil,
+} from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import {
@@ -37,7 +44,7 @@ import { PAGINATION_SIZES } from '../../../../../../shared/constants/pagination-
 import { MatPaginatorIntlPtBr } from '../../../../../../shared/config/pagination-intl.model';
 import { fireGenericError } from '../../../../../../notification/functions/fire-generic-error.function';
 import { fireGenericSuccess } from '../../../../../../notification/functions/fire-generic-success.function';
-import { BoardAdminService } from '../../../../../../services/admin/boards/board.service';
+import { BoardAdminService } from '../../../../../../services/admin/boards/board-admin.service';
 import { Board } from '../../../../../../models/board.model';
 import { ServerImgPipe } from '../../../../../../shared/pipes/server-img.pipe';
 import { boardRecordLabels } from '../../../../../../shared/constants/board-record-labels.const';
@@ -93,15 +100,21 @@ export class ListComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['thumb', 'id', 'name', 'updatedAt', 'actions'];
 
   private loadedBoards$ = this.currentPage$.pipe(
+    distinctUntilChanged(
+      (prev, curr) =>
+        prev?.start === curr?.start &&
+        prev?.end === curr?.end &&
+        prev?.pageSize === curr?.pageSize
+    ),
     takeUntil(this.destroy$),
     switchMap(({ start, end, pageSize }) =>
-      this.boardService.paginate(start, end, pageSize)
+      this.boardAdminService.paginate(start, end, pageSize)
     )
   );
   loadedBoards = toSignal(this.loadedBoards$);
 
   constructor(
-    public boardService: BoardAdminService,
+    public boardAdminService: BoardAdminService,
     private activatedRoute: ActivatedRoute,
     private router: Router
   ) {}
@@ -151,7 +164,7 @@ export class ListComponent implements OnInit, OnDestroy {
     this.loadingActions.set(true);
     const { id, name } = board;
     if (!id) return;
-    this.boardService.remove(id).subscribe({
+    this.boardAdminService.remove(id).subscribe({
       next: (result) => {
         this.loadingActions.set(false);
         if (!result.success) {

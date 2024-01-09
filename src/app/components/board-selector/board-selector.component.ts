@@ -34,9 +34,8 @@ import {
 } from 'rxjs';
 import { displayNameFn } from '../../shared/functions/display-fn-selectors.function';
 import { Board } from '../../models/board.model';
-import { BoardAdminService } from '../../services/admin/boards/board.service';
 import { boardRecordLabels } from '../../shared/constants/board-record-labels.const';
-import { cloneDeep } from 'lodash';
+import { BoardsService } from '../../services/boards.service';
 
 @Component({
   selector: 'app-board-selector',
@@ -99,7 +98,7 @@ export class BoardSelectorComponent implements OnInit, OnChanges, OnDestroy {
   );
 
   constructor(
-    private boardService: BoardAdminService,
+    private boardService: BoardsService,
     private cd: ChangeDetectorRef
   ) {}
 

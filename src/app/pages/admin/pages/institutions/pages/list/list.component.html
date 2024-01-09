@@ -13,8 +13,6 @@
   <table mat-table
          [dataSource]="loadedInstitutions() || []"
          class="mat-elevation-z0">
-
-
     <ng-container matColumnDef="thumb">
       <th mat-header-cell
           *matHeaderCellDef></th>
@@ -94,13 +92,15 @@
   </table>
 </div>
 <div class="paginator-wrap">
+  @if (institutionAdminService.totalRecords() !== undefined) {
   <mat-paginator [pageSizeOptions]="pageSizeOptions"
                  [pageSize]="currentPageSize"
-                 [length]="institutionService.totalRecords()"
+                 [length]="institutionAdminService.totalRecords()"
                  showFirstLastButtons
                  (page)="onPageEvent($event)"
-                 [hidePageSize]="institutionService.totalRecords() < pageSizeOptions[0]">
+                 [hidePageSize]="(institutionAdminService.totalRecords() || 0) < pageSizeOptions[0]">
   </mat-paginator>
+  }
 </div>
 } @else {
 <div>

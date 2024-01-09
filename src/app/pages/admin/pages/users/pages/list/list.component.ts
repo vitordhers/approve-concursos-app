@@ -8,7 +8,14 @@ import {
 } from '@angular/core';
 import { CommonModule, registerLocaleData } from '@angular/common';
 import localePtBr from '@angular/common/locales/pt';
-import { BehaviorSubject, Subject, filter, switchMap, takeUntil } from 'rxjs';
+import {
+  BehaviorSubject,
+  Subject,
+  distinctUntilChanged,
+  filter,
+  switchMap,
+  takeUntil,
+} from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
@@ -97,6 +104,12 @@ export class ListComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['id', 'name', 'role', 'updatedAt', 'actions'];
 
   private loadedUsers$ = this.currentPage$.pipe(
+    distinctUntilChanged(
+      (prev, curr) =>
+        prev?.start === curr?.start &&
+        prev?.end === curr?.end &&
+        prev?.pageSize === curr?.pageSize
+    ),
     takeUntil(this.destroy$),
     switchMap(({ start, end, pageSize }) =>
       this.userService.paginate(start, end, pageSize)

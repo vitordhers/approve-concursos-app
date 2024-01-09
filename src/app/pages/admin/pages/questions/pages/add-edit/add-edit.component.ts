@@ -69,7 +69,7 @@ import { Entity } from '../../../../../../shared/enums/entity.enum';
 import { fireGenericError } from '../../../../../../notification/functions/fire-generic-error.function';
 import { fireGenericSuccess } from '../../../../../../notification/functions/fire-generic-success.function';
 import { Alternative, Question } from '../../../../../../models/question.model';
-import { QuestionsAdminService } from '../../../../../../services/admin/questions/questions-admin.service';
+import { QuestionAdminService } from '../../../../../../services/admin/questions/question-admin.service';
 import { AddQuestionDto } from '../../../../../../services/admin/questions/interfaces/add-question-dto.interface';
 import { EditQuestionDto } from '../../../../../../services/admin/questions/interfaces/edit-question-dto.interface';
 import { EducationStage } from '../../../../../../shared/enums/education-stage';
@@ -90,6 +90,7 @@ import { BoardSelectorComponent } from '../../../../../../components/board-selec
 import { SubjectSelectorComponent } from '../../../../../../components/subject-selector/subject-selector.component';
 import { CustomFormValidators } from '../../../../../../shared/models/custom-form-validators.model';
 import { YearSelectorComponent } from '../../../../../../components/year-selector/year-selector.component';
+import { ExamSelectorComponent } from '../../../../../../components/exam-selector/exam-selector.component';
 
 registerLocaleData(localePtBr);
 
@@ -120,6 +121,7 @@ registerLocaleData(localePtBr);
     BoardSelectorComponent,
     SubjectSelectorComponent,
     YearSelectorComponent,
+    ExamSelectorComponent,
   ],
   providers: [{ provide: LOCALE_ID, useValue: 'pt-BR' }],
   templateUrl: './add-edit.component.html',
@@ -166,7 +168,9 @@ export class AddEditComponent implements OnInit, OnDestroy {
         Validators.maxLength(50),
       ],
       asyncValidators: [
-        CustomFormValidators.createQuestionCodeValidator(this.questionService),
+        CustomFormValidators.createQuestionCodeValidator(
+          this.questionAdminService
+        ),
       ],
     }),
     prompt: new FormControl('', {
@@ -232,7 +236,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private questionService: QuestionsAdminService
+    private questionAdminService: QuestionAdminService
   ) {}
 
   patchPreview(imgPreview: ImgUploadPreview) {
@@ -250,7 +254,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
             return EMPTY;
           }
           this.loading.set(true);
-          return this.questionService.getOne(id, true);
+          return this.questionAdminService.getOne(id, true);
         })
       )
       .subscribe({
@@ -351,15 +355,19 @@ export class AddEditComponent implements OnInit, OnDestroy {
   onSubjectSelected(record: Subject) {
     this.form.controls['subjectId'].patchValue(record);
   }
+
   onInstitutionSelected(record: Institution) {
     this.form.controls['institutionId'].patchValue(record);
   }
+
   onBoardSelected(record: Board) {
     this.form.controls['boardId'].patchValue(record);
   }
+
   onExamSelected(record: Exam) {
     this.form.controls['examId'].patchValue(record);
   }
+
   onYearSelected(year: number) {
     this.form.controls['year'].patchValue(year);
   }
@@ -424,7 +432,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
                   : exam.id
                 : undefined,
             };
-            return this.questionService.add(addRecordDto);
+            return this.questionAdminService.add(addRecordDto);
           }
           const editRecordDto: EditQuestionDto = {
             prompt,
@@ -453,7 +461,10 @@ export class AddEditComponent implements OnInit, OnDestroy {
               : undefined,
           };
 
-          return this.questionService.edit(updatedRecord.id, editRecordDto);
+          return this.questionAdminService.edit(
+            updatedRecord.id,
+            editRecordDto
+          );
         })
       )
       .subscribe({
@@ -518,7 +529,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
     this.loading.set(true);
     const { id, code } = updatedRecord;
     if (!id) return;
-    this.questionService.remove(id).subscribe({
+    this.questionAdminService.remove(id).subscribe({
       next: (result) => {
         this.loading.set(false);
         if (!result.success) {

@@ -29,6 +29,27 @@ export class Question extends BaseEntity implements BaseQuestion {
   }
 }
 
+export class AnswerableQuestion extends BaseEntity implements BaseQuestion {
+  constructor(
+    id: string,
+    entityId: Entity,
+    public code: string,
+    public prompt: string,
+    public subjectId: string,
+    public alternatives: Alternative[],
+    createdAt: number,
+    updatedAt: number,
+    public illustration?: string,
+    public year?: number,
+    public institutionId?: string,
+    public boardId?: string,
+    public examId?: string,
+    public educationStage?: EducationStage
+  ) {
+    super(id, entityId, createdAt, updatedAt);
+  }
+}
+
 export interface MockQuestion {
   subjectId: string;
   times: number;
@@ -41,7 +62,7 @@ export interface BaseQuestion extends BaseEntityInterface {
   prompt: string;
   subjectId: string;
   alternatives: Alternative[];
-  correctIndex: number;
+  correctIndex?: number;
   answerExplanation?: string;
   illustration?: string;
   year?: number;

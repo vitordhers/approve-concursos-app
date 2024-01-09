@@ -6,3 +6,5 @@ export enum Entity {
   SUBJECTS = 'subjects',
   INSTITUTIONS = 'institutions',
 }
+
+export type CacheAcessor = Entity | 'answerable_questions';

@@ -95,13 +95,16 @@
 
 </div>
 <div class="paginator-wrap">
+  @if (subjectAdminService.totalRecords() !== undefined) {
+
   <mat-paginator [pageSizeOptions]="pageSizeOptions"
                  [pageSize]="currentPageSize"
-                 [length]="subjectService.totalRecords()"
+                 [length]="subjectAdminService.totalRecords()"
                  showFirstLastButtons
                  (page)="onPageEvent($event)"
-                 [hidePageSize]="subjectService.totalRecords() < pageSizeOptions[0]">
+                 [hidePageSize]="(subjectAdminService.totalRecords() || 0) < pageSizeOptions[0]">
   </mat-paginator>
+  }
 </div>
 } @else {
 <div>

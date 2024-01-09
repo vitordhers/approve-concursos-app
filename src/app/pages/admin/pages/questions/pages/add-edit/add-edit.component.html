@@ -221,30 +221,8 @@
         <app-subject-selector (selectedEmitter)="onSubjectSelected($event)"
                               [loadValue]="form.controls['subjectId'].value"
                               [required]="true" />
-        <mat-form-field appearance="outline">
-          <mat-label>Prova</mat-label>
-          <span matTextPrefix><fa-icon [icon]="faListOl" />&nbsp;&nbsp;</span>
-          <input type="text"
-                 matInput
-                 formControlName="examId"
-                 [matAutocomplete]="testAutocomplete">
-          <mat-autocomplete #testAutocomplete="matAutocomplete"
-                            [displayWith]="displayFn">
-            <!-- @for (record of searchedSubjects$ | async; track record) {
-            <mat-option [value]="record">
-              <mat-card class="autocomplete-card">
-                <mat-card-header>
-                  <img height="40"
-                       width="40"
-                       mat-card-avatar
-                       [ngSrc]="record.thumb ? (record.thumb | serverImgPipe ): 'assets/img/none.jpg'">
-                  <mat-card-title>{{record.name}}</mat-card-title>
-                </mat-card-header>
-              </mat-card>
-            </mat-option>
-            } -->
-          </mat-autocomplete>
-        </mat-form-field>
+        <app-exam-selector [loadValue]="form.controls['examId'].value"
+                           (selectedEmitter)="onExamSelected($event)" />
         <app-institution-selector (selectedEmitter)="onInstitutionSelected($event)"
                                   [loadValue]="form.controls['institutionId'].value" />
         <app-board-selector (selectedEmitter)="onBoardSelected($event)"

@@ -15,6 +15,7 @@ import {
   BehaviorSubject,
   Subject,
   combineLatest,
+  distinctUntilChanged,
   of,
   switchMap,
   takeUntil,
@@ -88,7 +89,17 @@ export class ExamListComponent implements OnInit, OnDestroy {
 
   type$ = new Subject<ExamType>();
 
-  private loadedExams$ = combineLatest([this.currentPage$, this.type$]).pipe(
+  private loadedExams$ = combineLatest([
+    this.currentPage$.pipe(
+      distinctUntilChanged(
+        (prev, curr) =>
+          prev?.start === curr?.start &&
+          prev?.end === curr?.end &&
+          prev?.pageSize === curr?.pageSize
+      )
+    ),
+    this.type$,
+  ]).pipe(
     takeUntil(this.destroy$),
     switchMap(([{ start, end, pageSize }, type]) => {
       return this.type

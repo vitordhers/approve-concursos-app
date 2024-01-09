@@ -1,4 +1,11 @@
-import { Injectable, Injector, computed, inject, signal } from '@angular/core';
+import {
+  Injectable,
+  Injector,
+  WritableSignal,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { distinctUntilChanged, map, of, switchMap, tap } from 'rxjs';
@@ -14,8 +21,8 @@ import { generateHash } from '../shared/functions/generate-hash.function';
 })
 export class BoardsService {
   private endpoint = `${environment.apiUrl}/boards`;
-  private allLoaded = false;
-  private loadedRecords = signal(new Map<string, Board>());
+  allLoaded = false;
+  loadedRecords = signal(new Map<string, Board>());
   private injector = inject(Injector);
   private paginateLoaded = computed(() =>
     Array.from(this.loadedRecords().values()).sort(
@@ -23,7 +30,7 @@ export class BoardsService {
     )
   );
 
-  private paginateLoaded$ = toObservable(this.paginateLoaded, {
+  paginateLoaded$ = toObservable(this.paginateLoaded, {
     injector: this.injector,
   }).pipe(
     distinctUntilChanged(
@@ -37,16 +44,17 @@ export class BoardsService {
       (prev, curr) => generateHash(prev) === generateHash(curr)
     )
   );
-  totalRecords = signal(0);
+
+  totalRecords: WritableSignal<number | undefined> = signal(undefined);
 
   constructor(private http: HttpClient) {}
 
   private setAllLoaded(map: Map<string, Board>) {
     const recordsLength = Array.from(map.keys()).length;
-    this.allLoaded = recordsLength == this.totalRecords();
+    this.allLoaded = recordsLength === this.totalRecords();
   }
 
-  private serializeRecord(record: BaseBoard) {
+  serializeRecord(record: BaseBoard) {
     return new Board(
       record.id,
       record.entityId,
@@ -111,42 +119,6 @@ export class BoardsService {
             `${this.endpoint}/search?query=${value}`
           )
           .pipe(
-            map((res) =>
-              res.success && res.data && res.data.length
-                ? res.data.map((record) => this.serializeRecord(record))
-                : ([] as Board[])
-            ),
-            tap((records) => this.cacheRecords(records))
-          );
-      })
-    );
-  }
-
-  paginate(start: number = 0, end: number, pageSize: number) {
-    return this.paginateLoaded$.pipe(
-      switchMap((paginateLoaded) => {
-        const alreadyLoadedRecords = paginateLoaded.slice(start, end);
-
-        if (this.allLoaded || alreadyLoadedRecords.length === end - start)
-          return of(paginateLoaded.slice(start, end));
-
-        let missingRecordsNo = 0;
-        let updatedStart = start;
-        let updatedEnd = end;
-        if (alreadyLoadedRecords.length) {
-          missingRecordsNo = pageSize - alreadyLoadedRecords.length;
-          updatedStart = alreadyLoadedRecords.length;
-          updatedEnd = start + missingRecordsNo;
-        }
-
-        return this.http
-          .get<PaginatedResponse<Board[]>>(
-            `${this.endpoint}?start=${updatedStart}&limit=${updatedEnd}`
-          )
-          .pipe(
-            tap((res) =>
-              res.success ? this.totalRecords.set(res.total) : undefined
-            ),
             map((res) =>
               res.success && res.data && res.data.length
                 ? res.data.map((record) => this.serializeRecord(record))

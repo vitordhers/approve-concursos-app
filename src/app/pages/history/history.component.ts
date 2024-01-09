@@ -91,7 +91,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   private setAllLoaded(map: Map<string, Answer>) {
     const recordsLength = Array.from(map.keys()).length;
-    this.allLoaded = recordsLength == this.totalRecords();
+    this.allLoaded = recordsLength === this.totalRecords();
   }
 
   constructor(

@@ -42,17 +42,12 @@ import {
   faCrown,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { FileUploaderComponent } from '../../../../../../components/file-uploader/file-uploader.component';
 import { fireToast } from '../../../../../../notification/functions/fire-toast.function';
-import { ImgUploadPreview } from '../../../../../../components/file-uploader/interface/img-upload-preview.interface';
-import { Entity } from '../../../../../../shared/enums/entity.enum';
 import { fireGenericError } from '../../../../../../notification/functions/fire-generic-error.function';
 import { fireGenericSuccess } from '../../../../../../notification/functions/fire-generic-success.function';
 import Swal from 'sweetalert2';
 import localePtBr from '@angular/common/locales/pt';
 import { Subject } from '../../../../../../models/subject.model';
-import { SubjectAdminService } from '../../../../../../services/admin/subjects/subject.service';
-import { subjectRecordLabels } from '../../../../../../shared/constants/subject-record-labels.const';
 import { userRecordLabels } from '../../../../../../shared/constants/user-record-labels.const';
 import { EMAIL_REGEX } from '../../../../../../components/modals/auth/constants/email-regex.const';
 import { STRONG_PASSWORD_REGEX } from '../../../../../../components/modals/auth/constants/strong-password-regex.const';
@@ -211,9 +206,6 @@ export class AddEditComponent implements OnInit, OnDestroy {
   }
 
   save() {
-    console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@ this.form.valid', {
-      valid: this.form.valid,
-    });
     if (!this.form.valid) {
       this.form.markAllAsTouched();
       console.log(this.form.errors);

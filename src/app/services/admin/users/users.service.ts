@@ -47,7 +47,7 @@ export class UserAdminService {
 
   private setAllLoaded(map: Map<string, User>) {
     const recordsLength = Array.from(map.keys()).length;
-    this.allLoaded = recordsLength == this.totalRecords();
+    this.allLoaded = recordsLength === this.totalRecords();
   }
 
   private serializeRecord(record: BaseUser) {

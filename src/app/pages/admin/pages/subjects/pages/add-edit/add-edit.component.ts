@@ -46,7 +46,7 @@ import { fireGenericSuccess } from '../../../../../../notification/functions/fir
 import Swal from 'sweetalert2';
 import localePtBr from '@angular/common/locales/pt';
 import { Subject } from '../../../../../../models/subject.model';
-import { SubjectAdminService } from '../../../../../../services/admin/subjects/subject.service';
+import { SubjectAdminService } from '../../../../../../services/admin/subjects/subject-admin.service';
 import { EditSubjectDto } from '../../../../../../services/admin/subjects/interfaces/edit-subject-dto.interface';
 import { AddSubjectDto } from '../../../../../../services/admin/subjects/interfaces/add-subject-dto.interface';
 import { subjectRecordLabels } from '../../../../../../shared/constants/subject-record-labels.const';

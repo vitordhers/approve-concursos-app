@@ -15,7 +15,7 @@ import {
   signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Question } from '../../models/question.model';
+import { AnswerableQuestion, Question } from '../../models/question.model';
 import {
   MatPaginator,
   MatPaginatorIntl,
@@ -55,8 +55,8 @@ import { fireToast } from '../../notification/functions/fire-toast.function';
 export class QuestionnaireComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator) paginator?: MatPaginator;
   @Input()
-  _loadedFilteredQuestions?: WritableSignal<Question[]>;
-  @Input() _loadedExamQuestions?: WritableSignal<Question[]>;
+  _loadedFilteredQuestions?: WritableSignal<AnswerableQuestion[]>;
+  @Input() _loadedExamQuestions?: WritableSignal<AnswerableQuestion[]>;
 
   @Output() pageEventEmitter = new EventEmitter<{
     start: number;
@@ -110,7 +110,7 @@ export class QuestionnaireComponent implements OnInit, OnDestroy {
   constructor(private cd: ChangeDetectorRef, private router: Router) {}
 
   ngOnInit(): void {
-    // this.answerMap.clear();
+    this.answerMap.clear();
   }
 
   onPageEvent({ pageIndex, pageSize }: PageEvent) {
@@ -130,9 +130,7 @@ export class QuestionnaireComponent implements OnInit, OnDestroy {
         'Você terminou sua prova. Vamos ver seus resultados?',
         'success'
       );
-      setTimeout(() => {
-
-      }, 3000);
+      setTimeout(() => {}, 3000);
 
       this.router.navigate(['painel', 'historico']);
       return;

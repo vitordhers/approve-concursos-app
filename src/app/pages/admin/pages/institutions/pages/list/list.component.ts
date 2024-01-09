@@ -7,7 +7,14 @@ import {
   signal,
 } from '@angular/core';
 import { CommonModule, registerLocaleData } from '@angular/common';
-import { BehaviorSubject, Subject, filter, switchMap, takeUntil } from 'rxjs';
+import {
+  BehaviorSubject,
+  Subject,
+  distinctUntilChanged,
+  filter,
+  switchMap,
+  takeUntil,
+} from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
@@ -32,7 +39,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import Swal from 'sweetalert2';
-import { InstitutionAdminService } from '../../../../../../services/admin/institution/institution.service';
+import { InstitutionAdminService } from '../../../../../../services/admin/institution/institution-admin.service';
 import { DEFAULT_PAGINATION_SIZE } from '../../../../../../shared/config/default-pagination-size.const';
 import { PAGINATION_SIZES } from '../../../../../../shared/constants/pagination-sizes.const';
 import { MatPaginatorIntlPtBr } from '../../../../../../shared/config/pagination-intl.model';
@@ -91,15 +98,21 @@ export class ListComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['thumb', 'id', 'name', 'updatedAt', 'actions'];
 
   private loadedInstitutions$ = this.currentPage$.pipe(
+    distinctUntilChanged(
+      (prev, curr) =>
+        prev?.start === curr?.start &&
+        prev?.end === curr?.end &&
+        prev?.pageSize === curr?.pageSize
+    ),
     takeUntil(this.destroy$),
     switchMap(({ start, end, pageSize }) =>
-      this.institutionService.paginate(start, end, pageSize)
+      this.institutionAdminService.paginate(start, end, pageSize)
     )
   );
   loadedInstitutions = toSignal(this.loadedInstitutions$);
 
   constructor(
-    public institutionService: InstitutionAdminService,
+    public institutionAdminService: InstitutionAdminService,
     private activatedRoute: ActivatedRoute,
     private router: Router
   ) {}
@@ -150,7 +163,7 @@ export class ListComponent implements OnInit, OnDestroy {
     this.loadingActions.set(true);
     const { id, name } = institution;
     if (!id) return;
-    this.institutionService.remove(id).subscribe({
+    this.institutionAdminService.remove(id).subscribe({
       next: (result) => {
         this.loadingActions.set(false);
         if (!result.success) {

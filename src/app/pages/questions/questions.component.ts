@@ -19,14 +19,15 @@ import {
   EMPTY,
   Subject,
   combineLatest,
+  distinctUntilChanged,
   switchMap,
   takeUntil,
 } from 'rxjs';
 import { QuestionnaireComponent } from '../../components/questionnaire/questionnaire.component';
-import { QuestionsService } from '../../services/questions.service';
 import { FilterType } from '../../shared/enums/filter-type.enum';
-import { Question } from '../../models/question.model';
+import { AnswerableQuestion, Question } from '../../models/question.model';
 import { ExamsService } from '../../services/exams.service';
+import { AnswerableQuestionsService } from '../../services/answerable-questions.service';
 
 @Component({
   selector: 'app-questions',
@@ -43,8 +44,8 @@ export class QuestionsComponent implements OnInit, OnDestroy {
   currentExamId: WritableSignal<string | undefined> = signal(undefined);
   currentFragment: WritableSignal<string | undefined> = signal(undefined);
 
-  loadedFilteredQuestions = signal([] as Question[]);
-  loadedExamQuestions = signal([] as Question[]);
+  loadedFilteredQuestions = signal([] as AnswerableQuestion[]);
+  loadedExamQuestions = signal([] as AnswerableQuestion[]);
 
   loadedFilteredQuestionsTotal = signal(0);
 
@@ -64,7 +65,7 @@ export class QuestionsComponent implements OnInit, OnDestroy {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private questionsService: QuestionsService,
+    private answerableQuestionsService: AnswerableQuestionsService,
     private examsService: ExamsService
   ) {}
 
@@ -91,9 +92,7 @@ export class QuestionsComponent implements OnInit, OnDestroy {
 
           filters = filters.filter((f) => f.type !== FilterType.SELECTOR);
 
-          // console.log('@@@', { filters, selectors });
-
-          return this.questionsService.fetchQuestionsWithFilters(
+          return this.answerableQuestionsService.fetchQuestionsWithFilters(
             filters,
             selectors
           );
@@ -104,7 +103,17 @@ export class QuestionsComponent implements OnInit, OnDestroy {
         this.loadedFilteredQuestionsTotal.set(result.length);
       });
 
-    combineLatest([this.activatedRoute.queryParamMap, this.examPaginator$])
+    combineLatest([
+      this.activatedRoute.queryParamMap,
+      this.examPaginator$.pipe(
+        distinctUntilChanged(
+          (prev, curr) =>
+            prev?.start === curr?.start &&
+            prev?.end === curr?.end &&
+            prev?.pageSize === curr?.pageSize
+        )
+      ),
+    ])
       .pipe(
         takeUntil(this.destroy$),
         switchMap(([params, page]) => {
@@ -114,7 +123,7 @@ export class QuestionsComponent implements OnInit, OnDestroy {
 
           const { start, end, pageSize } = page;
 
-          return this.examsService.paginateExamQuestions(
+          return this.examsService.paginateExamAnswerableQuestions(
             examId,
             start,
             end,
@@ -123,6 +132,7 @@ export class QuestionsComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe((examQuestions) => {
+        console.log('@@@@', { examQuestions });
         this.loadedExamQuestions.set(examQuestions);
       });
   }

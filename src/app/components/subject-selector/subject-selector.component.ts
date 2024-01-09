@@ -35,7 +35,8 @@ import {
 import { displayNameFn } from '../../shared/functions/display-fn-selectors.function';
 import { Subject } from '../../models/subject.model';
 import { subjectRecordLabels } from '../../shared/constants/subject-record-labels.const';
-import { SubjectAdminService } from '../../services/admin/subjects/subject.service';
+import { SubjectAdminService } from '../../services/admin/subjects/subject-admin.service';
+import { SubjectsService } from '../../services/subjects.service';
 
 @Component({
   selector: 'app-subject-selector',
@@ -91,7 +92,7 @@ export class SubjectSelectorComponent implements OnInit, OnChanges, OnDestroy {
   );
 
   constructor(
-    private subjectService: SubjectAdminService,
+    private subjectService: SubjectsService,
     private cd: ChangeDetectorRef
   ) {}
 

@@ -12,7 +12,7 @@ import {
   signal,
 } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { Question } from '../../models/question.model';
+import { AnswerableQuestion, Question } from '../../models/question.model';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCardModule } from '@angular/material/card';
@@ -52,6 +52,7 @@ import { AlternativeTooltipPipe } from '../../shared/pipes/alternative-tooltip.p
 import { toLocaleDateStringOptions } from '../../shared/config/locale-date-string-options.const';
 import { cloneDeep } from 'lodash';
 import { fireToast } from '../../notification/functions/fire-toast.function';
+import { AnswerableQuestionsService } from '../../services/answerable-questions.service';
 
 @Component({
   selector: 'app-answerable-question',
@@ -89,7 +90,7 @@ export class AnswerableQuestionComponent implements OnInit, OnChanges {
   @Output() nextPage = new EventEmitter<boolean>();
 
   @Input()
-  _question?: Question;
+  _question?: AnswerableQuestion | Question;
 
   @Input() questionNo?: number;
 
@@ -106,7 +107,7 @@ export class AnswerableQuestionComponent implements OnInit, OnChanges {
   faCheck = faCheck;
   faSquareXmark = faSquareXmark;
   faSquareCheck = faSquareCheck;
-  faCheckDouble = faCheckDouble
+  faCheckDouble = faCheckDouble;
 
   selectedIndex: WritableSignal<number | undefined> = signal(undefined);
 
@@ -165,7 +166,7 @@ export class AnswerableQuestionComponent implements OnInit, OnChanges {
     private institutionsService: InstitutionsService,
     private examService: ExamsService,
     private boardsService: BoardsService,
-    private questionsService: QuestionsService
+    private answerableQuestionsService: AnswerableQuestionsService
   ) {}
 
   ngOnInit(): void {
@@ -175,7 +176,6 @@ export class AnswerableQuestionComponent implements OnInit, OnChanges {
       !this._question
     )
       return;
-    // console.log('@@@@@@', this.correctAnswer, this.answeredAt, this.prevAnswer);
     this.answerMap.update((m) => {
       if (
         this.prevAnswer === undefined ||
@@ -193,7 +193,6 @@ export class AnswerableQuestionComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    // console.log('@@@@', cloneDeep({ changes }));
     if (!changes['_question']) return;
     if (changes['_question']) {
       const question = changes['_question'].currentValue;
@@ -204,7 +203,6 @@ export class AnswerableQuestionComponent implements OnInit, OnChanges {
 
   chooseAnswer() {
     if (!this.selectionList || this.answeredAt) return;
-    // console.log('@@@@@@@', this.answeredAt);
 
     this.selectedIndex.set(
       this.selectionList.selectedOptions.selected[0].value
@@ -223,7 +221,7 @@ export class AnswerableQuestionComponent implements OnInit, OnChanges {
       answeredAlternativeIndex: answeredIndex,
     };
 
-    this.questionsService.answer(answer).subscribe(() => {
+    this.answerableQuestionsService.answer(answer).subscribe(() => {
       this.answerMap.update((m) => {
         const updatedMap = cloneDeep(m);
         updatedMap.set(question.id, answeredIndex);
@@ -238,13 +236,6 @@ export class AnswerableQuestionComponent implements OnInit, OnChanges {
         this.questionIndex === undefined
       )
         return;
-
-      console.log('@@@@', {
-        pageEnd: this.pageEnd,
-        questionIndex: this.questionIndex,
-        questionNo: this.questionNo,
-        examTotalQuestions: this.examTotalQuestions,
-      });
 
       if (
         this.pageEnd !== this.questionIndex + 1 &&

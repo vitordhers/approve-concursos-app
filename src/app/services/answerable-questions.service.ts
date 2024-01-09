@@ -1,22 +1,19 @@
-import {
-  Injectable,
-  Injector,
-  WritableSignal,
-  computed,
-  inject,
-  signal,
-} from '@angular/core';
+import { Injectable, Injector, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { distinctUntilChanged, filter, map, of, switchMap, tap } from 'rxjs';
+import { distinctUntilChanged, map, of, switchMap, tap } from 'rxjs';
 import { cloneDeep } from 'lodash';
 import { environment } from '../../environments/environment';
 import { BaseBoard } from '../models/board.model';
 import { BaseExam } from '../models/exam.model';
 import { BaseInstitution } from '../models/institution.model';
-import { Question, BaseQuestion } from '../models/question.model';
+import {
+  Question,
+  BaseQuestion,
+  AnswerableQuestion,
+} from '../models/question.model';
 import { BaseSubject } from '../models/subject.model';
-import { Entity } from '../shared/enums/entity.enum';
+import { CacheAcessor } from '../shared/enums/entity.enum';
 import { FormattedResponse } from '../shared/interfaces/formatted-response.interface';
 import {
   Filters,
@@ -24,29 +21,16 @@ import {
 } from '../shared/interfaces/filters.interface';
 import { generateHash } from '../shared/functions/generate-hash.function';
 import { AnswerDto } from './interfaces/answer-dto.interface';
+import { QuestionsService } from './questions.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class QuestionsService {
+export class AnswerableQuestionsService {
   private endpoint = `${environment.apiUrl}/questions`;
-  allLoaded = false;
-  loadedRecords = signal(new Map<string, Question>());
+
+  loadedRecords = signal(new Map<string, AnswerableQuestion>());
   private injector = inject(Injector);
-
-  private paginateLoaded = computed(() =>
-    Array.from(this.loadedRecords().values()).sort(
-      (a, b) => b.updatedAt - a.updatedAt
-    )
-  );
-
-  paginateLoaded$ = toObservable(this.paginateLoaded, {
-    injector: this.injector,
-  }).pipe(
-    distinctUntilChanged(
-      (prev, curr) => generateHash(prev) === generateHash(curr)
-    )
-  );
 
   loadedRecords$ = toObservable(this.loadedRecords, {
     injector: this.injector,
@@ -56,18 +40,17 @@ export class QuestionsService {
     )
   );
 
-  totalRecords: WritableSignal<number | undefined> = signal(undefined);
-
   loadedRelations = signal(
-    new Map<Entity, (BaseSubject | BaseInstitution | BaseBoard | BaseExam)[]>()
+    new Map<
+      CacheAcessor,
+      (BaseSubject | BaseInstitution | BaseBoard | BaseExam)[]
+    >()
   );
 
-  constructor(private http: HttpClient) {}
-
-  private setAllLoaded(map: Map<string, Question>) {
-    const recordsLength = Array.from(map.keys()).length;
-    this.allLoaded = recordsLength === this.totalRecords();
-  }
+  constructor(
+    private http: HttpClient,
+    private questionsService: QuestionsService
+  ) {}
 
   serializeRecord(record: BaseQuestion, cacheRelations = false) {
     if (
@@ -85,7 +68,7 @@ export class QuestionsService {
         updatedAt: record?.updatedAt,
       });
       throw new Error(
-        `QuestionsService -> serializeRecord missing: ${{
+        `AnswerableQuestionsService -> serializeRecord missing: ${{
           id: record?.id,
           entity: record?.entityId,
           code: record?.code,
@@ -98,17 +81,15 @@ export class QuestionsService {
     if (cacheRelations) {
       this.cacheRelations(record);
     }
-    return new Question(
+    return new AnswerableQuestion(
       record.id,
       record.entityId,
       record.code,
       record.prompt,
-      record.correctIndex as number,
       record.subjectId,
       record.alternatives,
       record.createdAt,
       record.updatedAt,
-      record.answerExplanation,
       record.illustration,
       record.year,
       record.institutionId,
@@ -125,7 +106,7 @@ export class QuestionsService {
     exam?: BaseExam;
   }) {
     const relationsMap = new Map<
-      Entity,
+      CacheAcessor,
       (BaseSubject | BaseInstitution | BaseBoard | BaseExam)[]
     >();
 
@@ -152,9 +133,9 @@ export class QuestionsService {
     this.loadedRelations.set(relationsMap);
   }
 
-  cacheRecords(records: (Question | BaseQuestion)[]) {
+  cacheRecords(records: (AnswerableQuestion | BaseQuestion)[]) {
     const serializedRecords = records.map((record) =>
-      record instanceof Question
+      record instanceof AnswerableQuestion
         ? record
         : this.serializeRecord(record as BaseQuestion)
     );
@@ -162,7 +143,6 @@ export class QuestionsService {
     this.loadedRecords.update((m) => {
       m = cloneDeep(m);
       serializedRecords.map((i) => m.set(i.id, i));
-      this.setAllLoaded(m);
       return m;
     });
   }
@@ -173,6 +153,13 @@ export class QuestionsService {
         const loadedRecord = loadedRecords.get(id);
         if (loadedRecord) {
           return of(loadedRecord);
+        }
+
+        const questionFromQuestionsService =
+          this.questionsService.getOneFromCache(id);
+
+        if (questionFromQuestionsService) {
+          return of(this.serializeRecord(questionFromQuestionsService));
         }
 
         return this.http
@@ -218,10 +205,6 @@ export class QuestionsService {
     );
   }
 
-  getOneFromCache(id: string) {
-    return this.loadedRecords().get(id)
-  }
-
   getCached(questionsIds: string[]) {
     return this.loadedRecords$.pipe(
       map((m) => [...m.values()]),
@@ -229,29 +212,31 @@ export class QuestionsService {
     );
   }
 
-  applyFirstFiltersAndGetSubjectsSummary(filters: Filters[]) {
-    const arrayString = filters.length ? JSON.stringify(filters) : '';
+  fetchQuestionsWithFilters(filters: Filters[], selectors: SelectorFilter[]) {
+    const filtersArrayString = filters.length ? JSON.stringify(filters) : '';
+    const encodedFiltersArrayString = encodeURIComponent(filtersArrayString);
 
-    const encodedArrayString = encodeURIComponent(arrayString);
+    const selectorsArrayString = selectors.length
+      ? JSON.stringify(selectors)
+      : '';
+    const encodedSelectorsArrayString =
+      encodeURIComponent(selectorsArrayString);
 
-    const params = new URLSearchParams({ filters: encodedArrayString });
+    const params = new URLSearchParams({
+      filters: encodedFiltersArrayString,
+      selectors: encodedSelectorsArrayString,
+    });
 
     return this.http
-      .get<FormattedResponse<{ total: number; subject: BaseSubject }[]>>(
-        `${this.endpoint}/prefilter?${encodedArrayString !== '' ? params : ''}`
+      .get<FormattedResponse<BaseQuestion[]>>(
+        `${this.endpoint}/filter?${
+          encodedSelectorsArrayString !== '' ||
+          encodedSelectorsArrayString !== ''
+            ? params
+            : ''
+        }`
       )
       .pipe(
-        tap((response) => {
-          if (
-            !response ||
-            !response.success ||
-            !response.data ||
-            !response.data.length
-          )
-            return;
-          const records = response.data;
-          records?.map((r) => this.cacheRelations(r));
-        }),
         map((response) => {
           if (
             !response ||
@@ -260,8 +245,12 @@ export class QuestionsService {
             !response.data.length
           )
             return [];
-          return response.data;
+          return response.data.map((q) => this.serializeRecord(q, true));
         })
       );
+  }
+
+  answer(answerDto: AnswerDto) {
+    return this.http.post(`${this.endpoint}/answer`, answerDto);
   }
 }

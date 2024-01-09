@@ -49,7 +49,7 @@ import { Board } from '../../../../../../models/board.model';
 import { Exam } from '../../../../../../models/exam.model';
 import { EducationStage } from '../../../../../../shared/enums/education-stage';
 import { CustomFormValidators } from '../../../../../../shared/models/custom-form-validators.model';
-import { QuestionsAdminService } from '../../../../../../services/admin/questions/questions-admin.service';
+import { QuestionAdminService } from '../../../../../../services/admin/questions/question-admin.service';
 import { MatTableModule } from '@angular/material/table';
 import { cloneDeep } from 'lodash';
 import { fireToast } from '../../../../../../notification/functions/fire-toast.function';
@@ -146,7 +146,7 @@ export class AddBulkComponent implements OnInit {
   ];
 
   constructor(
-    private questionService: QuestionsAdminService,
+    private questionAdminService: QuestionAdminService,
     private cd: ChangeDetectorRef,
     private router: Router
   ) {}
@@ -227,7 +227,7 @@ export class AddBulkComponent implements OnInit {
         ],
         asyncValidators: [
           CustomFormValidators.createQuestionCodeValidator(
-            this.questionService
+            this.questionAdminService
           ),
         ],
       }),
@@ -408,7 +408,7 @@ export class AddBulkComponent implements OnInit {
       dtos.push(addQuestionDto);
     });
 
-    this.questionService.addBulk(dtos).subscribe((result) => {
+    this.questionAdminService.addBulk(dtos).subscribe((result) => {
       if (!result.success) return;
       this.form.clear();
       this.router.navigate(['painel', 'admin', 'questoes', 'editar']);

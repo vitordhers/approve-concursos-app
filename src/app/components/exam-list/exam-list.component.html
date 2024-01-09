@@ -51,7 +51,7 @@
                  [length]="type === examType.MOCK ?  examsService.totalMockRecords() : examsService.totalAssessmentRecords()"
                  showFirstLastButtons
                  (page)="onPageEvent($event)"
-                 [hidePageSize]="(type === examType.MOCK ?  examsService.totalMockRecords() : examsService.totalAssessmentRecords()) < pageSizeOptions[0]">
+                 [hidePageSize]="(type === examType.MOCK ?  (examsService.totalMockRecords() || 0) : (examsService.totalAssessmentRecords() || 0)) < pageSizeOptions[0]">
   </mat-paginator>
   }
 </div>

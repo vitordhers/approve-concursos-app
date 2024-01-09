@@ -10,7 +10,7 @@ import { SubjectsService } from './subjects.service';
 import { InstitutionsService } from './institutions.service';
 import { BoardsService } from './boards.service';
 import { QuestionsService } from './questions.service';
-import { cloneDeep } from 'lodash';
+import { AnswerableQuestionsService } from './answerable-questions.service';
 
 @Injectable({
   providedIn: 'root',
@@ -18,61 +18,72 @@ import { cloneDeep } from 'lodash';
 export class EntityRelationService {
   questionsRelationsCacheLoadEffect = effect(
     () => {
-      const newRelations = this.questionService.loadedRelations();
+      const relationMap = this.questionService.loadedRelations();
 
-      newRelations.map((relation) => {
-        switch (relation.entity) {
-          case Entity.SUBJECTS: {
-            return this.subjectService.cacheRecords(
-              relation.records as BaseSubject[]
-            );
-          }
-          case Entity.INSTITUTIONS: {
-            return this.institutionService.cacheRecords(
-              relation.records as BaseInstitution[]
-            );
-          }
-          case Entity.BOARDS: {
-            return this.boardService.cacheRecords(
-              relation.records as BaseBoard[]
-            );
-          }
-          case Entity.EXAMS: {
-            return this.examService.cacheRecords(
-              relation.records as BaseExam[]
-            );
-          }
-        }
-      });
+      if (relationMap.size === 0) return;
+
+      if (relationMap.has(Entity.SUBJECTS)) {
+        this.subjectService.cacheRecords(
+          relationMap.get(Entity.SUBJECTS) as BaseSubject[]
+        );
+      }
+
+      if (relationMap.has(Entity.INSTITUTIONS)) {
+        this.institutionService.cacheRecords(
+          relationMap.get(Entity.INSTITUTIONS) as BaseInstitution[]
+        );
+      }
+
+      if (relationMap.has(Entity.BOARDS)) {
+        this.boardService.cacheRecords(
+          relationMap.get(Entity.BOARDS) as BaseBoard[]
+        );
+      }
+
+      if (relationMap.has(Entity.EXAMS)) {
+        this.examService.cacheRecords(
+          relationMap.get(Entity.EXAMS) as BaseExam[]
+        );
+      }
     },
     { allowSignalWrites: true } as CreateEffectOptions
   );
 
   examsRelationsCacheLoadEffect = effect(
     () => {
-      const newRelations = this.examService.loadedRelations();
+      const relationMap = this.examService.loadedRelations();
 
-      // const relationMap = new Map<Entity, (BaseInstitution | BaseBoard | BaseQuestion)[]>();
+      if (relationMap.size === 0) return;
 
-      newRelations.map((relation) => {
-        switch (relation.entity) {
-          case Entity.INSTITUTIONS: {
-            return this.institutionService.cacheRecords(
-              relation.records as BaseInstitution[]
-            );
-          }
-          case Entity.BOARDS: {
-            return this.boardService.cacheRecords(
-              relation.records as BaseBoard[]
-            );
-          }
-          case Entity.QUESTIONS: {
-            return this.questionService.cacheRecords(
-              relation.records as BaseQuestion[]
-            );
-          }
-        }
-      });
+      if (relationMap.has(Entity.INSTITUTIONS)) {
+        this.institutionService.cacheRecords(
+          relationMap.get(Entity.INSTITUTIONS) as BaseInstitution[]
+        );
+      }
+
+      if (relationMap.has(Entity.BOARDS)) {
+        this.boardService.cacheRecords(
+          relationMap.get(Entity.BOARDS) as BaseBoard[]
+        );
+      }
+
+      if (relationMap.has(Entity.QUESTIONS)) {
+        this.questionService.cacheRecords(
+          relationMap.get(Entity.QUESTIONS) as BaseQuestion[]
+        );
+      }
+
+      if (relationMap.has('answerable_questions')) {
+        this.answerableQuestionsService.cacheRecords(
+          relationMap.get('answerable_questions') as BaseQuestion[]
+        );
+      }
+
+      if (relationMap.has(Entity.SUBJECTS)) {
+        this.subjectService.cacheRecords(
+          relationMap.get(Entity.SUBJECTS) as BaseSubject[]
+        );
+      }
     },
     { allowSignalWrites: true } as CreateEffectOptions
   );
@@ -82,6 +93,7 @@ export class EntityRelationService {
     private institutionService: InstitutionsService,
     private boardService: BoardsService,
     private questionService: QuestionsService,
+    private answerableQuestionsService: AnswerableQuestionsService,
     private examService: ExamsService
   ) {}
 }
