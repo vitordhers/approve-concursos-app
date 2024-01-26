@@ -12,6 +12,6 @@ export class ServerImgPipe implements PipeTransform {
 
     if (firstLetters !== 'uploads') return value;
 
-    return `${environment.serverUrl}/${value}`;
+    return `${environment.appUrl}/${value}`;
   }
 }
