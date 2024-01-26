@@ -2,6 +2,8 @@ import { Routes } from '@angular/router';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { signedInGuard } from './shared/guards/signedIn.guard';
+import { isAdminGuard } from './shared/guards/isAdmin.guard';
+import { isPaidUserGuard } from './shared/guards/isPaidUser.guard';
 
 export const routes: Routes = [
   {
@@ -21,6 +23,7 @@ export const routes: Routes = [
               import('./pages/study/study.component').then(
                 (c) => c.StudyComponent
               ),
+            // canActivate: [isPaidUserGuard],
           },
           {
             path: 'questoes',
@@ -28,6 +31,7 @@ export const routes: Routes = [
               import('./pages/questions/questions.component').then(
                 (c) => c.QuestionsComponent
               ),
+            canActivate: [isPaidUserGuard],
           },
           {
             path: 'historico',
@@ -35,6 +39,7 @@ export const routes: Routes = [
               import('./pages/history/history.component').then(
                 (c) => c.HistoryComponent
               ),
+            canActivate: [isPaidUserGuard],
           },
           {
             path: 'admin',
@@ -268,6 +273,7 @@ export const routes: Routes = [
                 ],
               },
             ],
+            canActivate: [isAdminGuard],
           },
           { path: '', redirectTo: 'estudos#desempenho', pathMatch: 'full' },
         ],

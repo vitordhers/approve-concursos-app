@@ -53,7 +53,6 @@ import { fireGenericSuccess } from '../../../../../../notification/functions/fir
 import { assessmentExamRecordLabels } from '../../../../../../shared/constants/assessment-exam-labels.const';
 import { Exam } from '../../../../../../models/exam.model';
 import { ExamAdminService } from '../../../../../../services/admin/exams/exam-admin.service';
-import { CustomFormValidators } from '../../../../../../shared/models/custom-form-validators.model';
 import { Board } from '../../../../../../models/board.model';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {
@@ -83,6 +82,7 @@ import { AddMockExamDto } from '../../../../../../services/admin/exams/interface
 import { QuestionAdminService } from '../../../../../../services/admin/questions/question-admin.service';
 import { cloneDeep } from 'lodash';
 import { LettersNumbersAndDashOnlyDirective } from '../../../../../../shared/directives/letters-numbers-and-dash-only.directive';
+import { CustomFormValidators } from '../../../../../../shared/utils/custom-form-validators.model';
 
 registerLocaleData(localePtBr);
 
@@ -668,5 +668,6 @@ export class AddEditComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    this.destroy$.unsubscribe();
   }
 }

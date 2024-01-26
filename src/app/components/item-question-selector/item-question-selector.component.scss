@@ -1,0 +1,46 @@
+.avatar {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+mat-card-title {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.question-card {
+  ::ng-deep {
+    .mat-mdc-card-header-text {
+      width: 100% !important;
+    }
+  }
+}
+
+mat-card-subtitle p {
+  color: #000;
+}
+
+.image-wrap {
+  position: relative;
+  img {
+    position: relative !important;
+    width: auto !important;
+    height: 100% !important;
+  }
+}
+
+.subtitle {
+  font-weight: 600;
+}
+
+.question-card {
+  ::ng-deep {
+    .mat-mdc-card-header-text {
+      width: 100% !important;
+    }
+  }
+}

@@ -5,11 +5,9 @@
     {{toolbarTitle()}}
   </h3>
   @if (currentTabIndex() !== 1) {
-
   <button mat-icon-button
           type="button"
-          (click)="setTabIndex(1)"><fa-icon
-             [icon]="currentTabIndex() === 0 ? faArrowRight : faArrowLeft" /></button>
+          (click)="setTabIndex(1)"><fa-icon [icon]="currentTabIndex() === 0 ? faArrowRight : faArrowLeft" /></button>
   } @else {
   <button mat-icon-button
           tabindex="-1"
@@ -22,6 +20,7 @@
                  preserveContent
                  [selectedIndex]="currentTabIndex()"
                  class="headerless-tabs">
+    <!-- 0 -->
     <mat-tab>
       <ng-template matTabContent>
         <div class="signup-form">
@@ -113,7 +112,7 @@
                   <button type="button"
                           mat-icon-button
                           matSuffix
-                          (click)="toggleShowPassword('signup')"
+                          (click)="toggleShowPassword('signUp')"
                           [attr.aria-label]="'Hide password'">
                     <fa-icon [icon]="showSignUpPassword() ? faEyeSlash : faEye" />
                   </button>
@@ -144,7 +143,7 @@
                   <button type="button"
                           mat-icon-button
                           matSuffix
-                          (click)="toggleShowPassword('signupConfirm')"
+                          (click)="toggleShowPassword('signUpConfirm')"
                           [attr.aria-label]="'Hide password'">
                     <fa-icon [icon]="showSignUpConfirmPassword() ? faEyeSlash : faEye" />
                   </button>
@@ -162,7 +161,6 @@
                 </mat-form-field>
               </div>
             </div>
-
 
             <div class="signup-actions">
               <div class="start">
@@ -189,6 +187,8 @@
       </ng-template>
 
     </mat-tab>
+
+    <!-- 1 -->
     <mat-tab>
       <div class="signin-form">
         <form [formGroup]="signInForm">
@@ -279,14 +279,17 @@
                (click)="setTabIndex(2)">aqui</a> para recuperar.
           </p>
           <p>Ainda não tem conta? <a class="text-link"
-               (click)="setTabIndex(0)">Criar uma nova conta</a>.</p>
+               (click)="setTabIndex(0)">Criar uma nova conta</a>.
+          </p>
         </form>
       </div>
     </mat-tab>
+
+    <!-- 2 -->
     <mat-tab>
       <ng-template matTabContent>
         <div class="recover-password-form">
-          <form [formGroup]="passwordRecoverForm">
+          <form [formGroup]="passwordRecoveryForm">
             <mat-form-field appearance="outline">
               <mat-label>E-mail</mat-label>
               <span matTextPrefix><fa-icon [icon]="faEnvelope" /> &nbsp;</span>
@@ -296,24 +299,25 @@
                      maxlength="50"
                      formControlName="email"
                      autocomplete="off">
-              @if (passwordRecoverForm.controls['email'].touched && signUpForm.controls['email'].invalid) {
+              @if (passwordRecoveryForm.controls['email'].touched && passwordRecoveryForm.controls['email'].invalid) {
               <div>
-                @if (passwordRecoverForm.controls['email'].hasError('required')) {
+                @if (passwordRecoveryForm.controls['email'].hasError('required')) {
                 <mat-error>Insira seu e-mail</mat-error>
                 }
-                @if (passwordRecoverForm.controls['email'].hasError('minlength')) {
+                @if (passwordRecoveryForm.controls['email'].hasError('minlength')) {
                 <mat-error>O e-mail deve ter pelo menos 6 caracteres</mat-error>
                 }
-                @if (passwordRecoverForm.controls['email'].hasError('maxlength')) {
+                @if (passwordRecoveryForm.controls['email'].hasError('maxlength')) {
                 <mat-error>O e-mail deve ter até 50 caracteres</mat-error>
                 }
-                @if (passwordRecoverForm.controls['email'].hasError('pattern')) {
+                @if (passwordRecoveryForm.controls['email'].hasError('pattern')) {
                 <mat-error>Insira um e-mail válido</mat-error>
                 }
               </div>
               }
             </mat-form-field>
-            <div class="password-recover-actions">
+
+            <div class="password-recovery-actions">
               <div class="start">
 
               </div>
@@ -321,7 +325,8 @@
                 <button type="button"
                         mat-raised-button
                         [disabled]="recoverPasswordLoading()"
-                        color="primary">
+                        color="primary"
+                        (click)="recoverPassword()">
                   <span class="button-content-wrap">
                     @if(recoverPasswordLoading()) {
                     <mat-spinner [diameter]="14"></mat-spinner> Enviando email...
@@ -329,14 +334,179 @@
                     Recuperar senha <fa-icon [icon]="faPaperPlane" />
                     }
                   </span>
-
                 </button>
               </div>
             </div>
           </form>
+          <p>Não recebeu e-mail de confirmação do cadastro? <a class="text-link"
+               (click)="setTabIndex(3)">Solicitar novo e-mail de confirmação</a>.
+          </p>
         </div>
       </ng-template>
     </mat-tab>
+
+    <!-- 3 -->
+    <mat-tab>
+      <ng-template matTabContent>
+        <div class="resend-verify-email-form">
+          <form [formGroup]="resendConfirmationEmailForm">
+            <mat-form-field appearance="outline">
+              <mat-label>E-mail</mat-label>
+              <span matTextPrefix><fa-icon [icon]="faEnvelope" /> &nbsp;</span>
+              <input matInput
+                     type="email"
+                     placeholder="seu@email.com"
+                     maxlength="50"
+                     formControlName="email"
+                     autocomplete="off">
+              @if (resendConfirmationEmailForm.controls['email'].touched &&
+              resendConfirmationEmailForm.controls['email'].invalid) {
+              <div>
+                @if (resendConfirmationEmailForm.controls['email'].hasError('required')) {
+                <mat-error>Insira seu e-mail</mat-error>
+                }
+                @if (resendConfirmationEmailForm.controls['email'].hasError('minlength')) {
+                <mat-error>O e-mail deve ter pelo menos 6 caracteres</mat-error>
+                }
+                @if (resendConfirmationEmailForm.controls['email'].hasError('maxlength')) {
+                <mat-error>O e-mail deve ter até 50 caracteres</mat-error>
+                }
+                @if (resendConfirmationEmailForm.controls['email'].hasError('pattern')) {
+                <mat-error>Insira um e-mail válido</mat-error>
+                }
+              </div>
+              }
+            </mat-form-field>
+          </form>
+
+          <div class="resend-verify-email-actions">
+            <div class="start">
+
+            </div>
+            <div class="end">
+              <button type="button"
+                      mat-raised-button
+                      [disabled]="resendVerifyEmailLoading()"
+                      color="primary"
+                      (click)="resendVerifyEmail()">
+                <span class="button-content-wrap">
+                  @if(resendVerifyEmailLoading()) {
+                  <mat-spinner [diameter]="14"></mat-spinner> Enviando email...
+                  } @else {
+                  Reenviar e-mail <fa-icon [icon]="faEnvelope" />
+                  }
+                </span>
+
+              </button>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </mat-tab>
+
+    <!-- 4 -->
+    <mat-tab>
+      <ng-template matTabContent>
+        <div class="redefine-password-form">
+          <form [formGroup]="redefinePasswordForm">
+            <div class="passwords">
+              <div>
+                <mat-form-field appearance="outline">
+                  <mat-label>Senha</mat-label>
+                  <span matTextPrefix><fa-icon [icon]="faLock" /> &nbsp;</span>
+                  <input matInput
+                         [type]="showRedefinePassword() ? 'text' : 'password'"
+                         maxlength="20"
+                         formControlName="password"
+                         autocomplete="off">
+                  <button type="button"
+                          mat-icon-button
+                          matSuffix
+                          (click)="toggleShowPassword('redefine')"
+                          [attr.aria-label]="'Hide password'">
+                    <fa-icon [icon]="showRedefinePassword() ? faEyeSlash : faEye" />
+                  </button>
+                  @if (redefinePasswordForm.controls['password'].touched &&
+                  redefinePasswordForm.controls['password'].invalid) {
+                  <div>
+                    @if (redefinePasswordForm.controls['password'].hasError('required')) {
+                    <mat-error>Insira uma senha</mat-error>
+                    }
+                    @if (redefinePasswordForm.controls['password'].hasError('pattern')) {
+                    <mat-error>A senha deve ter entre 8 e 20 caracteres, pelo menos uma letra, uma letra maiúscula, um
+                      número
+                      e
+                      um símbolo</mat-error>
+                    }
+                  </div>
+                  }
+                </mat-form-field>
+              </div>
+              <div>
+                <mat-form-field appearance="outline">
+                  <mat-label>Confirme sua senha</mat-label>
+                  <span matTextPrefix><fa-icon [icon]="faLock" /> &nbsp;</span>
+                  <input matInput
+                         [type]="showSignUpConfirmPassword() ? 'text' : 'password'"
+                         maxlength="20"
+                         formControlName="confirmPassword"
+                         autocomplete="off">
+                  <button type="button"
+                          mat-icon-button
+                          matSuffix
+                          (click)="toggleShowPassword('redefineConfirm')"
+                          [attr.aria-label]="'Hide password'">
+                    <fa-icon [icon]="showSignUpConfirmPassword() ? faEyeSlash : faEye" />
+                  </button>
+                  @if (redefinePasswordForm.controls['confirmPassword'].touched &&
+                  redefinePasswordForm.controls['confirmPassword'].invalid)
+                  {
+                  <div>
+                    @if (redefinePasswordForm.controls['confirmPassword'].hasError('required')) {
+                    <mat-error>Confirme sua senha</mat-error>
+                    }
+                    @if (redefinePasswordForm.controls['confirmPassword'].hasError('matchPasswords')) {
+                    <mat-error>As senhas estão diferentes</mat-error>
+                    }
+                  </div>
+                  }
+                </mat-form-field>
+              </div>
+            </div>
+          </form>
+          <div class="redefine-password-actions">
+            <div class="start">
+            </div>
+            <div class="end">
+              <button type="button"
+                      mat-raised-button
+                      [disabled]="redefinePasswordLoading()"
+                      color="primary"
+                      (click)="redefinePassword()">
+                <span class="button-content-wrap">
+                  @if(redefinePasswordLoading()) {
+                  <mat-spinner [diameter]="14"></mat-spinner> Redefinindo senha...
+                  } @else {
+                  Redefinir Senha <fa-icon [icon]="faLock" />
+                  }
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </mat-tab>
+
+    <!-- 5 -->
+    <mat-tab>
+      <ng-template matTabContent>
+        <div class="verify-email-form">
+          <p>Verificando e-mail</p>
+          <app-loader />
+        </div>
+      </ng-template>
+    </mat-tab>
+
   </mat-tab-group>
 
 </main>

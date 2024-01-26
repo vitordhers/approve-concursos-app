@@ -33,8 +33,8 @@
           *matHeaderCellDef> <fa-icon [icon]="faCrown" /> Privilégio
       </th>
       <td mat-cell
-          *matCellDef="let element"><fa-icon [icon]="element?.role === 0 ? faCrown : faChessPawn" /> {{element.role ===
-        0 ? "Admin": "Usuário"}} </td>
+          *matCellDef="let element"><fa-icon [icon]="element?.role === 3 ? faCrown : faChessPawn" /> {{element.role |
+        userRoleLabel}} </td>
     </ng-container>
 
     <ng-container matColumnDef="updatedAt">

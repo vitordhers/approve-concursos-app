@@ -1,9 +1,9 @@
 @if (currentFragment() === 'filtro') {
 <app-filter />
+} @else if(currentFragment() === 'buscar'){
+<app-question-select-list [search]="searchedTerms()"
+                          (selectedQuestionsIdsEmitter)="onQuestionsSelected($event)" />
 } @else {
-<app-questionnaire [_loadedFilteredQuestions]="loadedFilteredQuestions"
-                   [totalFilteredQuestions]="loadedFilteredQuestionsTotal()"
-                   (pageEventEmitter)="onExamPagination($event)"
-                   [_loadedExamQuestions]="loadedExamQuestions"
-                   [totalExamQuestions]="loadedExamQuestionsTotal()" />
+<app-questionnaire [loadedQuestions]="loadedQuestions"
+                   [totalQuestions]="loadedQuestionsTotal()" />
 }

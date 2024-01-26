@@ -50,6 +50,7 @@ import { userRecordLabels } from '../../../../../../shared/constants/user-record
 import { UserAdminService } from '../../../../../../services/admin/users/users.service';
 import { User } from '../../../../../../models/user.model';
 import { UserRole } from '../../../../../../shared/enums/user-role.enum';
+import { UserRoleLabelPipe } from '../../../../../../shared/pipes/user-role-label.pipe';
 
 registerLocaleData(localePtBr);
 
@@ -65,6 +66,7 @@ registerLocaleData(localePtBr);
     MatPaginatorModule,
     MatTooltipModule,
     FontAwesomeModule,
+    UserRoleLabelPipe,
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'pt-BR' },
@@ -205,5 +207,6 @@ export class ListComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    this.destroy$.unsubscribe();
   }
 }

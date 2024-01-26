@@ -82,7 +82,7 @@ export class ExamCardComponent implements OnInit {
   navigateToExamId(id: string) {
     this.router.navigate(['painel', 'questoes'], {
       fragment: 'resolver',
-      queryParams: { examId: id },
+      queryParams: { prova: id },
     });
   }
 }

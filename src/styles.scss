@@ -21,6 +21,13 @@ html {
   flex: 1;
 }
 
+.grecaptcha-badge {
+  display: none;
+  .grecaptcha-logo {
+    transition: all 0.3s ease-in-out;
+  }
+}
+
 .width-40 {
   margin-inline-start: 20px;
   width: 40px;
@@ -214,4 +221,10 @@ img {
   .mdc-text-field--outlined.mdc-text-field--disabled .mdc-text-field__input {
     color: rgba(0, 0, 0, 0.87);
   }
+}
+
+.mat-elevation-z0,
+.mat-mdc-elevation-specific.mat-elevation-z0 {
+  box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2),
+    0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12) !important;
 }

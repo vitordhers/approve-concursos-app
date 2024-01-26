@@ -19,6 +19,9 @@ import { environment } from '../../../environments/environment';
 import { SignInDto } from './interfaces/signin-dto.interface';
 import { cloneDeep } from 'lodash';
 import { FormattedResponse } from '../../shared/interfaces/formatted-response.interface';
+import { ResendConfirmationEmailDto } from './interfaces/resend-confirmation-email-dto.interface';
+import { VerifyEmailDto } from './interfaces/verify-email-dto.interface';
+import { RecoverPasswordDto } from './interfaces/recover-password-dto.interface';
 
 const CREDENTIALS_STORAGE_KEY = 'QuestionsAuthData';
 
@@ -109,7 +112,7 @@ export class AuthService {
     }, duration * 1000);
   }
 
-  private refreshAccessToken() {
+  refreshAccessToken() {
     this.refreshToken$
       ?.pipe(
         distinctUntilChanged(),
@@ -153,18 +156,49 @@ export class AuthService {
     }
     this.storageService.removeKey(CREDENTIALS_STORAGE_KEY);
     this.setCredentials(undefined);
-    // this.router.navigate(['/home']);
+    this.router.navigate(['/home']);
   }
 
-  signIn$(dto: SignInDto) {
+  signIn(dto: SignInDto) {
     return this.http
-      .post<FormattedResponse<Credentials>>(this.endpoint, dto)
+      .post<FormattedResponse<Credentials | { nonValidatedUser: boolean }>>(
+        this.endpoint,
+        dto
+      )
       .pipe(
         tap((response) => {
-          if (!response.success || !response.data) return;
-
+          if (
+            !response.success ||
+            !response.data ||
+            !('accessToken' in response.data)
+          )
+            return;
           this.setCredentials(response.data);
         })
       );
+  }
+
+  resendConfirmationEmail(dto: ResendConfirmationEmailDto) {
+    return this.http.post<FormattedResponse<undefined>>(
+      `${this.endpoint}/verify`,
+      dto,
+      { observe: 'response' }
+    );
+  }
+
+  verifyUser(dto: VerifyEmailDto) {
+    return this.http.post<FormattedResponse<undefined>>(
+      `${this.endpoint}/verify`,
+      dto,
+      { observe: 'response' }
+    );
+  }
+
+  recoverPassword(dto: RecoverPasswordDto) {
+    return this.http.post<FormattedResponse<{ nonValidatedUser: boolean }>>(
+      `${this.endpoint}/recover`,
+      dto,
+      { observe: 'response' }
+    );
   }
 }

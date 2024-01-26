@@ -9,5 +9,11 @@ export interface NavSection {
   isSubsection: boolean;
   isAdmin?: boolean;
   subsections?: NavSection[];
-  action?: (search?: string) => void;
+  navigationPayload?: NavigationPayload | ((arg: string) => NavigationPayload);
+}
+
+export interface NavigationPayload {
+  params?: string[];
+  fragment?: string;
+  queryParams?: Record<string, string>;
 }

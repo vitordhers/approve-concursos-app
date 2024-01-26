@@ -1,4 +1,4 @@
-<div class="wrapper">
+<div class="wrapper page">
   @if (loadedRecords().length) {
   @for (answer of loadedRecords(); track $index) {
   <app-answerable-question [_question]="answer.question"
@@ -12,6 +12,6 @@
                  [length]="totalRecords()"
                  showFirstLastButtons
                  (page)="onPageEvent($event)"
-                 [hidePageSize]="totalRecords() < pageSizeOptions[0]">
+                 [hidePageSize]="(totalRecords() || 0) < pageSizeOptions[0]">
   </mat-paginator>
 </div>

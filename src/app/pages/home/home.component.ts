@@ -33,7 +33,7 @@ import {
   faPaperPlane,
 } from '@fortawesome/free-solid-svg-icons';
 import { CarouselComponent } from '../../components/carousel/carousel.component';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ChartData, ChartType } from 'chart.js';
 import { NgChartsModule } from 'ng2-charts';
 import {
@@ -58,9 +58,10 @@ import { FooterComponent } from '../../components/footer/footer.component';
 import { LogoComponent } from '../../components/logo/logo.component';
 import { ModalService } from '../../services/modal.service';
 import { AuthComponent } from '../../components/modals/auth/auth.component';
-import { DialogData } from '../../components/modals/auth/interface/dialog-data.interface';
 import { UserService } from '../../services/user/user.service';
 import { fireToast } from '../../notification/functions/fire-toast.function';
+import { Subject, takeUntil } from 'rxjs';
+import { AuthDialogData } from '../../components/modals/auth/interface/auth-dialog-data.interface';
 
 @Component({
   selector: 'app-home',
@@ -97,6 +98,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   faPaperPlane = faPaperPlane;
   faBookOpenReader = faBookOpenReader;
   faChartLine = faChartLine;
+
+  private destroy$ = new Subject<void>();
 
   links = signal([
     {
@@ -220,11 +223,43 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     private zone: NgZone,
     private cd: ChangeDetectorRef,
     private router: Router,
+    private activatedRoute: ActivatedRoute,
     private modalService: ModalService,
     public userService: UserService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.activatedRoute.queryParamMap
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((paramMap) => {
+        if (paramMap.has('verificar')) {
+          const token = paramMap.get('verificar') as string;
+          this.router.navigate([]);
+          this.verifyUser(token);
+          return;
+        }
+
+        if (paramMap.has('reenviarConfirmacao')) {
+          const email = paramMap.get('reenviarConfirmacao') as string;
+          this.router.navigate([]);
+          this.resendConfirmationEmail(email);
+          return;
+        }
+
+        if (paramMap.has('redefinirSenha')) {
+          const token = paramMap.get('redefinirSenha') as string;
+          this.router.navigate([]);
+          this.redefinePassword(token);
+          return;
+        }
+
+        if (paramMap.has('recuperarSenha')) {
+          const email = paramMap.get('recuperarSenha') as string;
+          this.router.navigate([]);
+          this.recoverPassword(email);
+        }
+      });
+  }
 
   ngAfterViewInit(): void {
     if (!this.sections || !this.sections.length) return;
@@ -244,6 +279,54 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         this.observer?.observe(el.nativeElement);
       });
     });
+  }
+
+  recoverPassword(email: string) {
+    if (this.userService.isLoggedIn()) {
+      this.router.navigate(['painel'], { fragment: 'desempenho' });
+      return;
+    }
+
+    this.modalService.openModal<AuthComponent, AuthDialogData, void>(
+      AuthComponent,
+      { initialTabIndex: 2, recoverPasswordEmail: email }
+    );
+  }
+
+  resendConfirmationEmail(email: string) {
+    if (this.userService.isLoggedIn()) {
+      this.router.navigate(['painel'], { fragment: 'desempenho' });
+      return;
+    }
+
+    this.modalService.openModal<AuthComponent, AuthDialogData, void>(
+      AuthComponent,
+      { initialTabIndex: 3, resendConfirmationTo: email }
+    );
+  }
+
+  redefinePassword(token: string) {
+    if (this.userService.isLoggedIn()) {
+      this.router.navigate(['painel'], { fragment: 'desempenho' });
+      return;
+    }
+
+    this.modalService.openModal<AuthComponent, AuthDialogData, void>(
+      AuthComponent,
+      { initialTabIndex: 4, redefinePasswordToken: token }
+    );
+  }
+
+  verifyUser(token: string) {
+    if (this.userService.isLoggedIn()) {
+      this.router.navigate(['painel'], { fragment: 'desempenho' });
+      return;
+    }
+
+    this.modalService.openModal<AuthComponent, AuthDialogData, void>(
+      AuthComponent,
+      { initialTabIndex: 5, verifyToken: token }
+    );
   }
 
   private handleIntersection(entry: IntersectionObserverEntry) {
@@ -279,14 +362,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       behavior: 'smooth',
       inline: 'center',
     });
-
-    // setTimeout(() => {
-    //   if (!this.wrapperElementRef) return;
-    //   this.wrapperElementRef.nativeElement.scrollBy({
-    //     top: -63,
-    //     behavior: 'smooth',
-    //   });
-    // }, 700);
   }
 
   onSubmitContactForm() {
@@ -299,7 +374,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       this.router.navigate(['painel'], { fragment: 'desempenho' });
       return;
     }
-    this.modalService.openModal<AuthComponent, DialogData, void>(
+    this.modalService.openModal<AuthComponent, AuthDialogData, void>(
       AuthComponent,
       { initialTabIndex: 1 }
     );
@@ -311,5 +386,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     this.navigationHighlightEffect.destroy();
     this.playedGraphsAnimationEffect.destroy();
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.destroy$.unsubscribe();
   }
 }

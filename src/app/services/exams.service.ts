@@ -61,7 +61,8 @@ export class ExamsService {
     injector: this.injector,
   }).pipe(
     distinctUntilChanged(
-      (prev, curr) => generateHash(prev) === generateHash(curr)
+      (prev, curr) =>
+        generateHash([...prev.entries()]) === generateHash([...curr.entries()])
     )
   );
 
@@ -69,9 +70,7 @@ export class ExamsService {
     signal(undefined);
   totalMockRecords: WritableSignal<number | undefined> = signal(undefined);
 
-  examQuestionsLoadedMap = signal(
-    new Map<string, { total: number; allLoaded: boolean }>()
-  );
+  loadedExamsQuestionsTotalsMap = new Map<string, number>();
 
   loadedRelations = signal(
     new Map<
@@ -92,11 +91,7 @@ export class ExamsService {
     this.allAssessmentLoaded = recordsLength == this.totalAssessmentRecords();
   }
 
-  serializeRecord(record: BaseExam, cacheRelations = false) {
-    if (cacheRelations) {
-      this.cacheRelations(record);
-    }
-
+  serializeRecord(record: BaseExam) {
     return new Exam(
       record.id,
       record.entityId,
@@ -118,6 +113,8 @@ export class ExamsService {
     questions?: BaseQuestion[];
     answerableQuestions?: BaseQuestion[];
   }) {
+    if (!record) return;
+
     const relationsMap = new Map<
       CacheAcessor,
       (BaseInstitution | BaseBoard | BaseQuestion)[]
@@ -129,15 +126,15 @@ export class ExamsService {
     const answerableQuestionsRelations: BaseQuestion[] = [];
     const subjectRelations: BaseSubject[] = [];
 
-    if (record && record.institution) {
+    if (record.institution) {
       institutionRelations.push(record.institution);
     }
 
-    if (record && record.board) {
+    if (record.board) {
       boardRelations.push(record.board);
     }
 
-    if (record && record.questions && record.questions.length) {
+    if (record.questions && record.questions.length) {
       record.questions.forEach((q) => {
         if (q.subject) {
           subjectRelations.push(q.subject);
@@ -152,11 +149,7 @@ export class ExamsService {
       });
     }
 
-    if (
-      record &&
-      record.answerableQuestions &&
-      record.answerableQuestions.length
-    ) {
+    if (record.answerableQuestions && record.answerableQuestions.length) {
       record.answerableQuestions.forEach((q) => {
         if (q.subject) {
           subjectRelations.push(q.subject);
@@ -306,7 +299,7 @@ export class ExamsService {
             }),
             map((res) =>
               res.success && res.data && res.data.length
-                ? res.data.map((record) => this.serializeRecord(record, true))
+                ? res.data.map((record) => this.serializeRecord(record))
                 : ([] as Exam[])
             ),
             tap((records) => this.cacheRecords(records))
@@ -315,99 +308,37 @@ export class ExamsService {
     );
   }
 
-  paginateExamAnswerableQuestions(
-    examId: string,
-    start: number,
-    end: number,
-    pageSize: number
-  ) {
-    const alreadyLoadedExamRecord = this.examQuestionsLoadedMap().has(examId);
-
-    let updatedStart = start;
-    let updatedEnd = end;
-
-    let obs$: Observable<PaginatedResponse<BaseExam>> | undefined = undefined;
+  loadExamQuestions(examId: string) {
+    const alreadyLoadedExamRecord =
+      this.loadedExamsQuestionsTotalsMap.has(examId);
 
     if (alreadyLoadedExamRecord) {
-      const alreadyLoadedAllRecords =
-        this.examQuestionsLoadedMap().get(examId)?.allLoaded || false;
-
-      if (alreadyLoadedAllRecords) {
-        return this.getOne(examId).pipe(
-          switchMap((exam) => {
-            if (!exam) return of([]);
-            return this.answerableQuestionsService.getCached(exam.questionsIds);
-          }),
-          map((questions) => questions.slice(start, end))
-        );
-      }
-
-      obs$ = this.getOne(examId).pipe(
+      return this.getOne(examId).pipe(
         switchMap((exam) => {
           if (!exam) return of([]);
           return this.answerableQuestionsService.getCached(exam.questionsIds);
-        }),
-        switchMap((alreadyLoadedRecords) => {
-          let missingRecordsNo = 0;
-
-          if (alreadyLoadedRecords.length) {
-            missingRecordsNo = pageSize - alreadyLoadedRecords.length;
-            updatedStart = alreadyLoadedRecords.length;
-            updatedEnd = start + missingRecordsNo;
-          }
-
-          return this.http.get<PaginatedResponse<BaseExam>>(
-            `${this.endpoint}/${examId}/questions?start=${updatedStart}&limit=${updatedEnd}`
-          );
         })
       );
     }
 
-    if (!obs$) {
-      obs$ = this.http.get<PaginatedResponse<BaseExam>>(
-        `${this.endpoint}/${examId}/questions?start=${start}&limit=${end}`
+    return this.http
+      .get<PaginatedResponse<BaseExam>>(`${this.endpoint}/${examId}/questions`)
+      .pipe(
+        tap((res) => {
+          if (!res || !res.success || !res.data) return;
+          this.cacheRelations(res.data);
+          this.loadedExamsQuestionsTotalsMap.set(examId, res.total);
+        }),
+        map((response) => {
+          if (!response || !response.success || !response.data)
+            return undefined;
+          return this.serializeRecord(response.data);
+        }),
+        switchMap((exam) => {
+          if (!exam) return of([]);
+
+          return this.answerableQuestionsService.getCached(exam.questionsIds);
+        })
       );
-    }
-
-    return obs$.pipe(
-      map((response) => {
-        if (!response || !response.success || !response.data)
-          return { total: 0, record: undefined };
-        const serializedRecord = this.serializeRecord(response.data, true);
-
-        // this.examQuestionsLoadedMap.update((m) => {
-        //   m = cloneDeep(m);
-        //   m.set(examId, {
-        //     total: response.total,
-        //     allLoaded: false,
-        //   });
-        //   return m;
-        // });
-
-        return { total: response.total, record: serializedRecord };
-      }),
-      switchMap((result) => {
-        if (!result.record) return of([]);
-
-        return this.answerableQuestionsService.getCached(
-          result.record.questionsIds
-        );
-      }),
-      tap((questions) => {
-        const totals = this.examQuestionsLoadedMap().get(examId);
-        if (!totals) {
-          return questions.slice(updatedStart, updatedEnd);
-        }
-        this.examQuestionsLoadedMap.update((m) => {
-          m = cloneDeep(m);
-          m.set(examId, {
-            ...totals,
-            allLoaded: totals.total === questions.length,
-          });
-          return m;
-        });
-        return questions.slice(updatedStart, updatedEnd);
-      })
-    );
   }
 }

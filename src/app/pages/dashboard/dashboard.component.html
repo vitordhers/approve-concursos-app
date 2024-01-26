@@ -2,19 +2,20 @@
 <mat-sidenav-container>
   <mat-sidenav mode="side"
                [opened]="sideNavOpen()">
-    @if(userService.isLoggedIn()) {
+    @if(userName()) {
     <mat-list role="list">
       <mat-list-item>
-        <p>Bem vindo, <b>{{this.userService.user()?.name}}</b> 🤗</p>
+        <p>Bem-vindo, <b>{{userName()}}</b> 🤗</p>
       </mat-list-item>
     </mat-list>
     }
     <mat-nav-list>
       @for (section of displayedSections(); track section.uri) {
       <app-nav-item [section]="section"
-                    [currentUrl]="currentUrl()" />
+                    [currentUrl]="currentUrl()"
+                    (navigationEmitter)="handleNavigation($event)" />
       }
-      @if (userService.isLoggedIn()) {
+      @if (loggedIn()) {
       <mat-list-item (click)="logout()">
         <a matListItemTitle>
           <mat-accordion>

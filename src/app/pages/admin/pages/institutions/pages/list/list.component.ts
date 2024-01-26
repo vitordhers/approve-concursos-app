@@ -200,5 +200,6 @@ export class ListComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    this.destroy$.unsubscribe();
   }
 }

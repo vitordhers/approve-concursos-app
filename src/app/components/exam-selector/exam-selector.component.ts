@@ -136,6 +136,7 @@ export class ExamSelectorComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    this.destroy$.unsubscribe();
     this.touchedEffect.destroy();
     this.clearEffect.destroy();
   }

@@ -4,35 +4,32 @@ import {
   OnDestroy,
   OnInit,
   WritableSignal,
-  computed,
   signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FilterComponent } from '../admin/pages/questions/components/filter/filter.component';
-import {
-  Filters,
-  SelectorFilter,
-} from '../../shared/interfaces/filters.interface';
-import { ActivatedRoute } from '@angular/router';
-import {
-  BehaviorSubject,
-  EMPTY,
-  Subject,
-  combineLatest,
-  distinctUntilChanged,
-  switchMap,
-  takeUntil,
-} from 'rxjs';
+import { QuestionFilters } from '../../shared/interfaces/filters.interface';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { Subject, of, switchMap, takeUntil } from 'rxjs';
 import { QuestionnaireComponent } from '../../components/questionnaire/questionnaire.component';
-import { FilterType } from '../../shared/enums/filter-type.enum';
 import { AnswerableQuestion, Question } from '../../models/question.model';
 import { ExamsService } from '../../services/exams.service';
 import { AnswerableQuestionsService } from '../../services/answerable-questions.service';
+import {
+  QuestionFilterKeysPt,
+  translateQuestionParamMap,
+} from '../../shared/enums/question-filters.enum';
+import { QuestionSelectListComponent } from '../../components/question-select-list/question-select-list.component';
 
 @Component({
   selector: 'app-questions',
   standalone: true,
-  imports: [CommonModule, FilterComponent, QuestionnaireComponent],
+  imports: [
+    CommonModule,
+    FilterComponent,
+    QuestionnaireComponent,
+    QuestionSelectListComponent,
+  ],
   templateUrl: './questions.component.html',
   styleUrl: './questions.component.sass',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -40,33 +37,20 @@ import { AnswerableQuestionsService } from '../../services/answerable-questions.
 export class QuestionsComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<void>();
 
-  selectedFilters: WritableSignal<Filters[]> = signal([]);
-  currentExamId: WritableSignal<string | undefined> = signal(undefined);
+  selectedFilters: WritableSignal<QuestionFilters[]> = signal([]);
   currentFragment: WritableSignal<string | undefined> = signal(undefined);
 
-  loadedFilteredQuestions = signal([] as AnswerableQuestion[]);
-  loadedExamQuestions = signal([] as AnswerableQuestion[]);
+  loadedQuestions = signal([] as AnswerableQuestion[]);
 
-  loadedFilteredQuestionsTotal = signal(0);
+  loadedQuestionsTotal = signal(0);
 
-  loadedExamQuestionsTotal = computed(() => {
-    const currentExamId = this.currentExamId();
-    if (!currentExamId) return 0;
-    const totals = this.examsService.examQuestionsLoadedMap();
-    const examTotals = totals.get(currentExamId);
-    if (!examTotals) return 0;
-
-    return examTotals.total;
-  });
-
-  examPaginator$ = new BehaviorSubject<
-    { start: number; end: number; pageSize: number } | undefined
-  >(undefined);
+  searchedTerms = signal('');
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private answerableQuestionsService: AnswerableQuestionsService,
-    private examsService: ExamsService
+    private examsService: ExamsService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -74,7 +58,6 @@ export class QuestionsComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe((fragment) => {
         if (!fragment) return;
-
         this.currentFragment.set(fragment);
       });
 
@@ -82,67 +65,47 @@ export class QuestionsComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.destroy$),
         switchMap((params) => {
-          const data = params.get('data');
-          if (!data) return EMPTY;
+          const examId = params.get('prova');
+          if (examId) {
+            return this.examsService.loadExamQuestions(examId);
+          }
 
-          let filters = JSON.parse(decodeURIComponent(data)) as Filters[];
-          const selectors = filters.filter(
-            (f) => f.type === FilterType.SELECTOR
-          ) as SelectorFilter[];
+          const questionIds = params.getAll('questao');
+          if (questionIds.length) {
+            return this.answerableQuestionsService.getByIds(questionIds);
+          }
 
-          filters = filters.filter((f) => f.type !== FilterType.SELECTOR);
+          const paramsKeys = params.keys;
 
-          return this.answerableQuestionsService.fetchQuestionsWithFilters(
-            filters,
-            selectors
-          );
+          if (
+            paramsKeys.some((param) => QuestionFilterKeysPt.includes(param))
+          ) {
+            const translatedParams = translateQuestionParamMap(params);
+            return this.answerableQuestionsService.fetchQuestionsWithFilters(
+              translatedParams
+            );
+          }
+
+          const searchedTems = params.get('busca');
+          if (searchedTems) {
+            this.searchedTerms.set(searchedTems);
+          }
+
+          return of([]);
         })
       )
-      .subscribe((result) => {
-        this.loadedFilteredQuestions.set(result);
-        this.loadedFilteredQuestionsTotal.set(result.length);
-      });
-
-    combineLatest([
-      this.activatedRoute.queryParamMap,
-      this.examPaginator$.pipe(
-        distinctUntilChanged(
-          (prev, curr) =>
-            prev?.start === curr?.start &&
-            prev?.end === curr?.end &&
-            prev?.pageSize === curr?.pageSize
-        )
-      ),
-    ])
-      .pipe(
-        takeUntil(this.destroy$),
-        switchMap(([params, page]) => {
-          const examId = params.get('examId');
-          if (!examId || !page) return EMPTY;
-          this.currentExamId.set(examId);
-
-          const { start, end, pageSize } = page;
-
-          return this.examsService.paginateExamAnswerableQuestions(
-            examId,
-            start,
-            end,
-            pageSize
-          );
-        })
-      )
-      .subscribe((examQuestions) => {
-        console.log('@@@@', { examQuestions });
-        this.loadedExamQuestions.set(examQuestions);
+      .subscribe((loadedQuestions) => {
+        this.loadedQuestionsTotal.set(loadedQuestions.length);
+        this.loadedQuestions.set(loadedQuestions);
       });
   }
 
-  onExamPagination(paginationEvent: {
-    start: number;
-    end: number;
-    pageSize: number;
-  }) {
-    this.examPaginator$.next(paginationEvent);
+  onQuestionsSelected(questionsIds: string[]) {
+    const queryParams: Params = { questao: questionsIds };
+    this.router.navigate([], {
+      fragment: 'resolver',
+      queryParams,
+    });
   }
 
   ngOnDestroy(): void {

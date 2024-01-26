@@ -10,6 +10,11 @@ import { BaseQuestion, Question } from '../../../models/question.model';
 import { AddQuestionDto } from './interfaces/add-question-dto.interface';
 import { EditQuestionDto } from './interfaces/edit-question-dto.interface';
 import { QuestionsService } from '../../questions.service';
+import { BaseSubject } from '../../../models/subject.model';
+import { BaseInstitution } from '../../../models/institution.model';
+import { BaseBoard } from '../../../models/board.model';
+import { BaseExam } from '../../../models/exam.model';
+import { Entity } from '../../../shared/enums/entity.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -50,6 +55,105 @@ export class QuestionAdminService {
       .pipe(
         map((res) => (res.success && res.data ? res.data : { valid: false }))
       );
+  }
+
+  cacheRelations(
+    records: {
+      subject?: BaseSubject;
+      institution?: BaseInstitution;
+      board?: BaseBoard;
+      exam?: BaseExam;
+    }[]
+  ) {
+    const relationsMap = new Map<
+      Entity,
+      (BaseSubject | BaseInstitution | BaseBoard | BaseExam)[]
+    >();
+
+    const subjectRelations: BaseSubject[] = [];
+    const institutionRelations: BaseInstitution[] = [];
+    const boardRelations: BaseInstitution[] = [];
+    const examRelations: BaseExam[] = [];
+
+    records.forEach((record) => {
+      if (!record) return;
+      if (record.subject) {
+        subjectRelations.push(record.subject);
+      }
+
+      if (record.institution) {
+        institutionRelations.push(record.institution);
+      }
+
+      if (record.board) {
+        boardRelations.push(record.board);
+      }
+      if (record.exam) {
+        examRelations.push(record.exam);
+      }
+    });
+
+    if (subjectRelations.length) {
+      relationsMap.set(Entity.SUBJECTS, subjectRelations);
+    }
+
+    if (institutionRelations.length) {
+      relationsMap.set(Entity.INSTITUTIONS, institutionRelations);
+    }
+
+    if (boardRelations.length) {
+      relationsMap.set(Entity.BOARDS, boardRelations);
+    }
+
+    if (examRelations.length) {
+      relationsMap.set(Entity.EXAMS, examRelations);
+    }
+
+    this.questionsService.loadedRelations.set(relationsMap);
+  }
+
+  cacheRecords(records: (Question | BaseQuestion)[]) {
+    const serializedRecords = records.map((record) =>
+      record instanceof Question
+        ? record
+        : this.questionsService.serializeRecord(record as BaseQuestion)
+    );
+
+    this.questionsService.loadedRecords.update((m) => {
+      m = cloneDeep(m);
+      serializedRecords.map((i) => m.set(i.id, i));
+      this.questionsService.setAllLoaded(m);
+      return m;
+    });
+  }
+
+  searchByCode(value: string) {
+    return this.questionsService.loadedRecords$.pipe(
+      switchMap((loadedRecordsMap) => {
+        const regex = new RegExp(value);
+        const foundRecords = Array.from(loadedRecordsMap.values()).filter((r) =>
+          regex.test(r.code)
+        );
+        if (foundRecords && foundRecords.length) {
+          return of(foundRecords);
+        }
+
+        return this.http
+          .get<FormattedResponse<BaseQuestion[]>>(
+            `${this.endpoint}/search?code=${value}`
+          )
+          .pipe(
+            map((res) =>
+              res.success && res.data && res.data.length
+                ? res.data.map((record) =>
+                    this.questionsService.serializeRecord(record)
+                  )
+                : ([] as Question[])
+            ),
+            tap((records) => this.cacheRecords(records))
+          );
+      })
+    );
   }
 
   paginate(start: number = 0, end: number, pageSize: number) {

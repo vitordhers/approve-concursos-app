@@ -1,7 +1,8 @@
 @if (currentTemplateRef() && section) {
 <mat-list-item [disableRipple]="section.type !== 0"
-               (click)="section.action && section.type === 0 ? section.action() : null"
-               [activated]="section.type === 0 && activatedUrl()">
+               (click)="section.navigationPayload && section.type === 0 ? emitNavigationPayload(section.navigationPayload) : null"
+               [activated]="section.type === 0 && activatedUrl()"
+               [disabled]="!isPaidUser() && section.type !== 1 && section.uri !== '/painel/estudos#desempenho'">
   <div [ngClass]="{'padded': section.isSubsection}">
     <ng-container *ngTemplateOutlet="currentTemplateRef(); context: {
         title: section.title,
@@ -9,7 +10,7 @@
         icon: section.icon,
         subsections: section.subsections,
         uri: section.uri,
-        action: section.action,
+        navigationPayload: section.navigationPayload,
         isSubsection: section.isSubsection
         }">
     </ng-container>
@@ -34,7 +35,8 @@
       <mat-nav-list>
         @for (subsection of subsections; track section?.uri) {
         <app-nav-item [section]="subsection"
-                      [currentUrl]="currentUrl" />
+                      [currentUrl]="currentUrl"
+                      (navigationEmitter)="emitNavigationPayload($event)" />
         }
       </mat-nav-list>
     </mat-expansion-panel>
@@ -44,11 +46,10 @@
 <ng-template #linkSection
              let-title="title"
              let-icon="icon"
-             let-action="action"
+             let-navigationPayload="navigationPayload"
              let-uri="uri"
              let-isSubsection="isSubsection">
   @if(isSubsection) {
-
   <div matListItemTitle
        class="title-wrap">
     <fa-icon [icon]="icon" /> {{title}}
@@ -71,16 +72,19 @@
              let-title="title"
              let-icon="icon"
              let-uri="uri"
-             let-action="action">
+             let-navigationPayload="navigationPayload">
+  @if (search) {
   <mat-form-field appearance="outline">
     <input matInput
            [placeholder]="title"
            [formControl]="search">
     <button matSuffix
             mat-icon-button
-            (click)="action(search.value)">
+            (click)="emitNavigationPayload(navigationPayload)"
+            [disabled]="!isPaidUser()">
       <fa-icon [icon]="icon"
                size="sm" />
     </button>
   </mat-form-field>
+  }
 </ng-template>

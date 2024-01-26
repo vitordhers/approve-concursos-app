@@ -34,14 +34,14 @@
         </a>
       </span>
       }
-      <!-- @if(exam()) {
-        <span>
-          <span class="subtitle">Prova:</span>
-          <a>
-            {{exam()?.name}}
-          </a>
-        </span>
-      } -->
+      @if(exam()) {
+      <span>
+        <span class="subtitle">Prova:</span>
+        <a>
+          {{exam()?.name}}
+        </a>
+      </span>
+      }
       @if(board()) {
       <span>
         <span class="subtitle">Banca:</span>

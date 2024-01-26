@@ -92,13 +92,13 @@ export class QuestionSelectorComponent implements OnInit, OnDestroy {
     debounceTime(500),
     switchMap((value) =>
       value && typeof value === 'string' && value !== ''
-        ? this.questionsService.searchByCode(value)
+        ? this.questionAdminService.searchByCode(value)
         : EMPTY
     )
   );
 
   constructor(
-    private questionsService: QuestionsService,
+    private questionAdminService: QuestionAdminService,
     private cd: ChangeDetectorRef
   ) {}
 
@@ -115,6 +115,7 @@ export class QuestionSelectorComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    this.destroy$.unsubscribe();
     this.touchedEffect.destroy();
     this.clearEffect.destroy();
   }

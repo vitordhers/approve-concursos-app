@@ -13,15 +13,17 @@ import {
   AnswerableQuestion,
 } from '../models/question.model';
 import { BaseSubject } from '../models/subject.model';
-import { CacheAcessor } from '../shared/enums/entity.enum';
+import { CacheAcessor, Entity } from '../shared/enums/entity.enum';
 import { FormattedResponse } from '../shared/interfaces/formatted-response.interface';
 import {
-  Filters,
-  SelectorFilter,
+  QuestionFilters,
+  SelectorQuestionFilter,
 } from '../shared/interfaces/filters.interface';
 import { generateHash } from '../shared/functions/generate-hash.function';
 import { AnswerDto } from './interfaces/answer-dto.interface';
 import { QuestionsService } from './questions.service';
+import { Params } from '@angular/router';
+import { PaginatedResponse } from '../shared/interfaces/paginated-response.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -36,7 +38,8 @@ export class AnswerableQuestionsService {
     injector: this.injector,
   }).pipe(
     distinctUntilChanged(
-      (prev, curr) => generateHash(prev) === generateHash(curr)
+      (prev, curr) =>
+        generateHash([...prev.entries()]) === generateHash([...curr.entries()])
     )
   );
 
@@ -52,7 +55,7 @@ export class AnswerableQuestionsService {
     private questionsService: QuestionsService
   ) {}
 
-  serializeRecord(record: BaseQuestion, cacheRelations = false) {
+  serializeRecord(record: BaseQuestion) {
     if (
       !record.id ||
       !record.entityId ||
@@ -78,9 +81,6 @@ export class AnswerableQuestionsService {
       );
     }
 
-    if (cacheRelations) {
-      this.cacheRelations(record);
-    }
     return new AnswerableQuestion(
       record.id,
       record.entityId,
@@ -99,12 +99,14 @@ export class AnswerableQuestionsService {
     );
   }
 
-  cacheRelations(record: {
-    subject?: BaseSubject;
-    institution?: BaseInstitution;
-    board?: BaseBoard;
-    exam?: BaseExam;
-  }) {
+  cacheRelations(
+    records: {
+      subject?: BaseSubject;
+      institution?: BaseInstitution;
+      board?: BaseBoard;
+      exam?: BaseExam;
+    }[]
+  ) {
     const relationsMap = new Map<
       CacheAcessor,
       (BaseSubject | BaseInstitution | BaseBoard | BaseExam)[]
@@ -115,34 +117,51 @@ export class AnswerableQuestionsService {
     const boardRelations: BaseInstitution[] = [];
     const examRelations: BaseExam[] = [];
 
-    if (record && record.subject) {
-      subjectRelations.push(record.subject);
+    records.forEach((record) => {
+      if (record.subject) {
+        subjectRelations.push(record.subject);
+      }
+
+      if (record.institution) {
+        institutionRelations.push(record.institution);
+      }
+
+      if (record.board) {
+        boardRelations.push(record.board);
+      }
+      if (record.exam) {
+        examRelations.push(record.exam);
+      }
+    });
+
+    if (subjectRelations.length) {
+      relationsMap.set(Entity.SUBJECTS, subjectRelations);
     }
 
-    if (record && record.institution) {
-      institutionRelations.push(record.institution);
+    if (institutionRelations.length) {
+      relationsMap.set(Entity.INSTITUTIONS, institutionRelations);
     }
 
-    if (record && record.board) {
-      boardRelations.push(record.board);
+    if (boardRelations.length) {
+      relationsMap.set(Entity.BOARDS, boardRelations);
     }
-    if (record && record.exam) {
-      examRelations.push(record.exam);
+
+    if (examRelations.length) {
+      relationsMap.set(Entity.EXAMS, examRelations);
     }
 
     this.loadedRelations.set(relationsMap);
   }
 
   cacheRecords(records: (AnswerableQuestion | BaseQuestion)[]) {
-    const serializedRecords = records.map((record) =>
-      record instanceof AnswerableQuestion
-        ? record
-        : this.serializeRecord(record as BaseQuestion)
-    );
-
     this.loadedRecords.update((m) => {
       m = cloneDeep(m);
-      serializedRecords.map((i) => m.set(i.id, i));
+      const serializedRecords = records.map((record) =>
+        record instanceof AnswerableQuestion
+          ? record
+          : this.serializeRecord(record as BaseQuestion)
+      );
+      serializedRecords.forEach((i) => m.set(i.id, i));
       return m;
     });
   }
@@ -167,9 +186,14 @@ export class AnswerableQuestionsService {
             `${this.endpoint}/${id}?withRelations=${withRelations}`
           )
           .pipe(
+            tap((res) =>
+              res.success && res.data && withRelations
+                ? this.cacheRelations([res.data])
+                : undefined
+            ),
             map((res) =>
               res.success && res.data
-                ? this.serializeRecord(res.data, withRelations)
+                ? this.serializeRecord(res.data)
                 : undefined
             ),
             tap((record) => (record ? this.cacheRecords([record]) : undefined))
@@ -178,31 +202,94 @@ export class AnswerableQuestionsService {
     );
   }
 
-  searchByCode(value: string) {
+  getByIds(questionsIds: string[]) {
     return this.loadedRecords$.pipe(
-      switchMap((loadedRecordsMap) => {
-        const regex = new RegExp(value);
-        const foundRecords = Array.from(loadedRecordsMap.values()).filter((r) =>
-          regex.test(r.code)
-        );
-        if (foundRecords && foundRecords.length) {
-          return of(foundRecords);
+      switchMap((loadedRecords) => {
+        const recordsToLoad = questionsIds.length;
+        const alreadyLoadedRecords: AnswerableQuestion[] = [];
+        const missingRecordsIds: string[] = [];
+
+        questionsIds.forEach((questionId) => {
+          if (loadedRecords.has(questionId)) {
+            alreadyLoadedRecords.push(
+              loadedRecords.get(questionId) as AnswerableQuestion
+            );
+            return;
+          }
+          missingRecordsIds.push(questionId);
+        });
+
+        if (
+          recordsToLoad == alreadyLoadedRecords.length ||
+          missingRecordsIds.length === 0
+        ) {
+          return of(alreadyLoadedRecords);
         }
 
         return this.http
-          .get<FormattedResponse<BaseQuestion[]>>(
-            `${this.endpoint}/search?code=${value}`
+          .get<PaginatedResponse<BaseQuestion[]>>(
+            `${this.endpoint}/select?ids=${encodeURIComponent(
+              missingRecordsIds.join(',')
+            )}`
           )
           .pipe(
-            map((res) =>
-              res.success && res.data && res.data.length
-                ? res.data.map((record) => this.serializeRecord(record))
-                : ([] as Question[])
-            ),
-            tap((records) => this.cacheRecords(records))
+            tap((res) => {
+              if (!res || !res.success || !res.data || !res.data.length) return;
+              const records = res.data;
+              this.cacheRelations(records);
+            }),
+            map((res) => {
+              if (!res || !res.success || !res.data || !res.data.length)
+                return [] as AnswerableQuestion[];
+              const records = res.data;
+
+              const serializedRecords = records.map((r) =>
+                this.serializeRecord(r)
+              );
+
+              this.cacheRecords(serializedRecords);
+              return serializedRecords;
+            }),
+            map((fetchedRecords) => {
+              return [...alreadyLoadedRecords, ...fetchedRecords]
+            })
           );
       })
     );
+  }
+
+  searchByTerms(value: string, start: number, limit: number) {
+    return this.http
+      .get<PaginatedResponse<BaseQuestion[]>>(
+        `${this.endpoint}/search?terms=${encodeURIComponent(
+          value
+        )}&start=${start}&limit=${limit}`
+      )
+      .pipe(
+        tap((res) => {
+          if (!res || !res.success || !res.data || !res.data.length) return;
+          const records = res.data;
+          this.cacheRelations(records);
+          const serializedRecords = records.map((r) => this.serializeRecord(r));
+
+          this.cacheRecords(serializedRecords);
+        })
+      );
+  }
+
+  searchByCode(value: string) {
+    return this.http
+      .get<FormattedResponse<BaseQuestion[]>>(
+        `${this.endpoint}/search?code=${encodeURIComponent(value)}`
+      )
+      .pipe(
+        map((res) =>
+          res.success && res.data && res.data.length
+            ? res.data.map((record) => this.serializeRecord(record))
+            : ([] as Question[])
+        ),
+        tap((records) => this.cacheRecords(records))
+      );
   }
 
   getCached(questionsIds: string[]) {
@@ -212,31 +299,41 @@ export class AnswerableQuestionsService {
     );
   }
 
-  fetchQuestionsWithFilters(filters: Filters[], selectors: SelectorFilter[]) {
-    const filtersArrayString = filters.length ? JSON.stringify(filters) : '';
-    const encodedFiltersArrayString = encodeURIComponent(filtersArrayString);
+  private paramsToQueryParamsString(params: Params) {
+    let queryParamStr = '';
 
-    const selectorsArrayString = selectors.length
-      ? JSON.stringify(selectors)
-      : '';
-    const encodedSelectorsArrayString =
-      encodeURIComponent(selectorsArrayString);
-
-    const params = new URLSearchParams({
-      filters: encodedFiltersArrayString,
-      selectors: encodedSelectorsArrayString,
+    Object.entries(params).forEach(([key, value], index) => {
+      console.log({ key, value, index });
+      if (index === 0) {
+        queryParamStr += '?';
+      }
+      queryParamStr += `&${encodeURIComponent(key)}=${encodeURIComponent(
+        value
+      )}`;
     });
 
+    return queryParamStr;
+  }
+
+  applyFirstFiltersAndGetSubjectsSummary(params: Params) {
+    const queryParams = this.paramsToQueryParamsString(params);
+
+    console.log('applyFirstFiltersAndGetSubjectsSummary', { queryParams });
     return this.http
-      .get<FormattedResponse<BaseQuestion[]>>(
-        `${this.endpoint}/filter?${
-          encodedSelectorsArrayString !== '' ||
-          encodedSelectorsArrayString !== ''
-            ? params
-            : ''
-        }`
+      .get<FormattedResponse<{ total: number; subject: BaseSubject }[]>>(
+        `${this.endpoint}/prefilter${queryParams}`
       )
       .pipe(
+        tap((response) => {
+          if (
+            !response ||
+            !response.success ||
+            !response.data ||
+            !response.data.length
+          )
+            return;
+          this.cacheRelations(response.data);
+        }),
         map((response) => {
           if (
             !response ||
@@ -245,7 +342,33 @@ export class AnswerableQuestionsService {
             !response.data.length
           )
             return [];
-          return response.data.map((q) => this.serializeRecord(q, true));
+          return response.data;
+        })
+      );
+  }
+
+  fetchQuestionsWithFilters(params: Params) {
+    const queryParams = this.paramsToQueryParamsString(params);
+
+    return this.http
+      .get<FormattedResponse<BaseQuestion[]>>(
+        `${this.endpoint}/filter${queryParams}`
+      )
+      .pipe(
+        tap((response) =>
+          response.success && response.data && response.data.length
+            ? this.cacheRelations(response.data)
+            : undefined
+        ),
+        map((response) => {
+          if (
+            !response ||
+            !response.success ||
+            !response.data ||
+            !response.data.length
+          )
+            return [];
+          return response.data.map((q) => this.serializeRecord(q));
         })
       );
   }

@@ -13,7 +13,6 @@ import { cloneDeep } from 'lodash';
 import { BaseSubject, Subject } from '../models/subject.model';
 import { environment } from '../../environments/environment';
 import { FormattedResponse } from '../shared/interfaces/formatted-response.interface';
-import { PaginatedResponse } from '../shared/interfaces/paginated-response.interface';
 import { generateHash } from '../shared/functions/generate-hash.function';
 
 @Injectable({
@@ -43,7 +42,8 @@ export class SubjectsService {
     injector: this.injector,
   }).pipe(
     distinctUntilChanged(
-      (prev, curr) => generateHash(prev) === generateHash(curr)
+      (prev, curr) =>
+        generateHash([...prev.entries()]) === generateHash([...curr.entries()])
     )
   );
 

@@ -1,0 +1,65 @@
+<mat-card *ngIf="question() as question"
+          class="question-card mat-elevation-z0">
+  <mat-card-header>
+    @if(question.illustration) {
+    <div class="avatar"
+         mat-card-avatar>
+      <img mat-card-image
+           [ngSrc]="question.illustration | serverImg"
+           fill>
+    </div>
+    }
+    <mat-card-title>
+      <span class="code">
+        <mat-checkbox [formControl]="formControl"
+                      color="primary">
+          <span>{{question.code}}</span>
+        </mat-checkbox>
+      </span>
+
+      @if(question?.year) {
+      <span>
+        <span class="subtitle">Ano: </span>
+        <span>{{question.year}}</span>
+      </span>
+      }
+      @if(subject()) {
+      <span>
+        <span class="subtitle">Disciplina:</span>
+        <a>
+          {{subject()?.name}}
+        </a>
+      </span>
+      }
+      @if(institution()) {
+      <span>
+        <span class="subtitle">Órgão:</span>
+        <a>
+          {{institution()?.name}}
+        </a>
+      </span>
+      }
+      @if(exam()) {
+      <span>
+        <span class="subtitle">Prova:</span>
+        <a>
+          {{exam()?.name}}
+        </a>
+      </span>
+      }
+      @if(board()) {
+      <span>
+        <span class="subtitle">Banca:</span>
+        <a>
+          {{board()?.name}}
+        </a>
+      </span>
+      }
+    </mat-card-title>
+    <mat-card-subtitle>
+      <p>
+        {{question.prompt}}
+      </p>
+    </mat-card-subtitle>
+  </mat-card-header>
+</mat-card>

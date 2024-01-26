@@ -7,7 +7,14 @@ import {
   signal,
 } from '@angular/core';
 import { CommonModule, registerLocaleData } from '@angular/common';
-import { BehaviorSubject, Subject, distinctUntilChanged, filter, switchMap, takeUntil } from 'rxjs';
+import {
+  BehaviorSubject,
+  Subject,
+  distinctUntilChanged,
+  filter,
+  switchMap,
+  takeUntil,
+} from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
@@ -223,5 +230,6 @@ export class ListComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    this.destroy$.unsubscribe();
   }
 }

@@ -19,8 +19,9 @@
       </div>
       }
     </mat-card-content>
-    <mat-card-actions>
+    <mat-card-actions [ngClass]="{disabled: !isPaidUser()}">
       <a class="link-button"
+         [ngClass]="{disabled: !isPaidUser()}"
          [routerLink]="['/painel','questoes']">
         <span>Resolver mais</span>
         <fa-icon [icon]="faCircleRight" />
@@ -48,8 +49,9 @@
       </div>
       }
     </mat-card-content>
-    <mat-card-actions>
+    <mat-card-actions [ngClass]="{disabled: !isPaidUser()}">
       <a class="link-button"
+         [ngClass]="{disabled: !isPaidUser()}"
          [routerLink]="['/painel','questoes']">
         <span>Resolver mais</span>
         <fa-icon [icon]="faCircleRight" />
@@ -78,8 +80,9 @@
       </div>
       }
     </mat-card-content>
-    <mat-card-actions>
+    <mat-card-actions [ngClass]="{disabled: !isPaidUser()}">
       <a class="link-button"
+         [ngClass]="{disabled: !isPaidUser()}"
          [routerLink]="['/painel','questoes']">
         <span>Resolver questões erradas</span>
         <fa-icon [icon]="faCircleRight" />
@@ -107,8 +110,9 @@
       </div>
       }
     </mat-card-content>
-    <mat-card-actions>
+    <mat-card-actions [ngClass]="{disabled: !isPaidUser()}">
       <a class="link-button"
+         [ngClass]="{disabled: !isPaidUser()}"
          [routerLink]="['/painel','questoes']">
         <span>Melhorar</span>
         <fa-icon [icon]="faCircleRight" />

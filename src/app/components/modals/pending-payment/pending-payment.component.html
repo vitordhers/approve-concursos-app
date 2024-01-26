@@ -1,0 +1,27 @@
+@if(user()){
+
+<mat-card class="mat-elevation-z0">
+  <mat-card-header>
+    <mat-card-title>Prezado <b>{{user()?.name}}</b>,</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <p>Para continuar utilizando a plataforma, é necessário assinar os serviços</p>
+    @if (dueDate()) {
+    <p>Observamos que seu pagamento está vencido desde {{dueDate() | date:"d 'de' MMMM 'de' y, 'às' HH:mm":undefined:'pt-BR'}}</p>
+    }
+    <p>O pagamento pode ser feito clicando no botão abaixo</p>
+    <aside class="callout warning">
+      <b> ATENÇÃO ☝️</b>
+      <br>
+      Certifique-se de utilizar seu e-mail <b>{{user()?.email}}</b> na hora da compra
+    </aside>
+
+    <a mat-flat-button color="primary" [href]="paymentLink"
+       target="_blank">
+       <fa-icon [icon]="faStar" />
+       Assinar o Approve Concursos
+    </a>
+    <p>Tão logo for registrado o pagamento, você poderá continuar a utilizar nossos serviços 😉</p>
+  </mat-card-content>
+</mat-card>
+}

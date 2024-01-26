@@ -87,7 +87,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     )
   );
 
-  totalRecords = signal(0);
+  totalRecords = computed(() => this.userService.totalAnsweredQuestions());
 
   private setAllLoaded(map: Map<string, Answer>) {
     const recordsLength = Array.from(map.keys()).length;
@@ -134,23 +134,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
           updatedEnd = start + missingRecordsNo;
         }
 
-        return this.userService.getHistory$(updatedStart, updatedEnd).pipe(
-          tap((res) =>
-            res.success ? this.totalRecords.set(res.total) : undefined
-          ),
-          map((res) =>
-            res.success && res.data && res.data.length
-              ? res.data.map((record) => ({
-                  ...record,
-                  question: this.questionsService.serializeRecord(
-                    record.question,
-                    true
-                  ),
-                }))
-              : ([] as Answer[])
-          ),
-          tap((records) => this.cacheRecords(records))
-        );
+        return this.userService
+          .getHistory(updatedStart, updatedEnd)
+          .pipe(tap((records) => this.cacheRecords(records)));
       })
     );
   }

@@ -10,13 +10,15 @@
 
     </ng-template>
   </mat-tab>
-  <mat-tab label="Simulados">
+  <mat-tab label="Simulados"
+           [disabled]="!isPaidUser()">
     <ng-template mat-tab-label><fa-icon [icon]="faListCheck" />&nbsp; Simulados</ng-template>
     <ng-template matTabContent>
       <app-exam-list [type]="examType.MOCK" />
     </ng-template>
   </mat-tab>
-  <mat-tab label="Provas">
+  <mat-tab label="Provas"
+           [disabled]="!isPaidUser()">
     <ng-template mat-tab-label> <fa-icon [icon]="faListOl" />&nbsp; Provas</ng-template>
     <ng-template matTabContent>
       <app-exam-list [type]="examType.ASSESSMENT" />

@@ -1,30 +1,27 @@
 <div class="wrapper page">
-  @if (loadedFilteredQuestions().length) {
-  @for (question of loadedFilteredQuestions(); track $index) {
+  @if (displayedQuestions().length) {
+  @for (question of displayedQuestions(); track $index) {
   <app-answerable-question [_question]="question"
                            [questionNo]="currentPage().start + $index + 1"
                            (nextPage)="nextPage($event)"
                            [prevAnswer]="answerMap.get(question.id)"
                            [pageEnd]="currentPage().end"
                            [questionIndex]="$index"
-                           [examTotalQuestions]="totalFilteredQuestions" />
-  }
-  } @else if (loadedExamQuestions().length) {
-  @for (question of loadedExamQuestions(); track $index) {
-  <app-answerable-question [_question]="question"
-                           [questionNo]="currentPage().start + $index + 1"
-                           (nextPage)="nextPage($event)"
-                           [prevAnswer]="answerMap.get(question.id)"
-                           [pageEnd]="currentPage().end"
-                           [questionIndex]="$index"
-                           [examTotalQuestions]="totalExamQuestions" />
-  }
+                           [examTotalQuestions]="totalQuestions" />
   }
   <mat-paginator [pageSizeOptions]="pageSizeOptions"
                  [pageSize]="currentPageSize"
-                 [length]="type() === 'exam' ?  totalExamQuestions : totalFilteredQuestions"
-                 showFirstLastButtons
+                 [length]="totalQuestions"
                  (page)="onPageEvent($event)"
-                 [hidePageSize]="(type() === 'exam' ?  totalExamQuestions : totalFilteredQuestions) < pageSizeOptions[0]">
+                 [hidePageSize]="totalQuestions < pageSizeOptions[0]"
+                 showFirstLastButtons>
   </mat-paginator>
+  } @else {
+  <p>🤔 Não foram encontradas questões para serem resolvidas</p>
+  <button mat-flat-button
+          color="primary"
+          (click)="navigateToFilter()">
+    <fa-icon [icon]="faMagnifyingGlass" /> Buscar outras questões
+  </button>
+  }
 </div>

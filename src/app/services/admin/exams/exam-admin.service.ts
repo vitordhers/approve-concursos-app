@@ -23,7 +23,6 @@ import { BaseInstitution } from '../../../models/institution.model';
 import { BaseBoard } from '../../../models/board.model';
 import { Relation } from '../../../shared/interfaces/relation.interface';
 import { ExamType } from '../../../shared/enums/exam-type.enum';
-import { generateHash } from '../../../shared/functions/generate-hash.function';
 import { ExamsService } from '../../exams.service';
 
 @Injectable({

@@ -13,10 +13,10 @@ import { faHome } from '@fortawesome/free-solid-svg-icons';
 import { UserService } from '../../services/user/user.service';
 import { ModalService } from '../../services/modal.service';
 import { AuthComponent } from '../modals/auth/auth.component';
-import { DialogData } from '../modals/auth/interface/dialog-data.interface';
 import { fireToast } from '../../notification/functions/fire-toast.function';
 import { LogoComponent } from '../logo/logo.component';
 import { RouterModule } from '@angular/router';
+import { AuthDialogData } from '../modals/auth/interface/auth-dialog-data.interface';
 
 @Component({
   imports: [
@@ -26,7 +26,7 @@ import { RouterModule } from '@angular/router';
     MatIconModule,
     FontAwesomeModule,
     RouterModule,
-    LogoComponent
+    LogoComponent,
   ],
   selector: 'app-header',
   standalone: true,
@@ -49,7 +49,7 @@ export class HeaderComponent {
       fireToast('Atenção', 'você já está logado 😉', 'success');
       return;
     }
-    this.modalService.openModal<AuthComponent, DialogData, void>(
+    this.modalService.openModal<AuthComponent, AuthDialogData, void>(
       AuthComponent,
       { initialTabIndex: 1 }
     );

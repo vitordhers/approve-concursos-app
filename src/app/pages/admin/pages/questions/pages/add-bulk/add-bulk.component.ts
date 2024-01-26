@@ -48,7 +48,6 @@ import { Institution } from '../../../../../../models/institution.model';
 import { Board } from '../../../../../../models/board.model';
 import { Exam } from '../../../../../../models/exam.model';
 import { EducationStage } from '../../../../../../shared/enums/education-stage';
-import { CustomFormValidators } from '../../../../../../shared/models/custom-form-validators.model';
 import { QuestionAdminService } from '../../../../../../services/admin/questions/question-admin.service';
 import { MatTableModule } from '@angular/material/table';
 import { cloneDeep } from 'lodash';
@@ -69,6 +68,7 @@ import { EDUCATION_STAGE_OPTIONS } from '../../../../../../shared/constants/educ
 import { AddQuestionDto } from '../../../../../../services/admin/questions/interfaces/add-question-dto.interface';
 import { Alternative } from '../../../../../../models/question.model';
 import { Router } from '@angular/router';
+import { CustomFormValidators } from '../../../../../../shared/utils/custom-form-validators.model';
 
 @Component({
   selector: 'app-add-bulk',

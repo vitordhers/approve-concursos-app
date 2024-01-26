@@ -1,0 +1,41 @@
+a {
+  text-decoration: none;
+}
+
+.callout {
+  padding: 0.8em 1em;
+  line-height: 1.2;
+  text-align: left;
+  position: relative;
+  clear: both;
+  border-radius: 0 10px 10px 0;
+}
+
+mat-card-content {
+  padding: 16px 30px;
+}
+
+.callout {
+  background: rgba(224, 226, 255, 0.5);
+  border-left: 4px solid #b4aaff;
+  color: #242424;
+  margin: 1em 0px;
+  &.warning {
+    background-color: #ffe5d9;
+    border-left: 4px solid orangered;
+    &::before {
+      width: 35px;
+      height: 35px;
+      display: inline-flex;
+      justify-content: center;
+      position: absolute;
+      font-size: 1.5em;
+      left: -1.2rem;
+      content: "⚠️";
+      background-color: orangered;
+      border-radius: 50%;
+      align-items: center;
+      top: -0.8rem;
+    }
+  }
+}

@@ -2,20 +2,17 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  EventEmitter,
   Input,
   LOCALE_ID,
   OnDestroy,
   OnInit,
-  Output,
   ViewChild,
   WritableSignal,
   computed,
-  effect,
   signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AnswerableQuestion, Question } from '../../models/question.model';
+import { AnswerableQuestion } from '../../models/question.model';
 import {
   MatPaginator,
   MatPaginatorIntl,
@@ -32,6 +29,7 @@ import { DEFAULT_QUESTION_PAGINATION_SIZE } from '../../shared/config/default-qu
 import { QUESTION_PAGINATION_SIZES } from '../../shared/constants/question-pagination-sizes.const';
 import { Router } from '@angular/router';
 import { fireToast } from '../../notification/functions/fire-toast.function';
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-questionnaire',
@@ -55,36 +53,19 @@ import { fireToast } from '../../notification/functions/fire-toast.function';
 export class QuestionnaireComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator) paginator?: MatPaginator;
   @Input()
-  _loadedFilteredQuestions?: WritableSignal<AnswerableQuestion[]>;
-  @Input() _loadedExamQuestions?: WritableSignal<AnswerableQuestion[]>;
-
-  @Output() pageEventEmitter = new EventEmitter<{
-    start: number;
-    end: number;
-    pageSize: number;
-  }>();
-
-  loadedFilteredQuestions = computed(() => {
-    if (!this._loadedFilteredQuestions) return [];
-    const { start, end } = this.currentPage();
-    const loadedQuestions = this._loadedFilteredQuestions();
-    const paginatedQuestions = loadedQuestions.slice(start, end);
-    return paginatedQuestions;
-  });
-
-  loadedExamQuestions = computed(() => {
-    if (!this._loadedExamQuestions) return [];
-    return this._loadedExamQuestions();
-  });
+  loadedQuestions?: WritableSignal<AnswerableQuestion[]>;
 
   @Input()
-  totalFilteredQuestions = 0;
-  @Input() totalExamQuestions = 0;
+  totalQuestions = 0;
 
-  type = computed(() => {
-    if (this.loadedExamQuestions && this.loadedExamQuestions().length)
-      return 'exam';
-    return 'filtered';
+  faMagnifyingGlass = faMagnifyingGlass;
+
+  displayedQuestions = computed(() => {
+    if (!this.loadedQuestions) return [];
+    const { start, end } = this.currentPage();
+    const loadedQuestions = this.loadedQuestions();
+    const displayedQuestions = loadedQuestions.slice(start, end);
+    return displayedQuestions;
   });
 
   currentPage = signal({
@@ -99,13 +80,13 @@ export class QuestionnaireComponent implements OnInit, OnDestroy {
 
   answerMap = new Map<string, number>();
 
-  private currentPageEffect = effect(
-    () => {
-      const currentPage = this.currentPage();
-      this.pageEventEmitter.next(currentPage);
-    },
-    { allowSignalWrites: true }
-  );
+  // private currentPageEffect = effect(
+  //   () => {
+  //     const currentPage = this.currentPage();
+  //     // this.pageEventEmitter.next(currentPage);
+  //   },
+  //   { allowSignalWrites: true }
+  // );
 
   constructor(private cd: ChangeDetectorRef, private router: Router) {}
 
@@ -138,7 +119,11 @@ export class QuestionnaireComponent implements OnInit, OnDestroy {
     this.paginator.nextPage();
   }
 
+  navigateToFilter() {
+    this.router.navigate([], { fragment: 'filtro' });
+  }
+
   ngOnDestroy(): void {
-    this.currentPageEffect.destroy();
+    // this.currentPageEffect.destroy();
   }
 }

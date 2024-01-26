@@ -18,12 +18,8 @@ import { Question, BaseQuestion } from '../models/question.model';
 import { BaseSubject } from '../models/subject.model';
 import { Entity } from '../shared/enums/entity.enum';
 import { FormattedResponse } from '../shared/interfaces/formatted-response.interface';
-import {
-  Filters,
-  SelectorFilter,
-} from '../shared/interfaces/filters.interface';
 import { generateHash } from '../shared/functions/generate-hash.function';
-import { AnswerDto } from './interfaces/answer-dto.interface';
+import { Params } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -52,7 +48,8 @@ export class QuestionsService {
     injector: this.injector,
   }).pipe(
     distinctUntilChanged(
-      (prev, curr) => generateHash(prev) === generateHash(curr)
+      (prev, curr) =>
+        generateHash([...prev.entries()]) === generateHash([...curr.entries()])
     )
   );
 
@@ -64,12 +61,12 @@ export class QuestionsService {
 
   constructor(private http: HttpClient) {}
 
-  private setAllLoaded(map: Map<string, Question>) {
+  setAllLoaded(map: Map<string, Question>) {
     const recordsLength = Array.from(map.keys()).length;
     this.allLoaded = recordsLength === this.totalRecords();
   }
 
-  serializeRecord(record: BaseQuestion, cacheRelations = false) {
+  serializeRecord(record: BaseQuestion) {
     if (
       !record.id ||
       !record.entityId ||
@@ -95,9 +92,6 @@ export class QuestionsService {
       );
     }
 
-    if (cacheRelations) {
-      this.cacheRelations(record);
-    }
     return new Question(
       record.id,
       record.entityId,
@@ -118,12 +112,14 @@ export class QuestionsService {
     );
   }
 
-  cacheRelations(record: {
-    subject?: BaseSubject;
-    institution?: BaseInstitution;
-    board?: BaseBoard;
-    exam?: BaseExam;
-  }) {
+  cacheRelations(
+    records: {
+      subject?: BaseSubject;
+      institution?: BaseInstitution;
+      board?: BaseBoard;
+      exam?: BaseExam;
+    }[]
+  ) {
     const relationsMap = new Map<
       Entity,
       (BaseSubject | BaseInstitution | BaseBoard | BaseExam)[]
@@ -134,19 +130,38 @@ export class QuestionsService {
     const boardRelations: BaseInstitution[] = [];
     const examRelations: BaseExam[] = [];
 
-    if (record && record.subject) {
-      subjectRelations.push(record.subject);
+    records.forEach((record) => {
+      if (!record) return;
+      if (record.subject) {
+        subjectRelations.push(record.subject);
+      }
+
+      if (record.institution) {
+        institutionRelations.push(record.institution);
+      }
+
+      if (record.board) {
+        boardRelations.push(record.board);
+      }
+      if (record.exam) {
+        examRelations.push(record.exam);
+      }
+    });
+
+    if (subjectRelations.length) {
+      relationsMap.set(Entity.SUBJECTS, subjectRelations);
     }
 
-    if (record && record.institution) {
-      institutionRelations.push(record.institution);
+    if (institutionRelations.length) {
+      relationsMap.set(Entity.INSTITUTIONS, institutionRelations);
     }
 
-    if (record && record.board) {
-      boardRelations.push(record.board);
+    if (boardRelations.length) {
+      relationsMap.set(Entity.BOARDS, boardRelations);
     }
-    if (record && record.exam) {
-      examRelations.push(record.exam);
+
+    if (examRelations.length) {
+      relationsMap.set(Entity.EXAMS, examRelations);
     }
 
     this.loadedRelations.set(relationsMap);
@@ -180,9 +195,14 @@ export class QuestionsService {
             `${this.endpoint}/${id}?withRelations=${withRelations}`
           )
           .pipe(
+            tap((res) =>
+              res.success && res.data
+                ? this.cacheRelations([res.data])
+                : undefined
+            ),
             map((res) =>
               res.success && res.data
-                ? this.serializeRecord(res.data, withRelations)
+                ? this.serializeRecord(res.data)
                 : undefined
             ),
             tap((record) => (record ? this.cacheRecords([record]) : undefined))
@@ -191,35 +211,8 @@ export class QuestionsService {
     );
   }
 
-  searchByCode(value: string) {
-    return this.loadedRecords$.pipe(
-      switchMap((loadedRecordsMap) => {
-        const regex = new RegExp(value);
-        const foundRecords = Array.from(loadedRecordsMap.values()).filter((r) =>
-          regex.test(r.code)
-        );
-        if (foundRecords && foundRecords.length) {
-          return of(foundRecords);
-        }
-
-        return this.http
-          .get<FormattedResponse<BaseQuestion[]>>(
-            `${this.endpoint}/search?code=${value}`
-          )
-          .pipe(
-            map((res) =>
-              res.success && res.data && res.data.length
-                ? res.data.map((record) => this.serializeRecord(record))
-                : ([] as Question[])
-            ),
-            tap((records) => this.cacheRecords(records))
-          );
-      })
-    );
-  }
-
   getOneFromCache(id: string) {
-    return this.loadedRecords().get(id)
+    return this.loadedRecords().get(id);
   }
 
   getCached(questionsIds: string[]) {
@@ -227,41 +220,5 @@ export class QuestionsService {
       map((m) => [...m.values()]),
       map((questions) => questions.filter((q) => questionsIds.includes(q.id)))
     );
-  }
-
-  applyFirstFiltersAndGetSubjectsSummary(filters: Filters[]) {
-    const arrayString = filters.length ? JSON.stringify(filters) : '';
-
-    const encodedArrayString = encodeURIComponent(arrayString);
-
-    const params = new URLSearchParams({ filters: encodedArrayString });
-
-    return this.http
-      .get<FormattedResponse<{ total: number; subject: BaseSubject }[]>>(
-        `${this.endpoint}/prefilter?${encodedArrayString !== '' ? params : ''}`
-      )
-      .pipe(
-        tap((response) => {
-          if (
-            !response ||
-            !response.success ||
-            !response.data ||
-            !response.data.length
-          )
-            return;
-          const records = response.data;
-          records?.map((r) => this.cacheRelations(r));
-        }),
-        map((response) => {
-          if (
-            !response ||
-            !response.success ||
-            !response.data ||
-            !response.data.length
-          )
-            return [];
-          return response.data;
-        })
-      );
   }
 }

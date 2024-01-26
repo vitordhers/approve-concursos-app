@@ -1,5 +1,6 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   LOCALE_ID,
   OnDestroy,
@@ -59,6 +60,7 @@ import { EditUserDto } from '../../../../../../services/admin/users/interfaces/e
 import { MatSelectModule } from '@angular/material/select';
 import { UserRole } from '../../../../../../shared/enums/user-role.enum';
 import { CpfDirective } from '../../../../../../shared/directives/cpf.directive';
+import { USER_ROLES_WITH_LABELS } from '../../../../../../shared/config/user-roles-with-labels.const';
 
 registerLocaleData(localePtBr);
 
@@ -100,16 +102,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 
   loading = signal(false);
 
-  userRoles = [
-    {
-      label: 'Admin',
-      value: UserRole.ADMIN,
-    },
-    {
-      label: 'Usuário',
-      value: UserRole.USER,
-    },
-  ];
+  userRolesWithLabels = USER_ROLES_WITH_LABELS;
 
   private destroy$ = new RxJsSubject<void>();
 
@@ -140,19 +133,13 @@ export class AddEditComponent implements OnInit, OnDestroy {
     }),
     password: new FormControl<string | undefined>(undefined, {
       nonNullable: true,
-      validators: [
-        Validators.required,
-        Validators.pattern(STRONG_PASSWORD_REGEX),
-      ],
+      validators: [Validators.pattern(STRONG_PASSWORD_REGEX)],
     }),
     confirmPassword: new FormControl<string | undefined>(undefined, {
       nonNullable: true,
-      validators: [
-        Validators.required,
-        matchPasswordsValidator('password', 'confirmPassword'),
-      ],
+      validators: [matchPasswordsValidator('password', 'confirmPassword')],
     }),
-    role: new FormControl<number>(1, {
+    role: new FormControl<number>(0, {
       nonNullable: true,
       validators: [Validators.required],
     }),
@@ -164,7 +151,8 @@ export class AddEditComponent implements OnInit, OnDestroy {
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private userService: UserAdminService
+    private userService: UserAdminService,
+    private cd: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -189,6 +177,9 @@ export class AddEditComponent implements OnInit, OnDestroy {
           this.form.controls['name'].patchValue(record.name);
           this.form.controls['email'].patchValue(record.email);
           this.form.controls['cpf'].patchValue(record.cpf);
+          this.form.controls['role'].patchValue(record.role);
+          this.form.updateValueAndValidity();
+          this.cd.detectChanges();
         },
         error: (err) => {
           console.error(err);
@@ -379,5 +370,6 @@ export class AddEditComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    this.destroy$.unsubscribe();
   }
 }

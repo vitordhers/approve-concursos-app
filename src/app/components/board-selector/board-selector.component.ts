@@ -133,6 +133,7 @@ export class BoardSelectorComponent implements OnInit, OnChanges, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    this.destroy$.unsubscribe();
     this.touchedEffect.destroy();
     this.clearEffect.destroy();
   }

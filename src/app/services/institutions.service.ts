@@ -41,7 +41,8 @@ export class InstitutionsService {
     injector: this.injector,
   }).pipe(
     distinctUntilChanged(
-      (prev, curr) => generateHash(prev) === generateHash(curr)
+      (prev, curr) =>
+        generateHash([...prev.entries()]) === generateHash([...curr.entries()])
     )
   );
 

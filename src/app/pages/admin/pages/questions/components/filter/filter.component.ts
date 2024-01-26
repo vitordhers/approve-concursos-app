@@ -3,11 +3,9 @@ import {
   Component,
   OnDestroy,
   OnInit,
-  WritableSignal,
   signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ModalService } from '../../../../../../services/modal.service';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -21,8 +19,8 @@ import {
 import { Institution } from '../../../../../../models/institution.model';
 import { EducationStage } from '../../../../../../shared/enums/education-stage';
 import { Board } from '../../../../../../models/board.model';
-import { Subject as RxJsSubject, takeUntil } from 'rxjs';
-import { BaseSubject, Subject } from '../../../../../../models/subject.model';
+import { Subject as RxJsSubject } from 'rxjs';
+import { BaseSubject } from '../../../../../../models/subject.model';
 import { MatButtonModule } from '@angular/material/button';
 import { BoardSelectorComponent } from '../../../../../../components/board-selector/board-selector.component';
 import { InstitutionSelectorComponent } from '../../../../../../components/institution-selector/institution-selector.component';
@@ -42,16 +40,21 @@ import { EDUCATION_STAGE_OPTIONS } from '../../../../../../shared/constants/educ
 import { MatSelectModule } from '@angular/material/select';
 import { QuestionsService } from '../../../../../../services/questions.service';
 import {
-  Filters,
-  MultipleValuesFilter,
-  RangeValueFilter,
-  SelectorFilter,
-  SingleValueFilter,
+  QuestionFilters,
+  MultipleValuesQuestionFilter,
+  RangeValueQuestionFilter,
+  SelectorQuestionFilter,
+  SingleValueQuestionFilter,
 } from '../../../../../../shared/interfaces/filters.interface';
 import { FilterType } from '../../../../../../shared/enums/filter-type.enum';
 import { SubjectsService } from '../../../../../../services/subjects.service';
 import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import {
+  QuestionFilter,
+  QuestionFilterPt,
+} from '../../../../../../shared/enums/question-filters.enum';
+import { AnswerableQuestionsService } from '../../../../../../services/answerable-questions.service';
 
 @Component({
   selector: 'app-filter',
@@ -121,17 +124,9 @@ export class FilterComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['name', 'quantity', 'total'];
 
   constructor(
-    private ModalService: ModalService,
-    private questionsService: QuestionsService,
+    private answerableQuestionsService: AnswerableQuestionsService,
     private router: Router
-  ) {
-    // year
-    // institution
-    // board
-    // exam
-    // educationStage
-    // subject
-  }
+  ) {}
 
   ngOnInit(): void {}
 
@@ -151,51 +146,56 @@ export class FilterComponent implements OnInit, OnDestroy {
       educationStage,
     } = this.firstFormGroup.value;
 
-    const filters: Filters[] = [];
+    const filters: QuestionFilters[] = [];
 
     if (year) {
       const currentYear = new Date().getFullYear();
       const yearFilter = isStartingYear
         ? ({
+            id: QuestionFilter.fromTo,
             type: FilterType.RANGE,
             key: 'year',
-            from: year,
-            to: currentYear,
-          } as RangeValueFilter)
+            values: [year, currentYear],
+          } as RangeValueQuestionFilter)
         : ({
+            id: QuestionFilter.year,
             type: FilterType.SINGLE_VALUE,
             key: 'year',
             value: year,
-          } as SingleValueFilter);
+          } as SingleValueQuestionFilter);
       filters.push(yearFilter);
     }
     if (institution && typeof institution !== 'string') {
-      const institutionFilter: SingleValueFilter = {
+      const institutionFilter: SingleValueQuestionFilter = {
+        id: QuestionFilter.institutionId,
         type: FilterType.SINGLE_VALUE,
         key: 'institutionId',
-        value: institution.dbId,
+        value: institution.id,
       };
       filters.push(institutionFilter);
     }
 
     if (boards && boards.length) {
-      const boardsFilter: MultipleValuesFilter = {
+      const boardsFilter: MultipleValuesQuestionFilter = {
+        id: QuestionFilter.boardIdOR,
         type: FilterType.MULTIPLE_VALUES,
-        key: 'boardId',
+        key: 'boardID',
         condition: 'OR',
         values: [],
       };
 
       boards.forEach((board) => {
-        boardsFilter.values.push(board.dbId);
+        boardsFilter.values.push(board.id);
       });
       filters.push(boardsFilter);
     }
 
+    // this check allow us to bypass EducationStage.NONE
     if (educationStage) {
-      const educationStageFilter: SingleValueFilter = {
-        type: FilterType.SINGLE_VALUE,
+      const educationStageFilter: SingleValueQuestionFilter = {
+        id: QuestionFilter.educationStage,
         key: 'educationStage',
+        type: FilterType.SINGLE_VALUE,
         value: educationStage,
       };
       filters.push(educationStageFilter);
@@ -207,8 +207,10 @@ export class FilterComponent implements OnInit, OnDestroy {
   applyFirstFiltersAndPaginateSubjectsSummary() {
     const filters = this.getFirstFilters();
 
-    this.questionsService
-      .applyFirstFiltersAndGetSubjectsSummary(filters)
+    const params = this.mapQuestionFiltersToQueryParams(filters);
+
+    this.answerableQuestionsService
+      .applyFirstFiltersAndGetSubjectsSummary(params)
       .subscribe((results) => {
         this.dataSource.set(results);
 
@@ -225,35 +227,100 @@ export class FilterComponent implements OnInit, OnDestroy {
       });
   }
 
+  mapQuestionFiltersToQueryParams(
+    filters: QuestionFilters[],
+    queryParamsLanguage: 'en' | 'pt' = 'en'
+  ) {
+    const singleParams: Params = {};
+    const multipleParams: Params = {};
+    const paramFilter =
+      queryParamsLanguage === 'en' ? QuestionFilter : QuestionFilterPt;
+
+    filters.forEach((filter) => {
+      switch (filter.id) {
+        case QuestionFilter.year:
+          singleParams[paramFilter.year] = filter.value;
+          return;
+        case QuestionFilter.institutionId:
+          singleParams[paramFilter.institutionId] = filter.value;
+          return;
+        case QuestionFilter.educationStage:
+          singleParams[paramFilter.educationStage] = filter.value;
+          return;
+        case QuestionFilter.fromTo:
+          singleParams[paramFilter.fromTo] = filter.values;
+          return;
+        case QuestionFilter.boardIdOR:
+          if (multipleParams[paramFilter.boardIdOR]) {
+            multipleParams[paramFilter.boardIdOR] = [
+              ...multipleParams[paramFilter.boardIdOR],
+              ...filter.values,
+            ];
+            return;
+          }
+          multipleParams[paramFilter.boardIdOR] = filter.values;
+          return;
+        case QuestionFilter.subjectIdOR:
+          if (multipleParams[paramFilter.subjectIdOR]) {
+            multipleParams[paramFilter.subjectIdOR] = [
+              ...multipleParams[paramFilter.subjectIdOR],
+              ...filter.values,
+            ];
+            return;
+          }
+          multipleParams[paramFilter.subjectIdOR] = filter.values;
+          return;
+        case QuestionFilter.subjectIdSELECTOR:
+          const value = `${filter.values[0]}_${filter.values[1]}`;
+          if (multipleParams[paramFilter.subjectIdSELECTOR]) {
+            multipleParams[paramFilter.subjectIdSELECTOR] = [
+              ...multipleParams[paramFilter.subjectIdSELECTOR],
+              value,
+            ];
+            return;
+          }
+          multipleParams[paramFilter.subjectIdSELECTOR] = [value];
+          return;
+        default:
+          return;
+      }
+    });
+
+    const params: Params = { ...singleParams, ...multipleParams };
+
+    return params;
+  }
+
   filter() {
     let filters = this.getFirstFilters();
 
-    const subjects = this.subjectsFormArray.value;
-    const subjectsFilters: SelectorFilter[] = [];
+    const subjects = this.subjectsFormArray.value as {
+      subjectId: string;
+      quantity: number;
+    }[];
+
+    const subjectsFilters: SelectorQuestionFilter[] = [];
 
     subjects.forEach((subject) => {
       if (!subject.quantity) return;
-      const filter: SelectorFilter = {
+      const filter: SelectorQuestionFilter = {
+        id: QuestionFilter.subjectIdSELECTOR,
         type: FilterType.SELECTOR,
         key: 'subjectId',
         condition: 'OR',
-        limit: subject.quantity,
-        fetch: ['institutionId', 'subjectId', 'boardId', 'examId'],
-        value: `subjects:${subject.subjectId}`,
+        values: [subject.quantity, subject.subjectId],
       };
       subjectsFilters.push(filter);
     });
 
     filters = [...filters, ...subjectsFilters];
 
-    const arrayString = filters.length ? JSON.stringify(filters) : '';
+    const mappedParams = this.mapQuestionFiltersToQueryParams(filters, 'pt');
 
-    const encodedArrayString = encodeURIComponent(arrayString);
-
-    const params = new URLSearchParams({ data: encodedArrayString });
-    const queryParams: Params = { data: encodedArrayString };
-
-    this.router.navigate([], { fragment: 'resolver', queryParams });
+    this.router.navigate([], {
+      fragment: 'resolver',
+      queryParams: mappedParams,
+    });
   }
 
   onYearSelected(year: number) {
@@ -285,5 +352,6 @@ export class FilterComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    this.destroy$.unsubscribe();
   }
 }

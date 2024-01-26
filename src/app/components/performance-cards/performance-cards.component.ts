@@ -3,6 +3,7 @@ import {
   Component,
   OnInit,
   WritableSignal,
+  computed,
   signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -37,6 +38,8 @@ export class PerformanceCardsComponent implements OnInit {
   correctTotal: WritableSignal<number | undefined> = signal(undefined);
   wrongTotal: WritableSignal<number | undefined> = signal(undefined);
   overallPerformance: WritableSignal<number | undefined> = signal(undefined);
+
+  isPaidUser = computed(() => this.userService.isPaidUser());
 
   constructor(private userService: UserService) {}
 

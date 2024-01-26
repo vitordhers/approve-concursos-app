@@ -1,0 +1,27 @@
+@if (searchedQuestions()?.length) {
+<h3><fa-icon [icon]="faMagnifyingGlass" /> Resultados para a busca "<i>{{searchedTerms()}}</i>"</h3>
+<p>Selecione as questões abaixo para resolvê-las</p>
+@for (question of searchedQuestions(); track $index) {
+<app-item-question-selector [questionId]="question.id"
+                            (questionSelectedEmitter)="onQuestionSelectChange($event)"></app-item-question-selector>
+}
+<mat-paginator [pageSizeOptions]="pageSizeOptions"
+               [pageSize]="currentPageSize"
+               [length]="searchTotalRecords()"
+               showFirstLastButtons
+               (page)="onPageEvent($event)"
+               [hidePageSize]="(searchTotalRecords() || 0) < pageSizeOptions[0]">
+</mat-paginator>
+<div class="actions">
+  <button mat-flat-button
+          color="primary"
+          (click)="onSelectQuestions()">
+    <fa-icon [icon]="faCheck" />
+    Selecionar questões
+  </button>
+</div>
+} @else {
+<div>
+  Não foram encotradas questões para a busca "<i>{{searchedTerms()}}</i>"
+</div>
+}

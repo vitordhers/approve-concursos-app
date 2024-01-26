@@ -11,18 +11,14 @@
   background-position: center;
   object-fit: cover;
   overflow: hidden;
-
   .animations {
     position: relative;
     img {
-      // width: 100%;
-      // height: 100%;
       position: fixed;
       top: 0px;
       left: 0px;
       color: transparent;
       object-fit: cover;
-      // background-position: 50% 50%;
       background-repeat: none;
       opacity: 0;
       z-index: -1;
@@ -124,8 +120,8 @@ ul {
   all: unset;
   display: flex;
   width: 100%;
-
   height: 100%;
+  justify-content: space-around;
   li {
     all: unset;
     padding: 0px 10px;
@@ -262,7 +258,6 @@ hr.header-footer {
 
 .social {
   z-index: 0;
-
   .content {
     position: relative;
     width: 100%;

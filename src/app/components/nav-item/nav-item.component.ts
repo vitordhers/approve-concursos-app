@@ -2,17 +2,23 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
+  EventEmitter,
   Input,
   OnChanges,
   OnInit,
+  Output,
   SimpleChanges,
   TemplateRef,
   ViewChild,
   WritableSignal,
+  computed,
   signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NavSection } from '../../pages/dashboard/interfaces/nav-section.interface';
+import {
+  NavSection,
+  NavigationPayload,
+} from '../../pages/dashboard/interfaces/nav-section.interface';
 import { MatButtonModule } from '@angular/material/button';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -21,6 +27,7 @@ import { MatInputModule } from '@angular/material/input';
 import { NavSectionType } from '../../pages/dashboard/enums/nav-section-type.enum';
 import { MatListModule } from '@angular/material/list';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { UserService } from '../../services/user/user.service';
 
 @Component({
   selector: 'app-nav-item',
@@ -44,6 +51,8 @@ export class NavItemComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() section?: NavSection;
   @Input() currentUrl?: string;
 
+  @Output() navigationEmitter = new EventEmitter<NavigationPayload>();
+
   activatedUrl = signal(false);
 
   @ViewChild('expandableSection')
@@ -56,19 +65,23 @@ export class NavItemComponent implements OnInit, AfterViewInit, OnChanges {
   currentTemplateRef: WritableSignal<TemplateRef<NavSection> | null> =
     signal(null);
 
-  search!: FormControl<string>;
+  search?: FormControl<string>;
 
-  constructor() {}
+  isPaidUser = computed(() => this.userService.isPaidUser());
+  constructor(private userService: UserService) {}
 
   ngOnInit(): void {
     if (this.section?.type === NavSectionType.SEARCH) {
-      this.search = new FormControl<string>('', { nonNullable: true });
+      this.search = new FormControl<string>(
+        { value: '', disabled: !this.isPaidUser() },
+        { nonNullable: true }
+      );
     }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (!changes['currentUrl']) return;
-    this.activatedUrl.update(() =>
+    this.activatedUrl.set(
       changes['currentUrl'].currentValue.includes(this.section?.uri)
     );
   }
@@ -98,5 +111,17 @@ export class NavItemComponent implements OnInit, AfterViewInit, OnChanges {
           () => this.searchSectionTemplateRef as TemplateRef<NavSection>
         );
     }
+  }
+
+  emitNavigationPayload(
+    payload: NavigationPayload | ((arg: string) => NavigationPayload)
+  ) {
+    if (typeof payload !== 'object') {
+      if (!this.search) return;
+      const value = this.search.value;
+      payload = payload(value);
+    }
+
+    this.navigationEmitter.emit(payload);
   }
 }

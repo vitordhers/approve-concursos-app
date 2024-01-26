@@ -13,7 +13,6 @@ import { cloneDeep } from 'lodash';
 import { environment } from '../../environments/environment';
 import { Board, BaseBoard } from '../models/board.model';
 import { FormattedResponse } from '../shared/interfaces/formatted-response.interface';
-import { PaginatedResponse } from '../shared/interfaces/paginated-response.interface';
 import { generateHash } from '../shared/functions/generate-hash.function';
 
 @Injectable({
@@ -41,7 +40,7 @@ export class BoardsService {
     injector: this.injector,
   }).pipe(
     distinctUntilChanged(
-      (prev, curr) => generateHash(prev) === generateHash(curr)
+      (prev, curr) => generateHash([...prev.entries()]) === generateHash([...curr.entries()])
     )
   );
 

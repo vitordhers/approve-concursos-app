@@ -38,6 +38,10 @@ mat-card {
 
 mat-card-actions {
   backdrop-filter: brightness(80%);
+
+  &.disabled {
+    backdrop-filter: grayscale(1);
+  }
 }
 
 mat-card-content div {
@@ -56,4 +60,9 @@ h4 {
   display: flex;
   width: 100%;
   justify-content: space-between;
+
+  &.disabled {
+    cursor: not-allowed;
+    pointer-events: none;
+  }
 }

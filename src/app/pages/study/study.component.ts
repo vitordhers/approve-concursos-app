@@ -4,6 +4,7 @@ import {
   OnDestroy,
   OnInit,
   WritableSignal,
+  computed,
   effect,
   signal,
 } from '@angular/core';
@@ -21,6 +22,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { PerformanceCardsComponent } from '../../components/performance-cards/performance-cards.component';
 import { ExamListComponent } from '../../components/exam-list/exam-list.component';
 import { ExamType } from '../../shared/enums/exam-type.enum';
+import { UserService } from '../../services/user/user.service';
 
 @Component({
   selector: 'app-study',
@@ -71,7 +73,13 @@ export class StudyComponent implements OnInit, OnDestroy {
     { allowSignalWrites: true }
   );
 
-  constructor(private activatedRoute: ActivatedRoute, private router: Router) {}
+  isPaidUser = computed(() => this.userService.isPaidUser());
+
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
+    private userService: UserService
+  ) {}
 
   ngOnInit(): void {
     this.activatedRoute.fragment
@@ -107,6 +115,7 @@ export class StudyComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    this.destroy$.unsubscribe();
     this.changeTabOnFragmentChangedEffect.destroy();
   }
 }

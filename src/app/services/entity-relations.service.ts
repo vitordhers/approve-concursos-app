@@ -49,6 +49,39 @@ export class EntityRelationService {
     { allowSignalWrites: true } as CreateEffectOptions
   );
 
+  answerableQuestionsRelationsCacheLoadEffect = effect(
+    () => {
+      const relationMap = this.answerableQuestionsService.loadedRelations();
+
+      if (relationMap.size === 0) return;
+
+      if (relationMap.has(Entity.SUBJECTS)) {
+        this.subjectService.cacheRecords(
+          relationMap.get(Entity.SUBJECTS) as BaseSubject[]
+        );
+      }
+
+      if (relationMap.has(Entity.INSTITUTIONS)) {
+        this.institutionService.cacheRecords(
+          relationMap.get(Entity.INSTITUTIONS) as BaseInstitution[]
+        );
+      }
+
+      if (relationMap.has(Entity.BOARDS)) {
+        this.boardService.cacheRecords(
+          relationMap.get(Entity.BOARDS) as BaseBoard[]
+        );
+      }
+
+      if (relationMap.has(Entity.EXAMS)) {
+        this.examService.cacheRecords(
+          relationMap.get(Entity.EXAMS) as BaseExam[]
+        );
+      }
+    },
+    { allowSignalWrites: true } as CreateEffectOptions
+  );
+
   examsRelationsCacheLoadEffect = effect(
     () => {
       const relationMap = this.examService.loadedRelations();

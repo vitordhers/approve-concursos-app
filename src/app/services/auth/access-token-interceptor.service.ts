@@ -5,7 +5,7 @@ import {
   HttpRequest,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, switchMap, throwError } from 'rxjs';
+import { catchError, switchMap, throwError } from 'rxjs';
 import { AuthService } from './auth.service';
 import { environment } from '../../../environments/environment';
 import { ACCESS_TOKEN_EXCLUDED_ENDPOINTS } from './constants/access-token-excluded-endpoints.const';

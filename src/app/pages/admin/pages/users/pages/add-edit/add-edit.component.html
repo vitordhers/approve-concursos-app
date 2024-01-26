@@ -102,7 +102,7 @@
           <fa-icon [icon]="faCrown" />
           Privilégio</mat-label>
         <mat-select formControlName="role">
-          @for (role of userRoles; track role) {
+          @for (role of userRolesWithLabels; track role) {
           <mat-option [value]="role.value">{{role.label}}</mat-option>
           }
         </mat-select>
@@ -117,7 +117,8 @@
           <input matInput
                  [type]="showPassword() ? 'text' : 'password'"
                  maxlength="20"
-                 formControlName="password">
+                 formControlName="password"
+                 autocomplete="new-password">
           <button type="button"
                   mat-icon-button
                   matSuffix
@@ -140,7 +141,7 @@
           }
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label>Confirme sua senha</mat-label>
+          <mat-label>Confirme a senha</mat-label>
           <span matTextPrefix><fa-icon [icon]="faLock" /> &nbsp;</span>
           <input matInput
                  [type]="showConfirmPassword() ? 'text' : 'password'"
@@ -157,7 +158,7 @@
           {
           <div>
             @if (form.controls['confirmPassword'].hasError('required')) {
-            <mat-error>Confirme sua senha</mat-error>
+            <mat-error>Confirme a senha</mat-error>
             }
             @if (form.controls['confirmPassword'].hasError('matchPasswords')) {
             <mat-error>As senhas estão diferentes</mat-error>

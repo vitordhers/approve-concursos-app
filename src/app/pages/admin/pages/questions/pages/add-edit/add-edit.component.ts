@@ -88,9 +88,9 @@ import { EDUCATION_STAGE_OPTIONS } from '../../../../../../shared/constants/educ
 import { questionRecordLabels } from '../../../../../../shared/constants/question-record-labels.const';
 import { BoardSelectorComponent } from '../../../../../../components/board-selector/board-selector.component';
 import { SubjectSelectorComponent } from '../../../../../../components/subject-selector/subject-selector.component';
-import { CustomFormValidators } from '../../../../../../shared/models/custom-form-validators.model';
 import { YearSelectorComponent } from '../../../../../../components/year-selector/year-selector.component';
 import { ExamSelectorComponent } from '../../../../../../components/exam-selector/exam-selector.component';
+import { CustomFormValidators } from '../../../../../../shared/utils/custom-form-validators.model';
 
 registerLocaleData(localePtBr);
 
@@ -571,5 +571,6 @@ export class AddEditComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    this.destroy$.unsubscribe();
   }
 }
