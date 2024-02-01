@@ -58,7 +58,7 @@
       </mat-form-field>
     </div>
     }
-    <div class="form-field-pair-wrap">
+    <div [ngClass]="{'form-field-pair-wrap': !isScreenSmall()}">
       <mat-form-field appearance="outline">
         <mat-label>Nome</mat-label>
         <span matTextPrefix><fa-icon [icon]="faFont" /> &nbsp;</span>
@@ -85,7 +85,7 @@
 
     </div>
     @if (type() === 1) {
-    <div class="form-field-pair-wrap">
+    <div [ngClass]="{'form-field-pair-wrap': !isScreenSmall()}">
       <app-institution-selector (selectedEmitter)="onSelectInstitution($event)"
                                 [markAsTouched]="markInstitutionSelectorAsTouched"
                                 [required]="true"
@@ -97,7 +97,7 @@
     </div>
     }
     <div class="form-field-full-wrap">
-      <ng-container *ngIf="labels.label === 'simulados' || isEdit(); else assessmentQuestions">
+      <ng-container *ngIf="labels.label === 'simulado' || isEdit(); else assessmentQuestions">
         <div class="mock-questions-wrap">
           @if (form.controls['mockQuestions'].controls.length) {
           <h4>
@@ -155,7 +155,7 @@
           <mat-card-content>
             <form class="add-mock-question-form"
                   [formGroup]="addMockQuestionsFromGroup">
-              <div class="form-field-pair-wrap">
+              <div [ngClass]="{'form-field-pair-wrap': !isScreenSmall()}">
                 <div>
                   <mat-form-field class="add-mock-times-field"
                                   appearance="outline">

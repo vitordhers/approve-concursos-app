@@ -32,6 +32,7 @@ import { UserRole } from '../../shared/enums/user-role.enum';
 import { ModalService } from '../../services/modal.service';
 import { PendingPaymentModalComponent } from '../../components/modals/pending-payment/pending-payment.component';
 import { MatDialogConfig } from '@angular/material/dialog';
+import { PlatformService, ScreenSizes } from '../../services/platform.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -61,7 +62,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
-  sideNavOpen = signal(true);
+  isLargeScreen = computed(
+    () => this.platformService.currentScreenSize() >= ScreenSizes.LARGE
+  );
+
+  sideNavOpen = signal(this.isLargeScreen());
 
   displayedSections = computed(() => {
     const isAdmin = this.userService.isAdmin();
@@ -106,7 +111,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private location: Location,
     private userService: UserService,
     private modalService: ModalService,
-    private entityRelationsService: EntityRelationService
+    private entityRelationsService: EntityRelationService,
+    private platformService: PlatformService
   ) {}
 
   ngOnInit(): void {

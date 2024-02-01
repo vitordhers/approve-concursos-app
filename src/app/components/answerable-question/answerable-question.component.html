@@ -7,7 +7,7 @@
       <app-icon-number-sequence [no]="questionNo" />
     </div>
     }
-    <mat-card-title>
+    <mat-card-title [ngClass]="{'small': isScreenSmall()}">
       <span class="code">
         <span>{{question.code}}</span>
       </span>

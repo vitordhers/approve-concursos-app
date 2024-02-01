@@ -21,7 +21,7 @@
     </div>
   </div>
   <form [formGroup]="form">
-    <div class="form-field-pair-wrap">
+    <div [ngClass]="{'form-field-pair-wrap': !isScreenSmall()}">
       <mat-form-field appearance="outline">
         <mat-label>Nome</mat-label>
         <span matTextPrefix><fa-icon [icon]="faFont" /> &nbsp;</span>
@@ -71,8 +71,7 @@
       </mat-form-field>
     </div>
 
-    <div class="form-field-pair-wrap">
-
+    <div [ngClass]="{'form-field-pair-wrap': !isScreenSmall()}">
       <mat-form-field appearance="outline">
         <mat-label>CPF</mat-label>
         <span matTextPrefix><fa-icon [icon]="faIdCard" /> &nbsp;</span>
@@ -110,7 +109,7 @@
     </div>
 
     <div class="passwords">
-      <div class="form-field-pair-wrap">
+      <div [ngClass]="{'form-field-pair-wrap': !isScreenSmall()}">
         <mat-form-field appearance="outline">
           <mat-label>Senha</mat-label>
           <span matTextPrefix><fa-icon [icon]="faLock" /> &nbsp;</span>

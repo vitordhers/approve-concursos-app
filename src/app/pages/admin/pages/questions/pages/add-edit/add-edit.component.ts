@@ -91,6 +91,10 @@ import { SubjectSelectorComponent } from '../../../../../../components/subject-s
 import { YearSelectorComponent } from '../../../../../../components/year-selector/year-selector.component';
 import { ExamSelectorComponent } from '../../../../../../components/exam-selector/exam-selector.component';
 import { CustomFormValidators } from '../../../../../../shared/utils/custom-form-validators.model';
+import {
+  PlatformService,
+  ScreenSizes,
+} from '../../../../../../services/platform.service';
 
 registerLocaleData(localePtBr);
 
@@ -194,11 +198,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
     ),
     answerExplanation: new FormControl<string | undefined>('', {
       nonNullable: true,
-      validators: [
-        Validators.required,
-        Validators.minLength(5),
-        Validators.maxLength(5000),
-      ],
+      validators: [Validators.minLength(5), Validators.maxLength(5000)],
     }),
     correctIndex: new FormControl(0, {
       nonNullable: true,
@@ -233,10 +233,23 @@ export class AddEditComponent implements OnInit, OnDestroy {
 
   isEdit = computed(() => !!this.updatedRecord());
 
+  isScreenSmall = computed(() => {
+    return this.platformService.currentScreenSize() <= ScreenSizes.SMALL;
+  });
+
+  isScreenMedium = computed(() => {
+    return this.platformService.currentScreenSize() <= ScreenSizes.MEDIUM;
+  });
+
+  isScreenLarge = computed(() => {
+    return this.platformService.currentScreenSize() > ScreenSizes.MEDIUM;
+  });
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private questionAdminService: QuestionAdminService
+    private questionAdminService: QuestionAdminService,
+    private platformService: PlatformService
   ) {}
 
   patchPreview(imgPreview: ImgUploadPreview) {

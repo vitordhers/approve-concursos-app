@@ -12,6 +12,11 @@ mat-card-title {
   display: flex;
   gap: 10px;
   align-items: center;
+
+  &.small {
+    align-items: baseline;
+    flex-direction: column;
+  }
 }
 
 .alternative-letter {

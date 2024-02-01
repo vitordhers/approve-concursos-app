@@ -21,7 +21,9 @@ import { UploadedImg } from '../../services/upload/interfaces/uploaded-img.inter
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
   faCloudArrowUp,
+  faEraser,
   faRotateRight,
+  faTrash,
 } from '@fortawesome/free-solid-svg-icons';
 import { resizeBase64Img } from './functions/resize-base64-img.function';
 import { ImgUploadPreview } from './interface/img-upload-preview.interface';
@@ -29,6 +31,8 @@ import { NgOptimizedImage } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
 import { FormattedResponse } from '../../shared/interfaces/formatted-response.interface';
 import { ServerImgPipe } from '../../shared/pipes/server-img.pipe';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-file-uploader',
@@ -36,6 +40,9 @@ import { ServerImgPipe } from '../../shared/pipes/server-img.pipe';
   imports: [
     CommonModule,
     NgOptimizedImage,
+    MatButtonModule,
+    FontAwesomeModule,
+    MatTooltipModule,
     MatProgressBarModule,
     FontAwesomeModule,
     ServerImgPipe,
@@ -60,6 +67,8 @@ export class FileUploaderComponent implements OnChanges, OnDestroy {
   canSave = signal(true);
   progress = signal(0);
   imageHovered = signal(false);
+
+  faEraser = faEraser;
 
   @Input()
   imgSrc?: string;
@@ -131,7 +140,7 @@ export class FileUploaderComponent implements OnChanges, OnDestroy {
           250
         );
       }
-
+      this.cd.detectChanges();
       this.emitPreview.emit({ imgSrc: this.imgSrc, thumbSrc: this.thumbSrc });
     };
     reader.onerror = (error) => {
@@ -141,6 +150,11 @@ export class FileUploaderComponent implements OnChanges, OnDestroy {
 
   getPreviewedImgs() {
     return { image: this.imgSrc, thumbnail: this.thumbSrc };
+  }
+
+  clearImg() {
+    this.imgSrc = undefined;
+    this.cd.detectChanges();
   }
 
   async upload() {

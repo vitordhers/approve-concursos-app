@@ -10,6 +10,7 @@ import { CommonModule, registerLocaleData } from '@angular/common';
 import {
   BehaviorSubject,
   Subject,
+  combineLatest,
   distinctUntilChanged,
   filter,
   switchMap,
@@ -86,7 +87,8 @@ export class ListComponent implements OnInit, OnDestroy {
   faPenToSquare = faPenToSquare;
   faBarcode = faBarcode;
 
-  type = signal(ExamType.ASSESSMENT);
+  type$ = new BehaviorSubject(ExamType.ASSESSMENT);
+  type = toSignal(this.type$);
 
   loadingData = signal(true);
   loadingActions = signal(false);
@@ -111,16 +113,20 @@ export class ListComponent implements OnInit, OnDestroy {
     'actions',
   ];
 
-  private loadedExams$ = this.currentPage$.pipe(
-    distinctUntilChanged(
-      (prev, curr) =>
-        prev?.start === curr?.start &&
-        prev?.end === curr?.end &&
-        prev?.pageSize === curr?.pageSize
+  private loadedExams$ = combineLatest([
+    this.currentPage$.pipe(
+      distinctUntilChanged(
+        (prev, curr) =>
+          prev?.start === curr?.start &&
+          prev?.end === curr?.end &&
+          prev?.pageSize === curr?.pageSize
+      )
     ),
+    this.type$,
+  ]).pipe(
     takeUntil(this.destroy$),
-    switchMap(({ start, end, pageSize }) =>
-      this.examsAdminService.paginate(start, end, pageSize, this.type())
+    switchMap(([{ start, end, pageSize }, type]) =>
+      this.examsAdminService.paginate(start, end, pageSize, type)
     )
   );
   loadedExams = toSignal(this.loadedExams$);
@@ -136,7 +142,7 @@ export class ListComponent implements OnInit, OnDestroy {
       ? assessmentExamRecordLabels
       : mockExamRecordLabels;
 
-    this.type.set(
+    this.type$.next(
       this.router.url.includes(assessmentExamRecordLabels.uri)
         ? ExamType.ASSESSMENT
         : ExamType.MOCK

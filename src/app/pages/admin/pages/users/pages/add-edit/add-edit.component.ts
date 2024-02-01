@@ -58,9 +58,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AddUserDto } from '../../../../../../services/admin/users/interfaces/add-user-dto.interface';
 import { EditUserDto } from '../../../../../../services/admin/users/interfaces/edit-user-dto.interface';
 import { MatSelectModule } from '@angular/material/select';
-import { UserRole } from '../../../../../../shared/enums/user-role.enum';
 import { CpfDirective } from '../../../../../../shared/directives/cpf.directive';
 import { USER_ROLES_WITH_LABELS } from '../../../../../../shared/config/user-roles-with-labels.const';
+import { PlatformService, ScreenSizes } from '../../../../../../services/platform.service';
 
 registerLocaleData(localePtBr);
 
@@ -148,11 +148,16 @@ export class AddEditComponent implements OnInit, OnDestroy {
   updatedUser: WritableSignal<Subject | undefined> = signal(undefined);
   isEdit = computed(() => !!this.updatedUser());
 
+  isScreenSmall = computed(() => {
+    return this.platformService.currentScreenSize() <= ScreenSizes.SMALL;
+  });
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private userService: UserAdminService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private platformService: PlatformService
   ) {}
 
   ngOnInit(): void {

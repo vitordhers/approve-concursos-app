@@ -1,4 +1,4 @@
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 import { BreakpointObserver } from '@angular/cdk/layout';
 
 enum Breakpoints {
@@ -18,7 +18,7 @@ export enum ScreenSizes {
   providedIn: 'root',
 })
 export class PlatformService {
-  currentScreenSize = ScreenSizes.UNKNOWN;
+  currentScreenSize = signal(ScreenSizes.UNKNOWN);
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: any,
@@ -37,16 +37,17 @@ export class PlatformService {
     return this.platformId === 'browser';
   }
 
-  observeScreenSize() {
+  private observeScreenSize() {
     if (!this.isBrowser) return;
     this.breakpointObserver
       .observe([Breakpoints.SMALL, Breakpoints.MEDIUM, Breakpoints.LARGE])
       .subscribe((result) => {
         for (const query of Object.keys(result.breakpoints)) {
           if (result.breakpoints[query]) {
-            this.currentScreenSize =
+            this.currentScreenSize.set(
               this.displayNameMap.get(query as Breakpoints) ??
-              ScreenSizes.UNKNOWN;
+                ScreenSizes.UNKNOWN
+            );
           }
         }
       });

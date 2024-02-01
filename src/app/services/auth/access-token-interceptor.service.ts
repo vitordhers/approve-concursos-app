@@ -12,11 +12,6 @@ import { ACCESS_TOKEN_EXCLUDED_ENDPOINTS } from './constants/access-token-exclud
 
 @Injectable()
 export class AccessTokenInterceptor implements HttpInterceptor {
-  // private isRefreshing = false;
-  // private refreshTokenSubject$ = new BehaviorSubject<string | undefined>(
-  //   undefined
-  // );
-
   constructor(private authService: AuthService) {}
   intercept(request: HttpRequest<any>, next: HttpHandler) {
     const url = request.url;

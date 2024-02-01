@@ -182,14 +182,10 @@
                     type="text"
                     placeholder="ex.: Vamos analisar o seguinte esquema, note que se pegarmos a tangente de 60°, teremos..."
                     maxlength="5000"
-                    formControlName="answerExplanation"
-                    required>
+                    formControlName="answerExplanation">
           </textarea>
           @if (form.controls['answerExplanation'].touched && form.controls['answerExplanation'].invalid) {
           <div>
-            @if (form.controls['answerExplanation'].hasError('required')) {
-            <mat-error>O gabarito é obrigatório</mat-error>
-            }
             @if (form.controls['answerExplanation'].hasError('minlength')) {
             <mat-error>O gabarito deve ter pelo menos 5 caracteres</mat-error>
             }
@@ -200,10 +196,11 @@
           }
         </mat-form-field>
       </div>
-      <div class="form-field-pair-wrap">
+      <div [ngClass]="{'form-field-pair-wrap': !isScreenSmall()}">
         <app-year-selector [year]="form.controls['year'].value"
                            (selectedEmitter)="onYearSelected($event)" />
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="outline"
+                        [ngClass]="{'full': isScreenSmall()}">
           <mat-label>Nível de Escolaridade
           </mat-label>
           <span matTextPrefix><fa-icon [icon]="faGraduationCap" />&nbsp;</span>
@@ -217,7 +214,8 @@
           </mat-select>
         </mat-form-field>
       </div>
-      <div class="form-field-four-wrap">
+      <div
+           [ngClass]="{'form-field-four-wrap': isScreenLarge(), 'form-field-pair-wrap': isScreenMedium() && !isScreenSmall()}">
         <app-subject-selector (selectedEmitter)="onSubjectSelected($event)"
                               [loadValue]="form.controls['subjectId'].value"
                               [required]="true" />

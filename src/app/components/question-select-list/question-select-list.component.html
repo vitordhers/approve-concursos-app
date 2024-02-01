@@ -1,6 +1,8 @@
 @if (searchedQuestions()?.length) {
-<h3><fa-icon [icon]="faMagnifyingGlass" /> Resultados para a busca "<i>{{searchedTerms()}}</i>"</h3>
-<p>Selecione as questões abaixo para resolvê-las</p>
+<div class="padded">
+  <h3><fa-icon [icon]="faMagnifyingGlass" /> Resultados para a busca "<i>{{searchedTerms()}}</i>"</h3>
+  <p>Selecione as questões abaixo para resolvê-las</p>
+</div>
 @for (question of searchedQuestions(); track $index) {
 <app-item-question-selector [questionId]="question.id"
                             (questionSelectedEmitter)="onQuestionSelectChange($event)"></app-item-question-selector>
@@ -21,7 +23,7 @@
   </button>
 </div>
 } @else {
-<div>
+<div class="padded">
   Não foram encotradas questões para a busca "<i>{{searchedTerms()}}</i>"
 </div>
 }

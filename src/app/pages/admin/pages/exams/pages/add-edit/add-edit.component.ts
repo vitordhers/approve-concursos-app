@@ -83,6 +83,10 @@ import { QuestionAdminService } from '../../../../../../services/admin/questions
 import { cloneDeep } from 'lodash';
 import { LettersNumbersAndDashOnlyDirective } from '../../../../../../shared/directives/letters-numbers-and-dash-only.directive';
 import { CustomFormValidators } from '../../../../../../shared/utils/custom-form-validators.model';
+import {
+  PlatformService,
+  ScreenSizes,
+} from '../../../../../../services/platform.service';
 
 registerLocaleData(localePtBr);
 
@@ -210,12 +214,17 @@ export class AddEditComponent implements OnInit, OnDestroy {
   updatedRecord: WritableSignal<Exam | undefined> = signal(undefined);
   isEdit = computed(() => !!this.updatedRecord());
 
+  isScreenSmall = computed(() => {
+    return this.platformService.currentScreenSize() <= ScreenSizes.SMALL;
+  });
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private examAdminService: ExamAdminService,
     private questionAdminService: QuestionAdminService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private platformService: PlatformService
   ) {}
 
   ngOnInit(): void {

@@ -1,4 +1,4 @@
-<div class="performance-cards">
+<div [ngClass]="{'grid-1-wrap': isScreenSmall(), 'grid-3-wrap': !isScreenSmall()}">
   <mat-card class="solved-questions-card">
     <mat-card-header>
       <div class="performance-avatar"

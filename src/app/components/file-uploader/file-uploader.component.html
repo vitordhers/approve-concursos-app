@@ -9,13 +9,24 @@
        priority />
   <fa-icon class="upload-action"
            [ngClass]="{'displayed': imageHovered()}"
-           [icon]="(imgSrc === undefined || imgSrc === 'assets/img/products/none.jpg') ? faCloudArrowUp : faRotateRight" />
-  @if(displayProgressBar()) {
-  <mat-progress-bar mode="determinate"
-                    [value]="progress()"></mat-progress-bar>
-  }
-
+           [icon]="(imgSrc === undefined || imgSrc === 'assets/img/none.jpg') ? faCloudArrowUp : faRotateRight" />
 </div>
+@if(displayProgressBar()) {
+<mat-progress-bar mode="determinate"
+                  [value]="progress()"></mat-progress-bar>
+} @else {
+@if (imgSrc) {
+<div class="flex">
+  <button type="button"
+          mat-mini-fab
+          matTooltip="Limpar imagem"
+          color="warn"
+          (click)="clearImg()">
+    <fa-icon [icon]="faEraser" />
+  </button>
+</div>
+}
+}
 
 <div class="img-upload-section">
   <input type="file"

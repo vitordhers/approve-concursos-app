@@ -20,7 +20,7 @@ export class ModalService {
     const dialogRef = this.dialog.open<C, D, R>(component, {
       maxWidth: '100%',
       width:
-        this.platformService.currentScreenSize === ScreenSizes.SMALL
+        this.platformService.currentScreenSize() <= ScreenSizes.SMALL
           ? '100%'
           : '768px',
       ...config,

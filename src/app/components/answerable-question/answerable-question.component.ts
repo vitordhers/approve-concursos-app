@@ -9,6 +9,7 @@ import {
   SimpleChanges,
   ViewChild,
   WritableSignal,
+  computed,
   signal,
 } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
@@ -53,6 +54,7 @@ import { toLocaleDateStringOptions } from '../../shared/config/locale-date-strin
 import { cloneDeep } from 'lodash';
 import { fireToast } from '../../notification/functions/fire-toast.function';
 import { AnswerableQuestionsService } from '../../services/answerable-questions.service';
+import { PlatformService, ScreenSizes } from '../../services/platform.service';
 
 @Component({
   selector: 'app-answerable-question',
@@ -161,12 +163,17 @@ export class AnswerableQuestionComponent implements OnInit, OnChanges {
 
   localeDateStringOptions = toLocaleDateStringOptions;
 
+  isScreenSmall = computed(() => {
+    return this.platformService.currentScreenSize() <= ScreenSizes.SMALL;
+  });
+
   constructor(
     private subjectsService: SubjectsService,
     private institutionsService: InstitutionsService,
     private examService: ExamsService,
     private boardsService: BoardsService,
-    private answerableQuestionsService: AnswerableQuestionsService
+    private answerableQuestionsService: AnswerableQuestionsService,
+    private platformService: PlatformService
   ) {}
 
   ngOnInit(): void {

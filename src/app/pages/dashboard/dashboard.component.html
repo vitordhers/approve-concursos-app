@@ -1,6 +1,6 @@
 <app-header (toggleHeader)="toggleSideNav()" />
-<mat-sidenav-container>
-  <mat-sidenav mode="side"
+<mat-sidenav-container [hasBackdrop]="!isLargeScreen()">
+  <mat-sidenav [mode]="isLargeScreen() ? 'side' : 'over'"
                [opened]="sideNavOpen()">
     @if(userName()) {
     <mat-list role="list">

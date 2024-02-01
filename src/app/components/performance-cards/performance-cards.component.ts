@@ -18,6 +18,7 @@ import {
   faSquareXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import { UserService } from '../../services/user/user.service';
+import { PlatformService, ScreenSizes } from '../../services/platform.service';
 
 @Component({
   selector: 'app-performance-cards',
@@ -41,7 +42,14 @@ export class PerformanceCardsComponent implements OnInit {
 
   isPaidUser = computed(() => this.userService.isPaidUser());
 
-  constructor(private userService: UserService) {}
+  isScreenSmall = computed(
+    () => this.platformService.currentScreenSize() <= ScreenSizes.SMALL
+  );
+
+  constructor(
+    private userService: UserService,
+    private platformService: PlatformService
+  ) {}
 
   ngOnInit(): void {
     this.userService.getOverallPerformance$().subscribe((result) => {

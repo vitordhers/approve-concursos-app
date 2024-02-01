@@ -2,11 +2,9 @@ import { Injectable } from '@angular/core';
 import {
   BehaviorSubject,
   EMPTY,
-  ReplaySubject,
   distinctUntilChanged,
   map,
   switchMap,
-  take,
   tap,
 } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
@@ -17,7 +15,6 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { SignInDto } from './interfaces/signin-dto.interface';
-import { cloneDeep } from 'lodash';
 import { FormattedResponse } from '../../shared/interfaces/formatted-response.interface';
 import { ResendConfirmationEmailDto } from './interfaces/resend-confirmation-email-dto.interface';
 import { VerifyEmailDto } from './interfaces/verify-email-dto.interface';

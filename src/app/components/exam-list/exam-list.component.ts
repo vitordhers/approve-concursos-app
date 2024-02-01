@@ -5,6 +5,7 @@ import {
   LOCALE_ID,
   OnDestroy,
   OnInit,
+  computed,
   signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -41,6 +42,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { fireToast } from '../../notification/functions/fire-toast.function';
 import { Exam } from '../../models/exam.model';
 import { MatPaginatorIntlPtBr } from '../../shared/config/pagination-intl.model';
+import { PlatformService, ScreenSizes } from '../../services/platform.service';
 
 @Component({
   selector: 'app-exam-list',
@@ -123,7 +125,14 @@ export class ExamListComponent implements OnInit, OnDestroy {
 
   pageSizeOptions = PAGINATION_SIZES;
 
-  constructor(public examsService: ExamsService) {}
+  isScreenSmall = computed(() => {
+    return this.platformService.currentScreenSize() <= ScreenSizes.SMALL;
+  });
+
+  constructor(
+    public examsService: ExamsService,
+    private platformService: PlatformService
+  ) {}
 
   ngOnInit(): void {
     // this.searchControl.valueChanges

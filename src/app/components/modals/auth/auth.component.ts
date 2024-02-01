@@ -410,6 +410,9 @@ export class AuthComponent implements OnInit, OnDestroy {
       return this.signUpForm.markAllAsTouched();
     }
     const { name, email, password, cpf } = this.signUpForm.value;
+    if (!email) {
+      return this.signUpForm.markAllAsTouched();
+    }
     from(
       grecaptcha.execute(environment.googleRecaptchaSiteKey, {
         action: 'login',
@@ -455,7 +458,7 @@ export class AuthComponent implements OnInit, OnDestroy {
             },
             heightAuto: false,
             title: 'Cadastro efetuado com sucesso',
-            html: 'Enviamos a confirmação do seu cadastro para ${email}, confirme o cadastro antes de fazer o login.',
+            html: `Enviamos a confirmação do seu cadastro para <b>${email}</b>, confirme o cadastro antes de fazer o login.`,
             icon: 'info',
           });
           this.dismiss();
@@ -575,6 +578,12 @@ export class AuthComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           console.error('verifyUser error', { err });
+          fireToast(
+            'Erro 😞',
+            'por gentileza, verifique se seu código ainda é válido',
+            'error'
+          );
+          this.dismiss();
         },
       });
   }
