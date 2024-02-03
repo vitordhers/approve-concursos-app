@@ -26,8 +26,8 @@ const CREDENTIALS_STORAGE_KEY = 'QuestionsAuthData';
   providedIn: 'root',
 })
 export class AuthService {
-  private credentials$ = new BehaviorSubject<Credentials | undefined>(
-    undefined
+  private credentials$ = new BehaviorSubject(
+    this.storageService.getKey<Credentials>(CREDENTIALS_STORAGE_KEY)
   );
   private activeRefreshTokenTimer?: NodeJS.Timeout;
   private endpoint = `${environment.apiUrl}/auth`;
@@ -111,7 +111,7 @@ export class AuthService {
 
   refreshAccessToken() {
     this.refreshToken$
-      ?.pipe(
+      .pipe(
         distinctUntilChanged(),
         switchMap((refreshToken) => {
           if (!refreshToken) return EMPTY;
@@ -133,13 +133,13 @@ export class AuthService {
           this.setCredentials(response.data);
         },
         error: (e) => {
-          console.warn(`autoRefreshAccessToken error: ${e}`);
+          console.warn(`refreshAccessToken error: ${e}`);
           this.logout();
         },
       });
   }
 
-  setCredentials(credentials: Credentials | undefined) {
+  private setCredentials(credentials: Credentials | undefined) {
     this.credentials$.next(credentials);
   }
 

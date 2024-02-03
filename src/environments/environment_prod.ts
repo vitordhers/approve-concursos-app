@@ -3,6 +3,5 @@ export const environment = {
   googleRecaptchaSiteKey: '6Lc501wpAAAAAEruiIGumPcJ13-GL2WOi9pAjNsZ',
   appUrl: 'https://approveconcursos.com.br',
   apiUrl: 'https://approveconcursos.com.br/api',
-  serverUrl: 'https://approveconcursos.com.br',
-  paymentLink: ''
+  paymentLink: '',
 };

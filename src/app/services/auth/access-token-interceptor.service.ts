@@ -5,7 +5,7 @@ import {
   HttpRequest,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, switchMap, throwError } from 'rxjs';
+import { EMPTY, catchError, switchMap, throwError } from 'rxjs';
 import { AuthService } from './auth.service';
 import { environment } from '../../../environments/environment';
 import { ACCESS_TOKEN_EXCLUDED_ENDPOINTS } from './constants/access-token-excluded-endpoints.const';
@@ -13,6 +13,7 @@ import { ACCESS_TOKEN_EXCLUDED_ENDPOINTS } from './constants/access-token-exclud
 @Injectable()
 export class AccessTokenInterceptor implements HttpInterceptor {
   constructor(private authService: AuthService) {}
+
   intercept(request: HttpRequest<any>, next: HttpHandler) {
     const url = request.url;
     if (
@@ -21,11 +22,12 @@ export class AccessTokenInterceptor implements HttpInterceptor {
     ) {
       return next.handle(request);
     }
+
+    if (!this.authService.accessToken$) return next.handle(request);
+
     return this.authService.accessToken$.pipe(
       switchMap((accessToken) => {
-        if (!accessToken) {
-          return next.handle(request);
-        }
+        if (!accessToken) return next.handle(request);
         if (accessToken) {
           request = this.addAccessToken(request, accessToken);
         }

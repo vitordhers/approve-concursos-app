@@ -165,7 +165,6 @@ export class UserService {
       this.abortCtrl = new AbortController();
 
       if (!accessToken) return;
-      console.log({ accessToken });
       try {
         await fetchEventSource(`${this.endpoint}/payments`, {
           headers: {
